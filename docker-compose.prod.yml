@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres:
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # No port exposure in production for security
+    ports: []
+
+  redis:
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    # No port exposure in production for security
+    ports: []
+
+  backend:
+    build:
+      target: production
+    restart: always
+    command: >
+      sh -c "
+        alembic upgrade head &&
+        gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+      "
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - LOG_LEVEL=INFO
+    # No direct volume mounting in production
+    volumes: []
+
+  frontend:
+    build:
+      target: production
+    restart: always
+    # Static file serving in production
+    command: nginx -g "daemon off;"
+    environment:
+      - NODE_ENV=production
+    # No direct volume mounting in production
+    volumes: []
+
+  # Additional production services
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/certbot/conf:/etc/letsencrypt
+      - ./docker/nginx/certbot/www:/var/www/certbot
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - mnemosyne-network

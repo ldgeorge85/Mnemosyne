@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      target: development
+    command: >
+      sh -c "
+        python -m pip install -r requirements.txt &&
+        ./startup.sh
+      "
+    environment:
+      - APP_ENV=development
+      - APP_DEBUG=true
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - ./backend:/app
+    # Enable hot reload for development
+    
+  frontend:
+    build:
+      target: development
+    command: npm run dev -- --host 0.0.0.0
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:8000/api/v1
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    # Enable hot reload for development

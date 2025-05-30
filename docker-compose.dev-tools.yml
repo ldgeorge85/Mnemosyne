@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+  # Development tools container
+  dev-tools:
+    build:
+      context: ./docker/dev
+      dockerfile: Dockerfile.dev-tools
+    volumes:
+      - .:/project
+      - ~/.gitconfig:/root/.gitconfig:ro  # Share git config with host
+    working_dir: /project
+    environment:
+      - TERM=xterm-256color
+    networks:
+      - mnemosyne-network
+    # This container will exit immediately unless run with a command
+    # Example: docker compose -f docker-compose.yml -f docker-compose.dev-tools.yml run dev-tools black backend/
+
+  # Test runner for backend
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    environment:
+      - APP_ENV=test
+      - DB_HOST=postgres-test
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE=mnemosyne_test
+      - REDIS_HOST=redis-test
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=redis
+      - PYTHONPATH=/app
+    command: pytest
+    depends_on:
+      - postgres-test
+      - redis-test
+    networks:
+      - mnemosyne-network
+
+  # Test runner for frontend
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    working_dir: /app
+    environment:
+      - NODE_ENV=test
+    command: npm test
+    networks:
+      - mnemosyne-network
+
+  # Test database instance (isolated from development database)
+  postgres-test:
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mnemosyne_test
+    ports:
+      - "5433:5432"  # Different port from main postgres to avoid conflicts
+    tmpfs:
+      - /var/lib/postgresql/data  # Use tmpfs for faster testing and no persistence
+    networks:
+      - mnemosyne-network
+
+  # Test redis instance (isolated from development redis)
+  redis-test:
+    image: redis:7-alpine
+    command: redis-server --requirepass redis
+    ports:
+      - "6380:6379"  # Different port from main redis to avoid conflicts
+    tmpfs:
+      - /data  # Use tmpfs for faster testing and no persistence
+    networks:
+      - mnemosyne-network
+
+  # Linting service for backend
+  backend-lint:
+    build:
+      context: ./docker/dev
+      dockerfile: Dockerfile.dev-tools
+    volumes:
+      - ./backend:/project/backend
+    working_dir: /project
+    command: >
+      bash -c "
+        cd backend &&
+        black . --check &&
+        isort . --check &&
+        ruff check . &&
+        mypy ."
+    networks:
+      - mnemosyne-network
+
+  # Linting service for frontend
+  frontend-lint:
+    build:
+      context: ./docker/dev
+      dockerfile: Dockerfile.dev-tools
+    volumes:
+      - ./frontend:/project/frontend
+    working_dir: /project
+    command: >
+      bash -c "
+        cd frontend &&
+        eslint . &&
+        prettier --check ."
+    networks:
+      - mnemosyne-network
+
+networks:
+  mnemosyne-network:
+    driver: bridge

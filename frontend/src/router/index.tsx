@@ -24,6 +24,7 @@ import LoginPage from '../pages/Login';
 import SettingsPage from '../pages/Settings';
 import ConversationsPage from '../pages/Conversations';
 import ConversationDetailPage from '../pages/ConversationDetail';
+import ChatPage from '../pages/Chat';
 
 /**
  * Protected Route component that requires authentication
@@ -59,6 +60,7 @@ const AppRouter: React.FC = () => {
             <Route path="settings" element={<SettingsPage />} />
             <Route path="conversations" element={<ConversationsPage />} />
             <Route path="conversations/:id" element={<ConversationDetailPage />} />
+            <Route path="chat" element={<ChatPage />} />
           </Route>
           
           {/* 404 route */}

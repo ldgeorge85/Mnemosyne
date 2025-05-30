@@ -6,3 +6,4 @@ This package contains SQLAlchemy models representing database tables and relatio
 
 # Import all models here so they can be discovered by SQLAlchemy
 from app.db.models.conversation import Conversation, Message
+from app.db.models.memory import Memory, MemoryChunk

@@ -161,116 +161,137 @@ This document outlines the specific tasks required to implement Mnemosyne, organ
 ## Phase 2: Core Functionality (2-3 weeks)
 
 ### Conversation System
-- [ ] [CONV-01] Implement conversation data model
+- [x] [CONV-01] Implement conversation data model
   - Priority: H | Dependencies: BKF-02 | Effort: M
-  - Design database schema
-  - Create models and interfaces
-  - Set up relationships
+  - Database schema
+  - Repository interfaces
+  - API endpoints
+  - **Completed**: 2025-05-29
   
-- [ ] [CONV-02] Create conversation context management
-  - Priority: H | Dependencies: CONV-01 | Effort: L
-  - Implement context tracking
-  - Handle conversation state
-  - Manage context window
-  
-- [ ] [CONV-03] Develop message handling system
+- [x] [CONV-02] Create conversation context management
   - Priority: H | Dependencies: CONV-01 | Effort: M
-  - Message validation
-  - Processing pipeline
-  - Error handling
+  - Context tracking
+  - Session management
+  - Context window
+  - **Completed**: 2025-05-29
   
-- [ ] [CONV-04] Implement response streaming
+- [x] [CONV-03] Develop message handling system
+  - Priority: M | Dependencies: CONV-02 | Effort: M
+  - Message processing pipeline
+  - Content validation
+  - Event dispatching
+  - **Completed**: 2025-05-29
+  
+- [x] [CONV-04] Implement response streaming
   - Priority: M | Dependencies: CONV-03 | Effort: M
-  - Server-Sent Events (SSE)
+  - Server-Sent Events
   - Chunked responses
   - Error recovery
+  - **Completed**: 2025-05-29
   
-- [ ] [CONV-05] Create conversation history UI
+- [x] [CONV-05] Create conversation history UI
   - Priority: M | Dependencies: FEF-03, CONV-01 | Effort: L
   - Message list component
   - Timestamp formatting
   - Loading states
+  - **Completed**: 2025-05-29
 
 ### LLM Integration
-- [ ] [LLM-01] Set up LangChain integration
+- [x] [LLM-01] Set up LangChain integration
   - Priority: H | Dependencies: BKF-01 | Effort: M
   - Install dependencies
   - Configure LLM client
   - Set up retry logic
+  - **Completed**: 2025-05-29
   
-- [ ] [LLM-02] Implement OpenAI API client
+- [x] [LLM-02] Implement OpenAI API client
   - Priority: H | Dependencies: LLM-01 | Effort: M
   - API key management
   - Rate limiting
   - Error handling
+  - **Completed**: 2025-05-29
   
-- [ ] [LLM-03] Create prompt engineering system
+- [x] [LLM-03] Create prompt engineering system
   - Priority: M | Dependencies: LLM-02 | Effort: L
   - Template management
   - Variable interpolation
   - Version control for prompts
+  - **Completed**: 2025-05-29
   
-- [ ] [LLM-04] Develop response parsing and handling
+- [x] [LLM-04] Develop response parsing and handling
   - Priority: M | Dependencies: LLM-02 | Effort: M
-  - Response validation
-  - Structured output parsing
+  - JSON response parsing
+  - Error handling
+  - Structured output interpretation
+  - **Completed**: 2025-05-29
   - Fallback strategies
   
-- [ ] [LLM-05] Implement function calling framework
-  - Priority: H | Dependencies: LLM-02 | Effort: L
-  - Function registry
-  - Parameter validation
-  - Execution pipeline
+- [x] [LLM-05] Implement function calling framework
+  - Priority: M | Dependencies: LLM-04 | Effort: M
+  - Tool definitions
+  - Function calling API integration
+  - Agent execution
+  - **Completed**: 2025-05-29
 
 ### Memory System
-- [ ] [MEM-01] Create vector embedding generation pipeline
+- [x] [MEM-01] Create vector embedding generation pipeline
   - Priority: H | Dependencies: BKF-03 | Effort: M
   - Text chunking
   - Embedding generation
   - Batch processing
   
-- [ ] [MEM-02] Implement pgvector storage interface
+- [x] [MEM-02] Implement pgvector storage interface
   - Priority: H | Dependencies: MEM-01 | Effort: M
   - Vector operations
   - Index management
   - Query optimization
+  - **Completed**: 2025-05-29
   
-- [ ] [MEM-03] Develop memory retrieval system
+- [x] [MEM-03] Develop memory retrieval system
   - Priority: M | Dependencies: MEM-02 | Effort: L
   - Similarity search
-  - Filtering
-  - Result ranking
+  - Relevance ranking
+  - Context retrieval
+  - **Completed**: 2025-05-29
   
-- [ ] [MEM-04] Create memory pruning and management
+- [x] [MEM-04] Create memory pruning and management
   - Priority: M | Dependencies: MEM-03 | Effort: S
   - Retention policies
   - Cleanup jobs
   - Storage optimization
+  - **Completed**: 2025-05-29
   
-- [ ] [MEM-05] Implement memory relevance scoring
+- [x] [MEM-05] Implement memory relevance scoring
   - Priority: L | Dependencies: MEM-03 | Effort: M
+  - Multiple scoring factors with configurable weights
+  - Feedback system for relevance improvement
+  - Batch scoring and history tracking
+  - **Completed**: 2025-05-30
   - Scoring algorithm
   - Feedback loop
   - Tuning parameters
 
 ### Basic UI
-- [ ] [UI-01] Develop chat interface components
+- [x] [UI-01] Develop chat interface components
   - Priority: H | Dependencies: FEF-04 | Effort: M
   - Message bubbles
   - Input area
   - Scroll behavior
+  - **Completed**: 2025-05-29
   
-- [ ] [UI-02] Create message display system
+- [x] [UI-02] Create message display system
   - Priority: H | Dependencies: UI-01 | Effort: M
   - Message formatting
   - Code blocks
   - Media handling
+  - **Completed**: 2025-05-29
   
-- [ ] [UI-03] Implement typing indicators
+- [x] [UI-03] Implement typing indicators
   - Priority: M | Dependencies: UI-01 | Effort: S
   - Animation
   - Status indicators
   - Typing state management
+  - **Completed**: 2025-05-29
   
 - [ ] [UI-04] Design and implement sidebar/navigation
   - Priority: M | Dependencies: FEF-03 | Effort: M

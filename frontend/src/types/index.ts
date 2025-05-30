@@ -14,12 +14,20 @@ export interface User {
 }
 
 // Conversation related types
+export interface MessageAttachment {
+  type: 'image' | 'video' | 'audio' | 'pdf' | 'other';
+  url: string;
+  fileName?: string;
+  fileSize?: number;
+}
+
 export interface Message {
   id: string;
   conversationId: string;
   content: string;
   role: 'user' | 'assistant' | 'system';
   createdAt: string;
+  attachments?: MessageAttachment[];
 }
 
 export interface Conversation {
@@ -61,6 +69,14 @@ export interface ApiResponse<T> {
   data: T;
   status: number;
   message: string;
+}
+
+// Paginated response type
+export interface PaginatedResponse<T> {
+  total: number;
+  offset: number;
+  limit: number;
+  items: T[];
 }
 
 // Health check response

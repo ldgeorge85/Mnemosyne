@@ -4,38 +4,28 @@
  * This component displays a detailed view of a single conversation,
  * showing all messages and allowing users to send new messages.
  */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
-  Button,
   Flex,
   Heading,
   IconButton,
   Input,
   Text,
-  VStack,
-  HStack,
-  Avatar,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Divider,
   useColorModeValue,
-  Tooltip,
+  useToast,
 } from '@chakra-ui/react';
 import {
   FiSend,
   FiEdit,
   FiTrash2,
-  FiMoreVertical,
-  FiCopy,
   FiArrowLeft,
   FiMessageSquare,
 } from 'react-icons/fi';
 import { useConversationStore } from '../stores';
 import { Message } from '../types';
+import { MessageList, MessageSkeleton } from '../components/domain/conversation';
 
 /**
  * Conversation detail page component that displays a conversation thread
@@ -61,8 +51,8 @@ const ConversationDetail: React.FC = () => {
   const [editTitleMode, setEditTitleMode] = useState(false);
   const [title, setTitle] = useState('');
   
-  // Ref for scrolling to bottom of conversation
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Toast for notifications
+  const toast = useToast();
   
   // Fetch conversation on component mount
   useEffect(() => {
@@ -78,10 +68,7 @@ const ConversationDetail: React.FC = () => {
     }
   }, [currentConversation]);
   
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [currentConversation?.messages]);
+  // No need for manual scroll effect as MessageList handles this
   
   // Handle sending a new message
   const handleSendMessage = () => {
@@ -91,8 +78,30 @@ const ConversationDetail: React.FC = () => {
     }
   };
   
+  // Handle copying a message to clipboard
+  const handleCopyMessage = (message: Message) => {
+    navigator.clipboard.writeText(message.content)
+      .then(() => {
+        toast({
+          title: 'Message copied',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        console.error('Failed to copy message:', error);
+        toast({
+          title: 'Failed to copy message',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        });
+      });
+  };
+  
   // Handle pressing Enter to send
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -115,13 +124,6 @@ const ConversationDetail: React.FC = () => {
     setEditTitleMode(false);
   };
   
-  // Copy text to clipboard
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
-  
-  // Background colors
-  const bgColor = useColorModeValue('gray.50', 'gray.700');
   const userMessageBg = useColorModeValue('brand.100', 'brand.800');
   const assistantMessageBg = useColorModeValue('gray.100', 'gray.600');
   
@@ -138,97 +140,108 @@ const ConversationDetail: React.FC = () => {
   }
   
   return (
-    <Box>
-      {/* Header */}
-      <Flex justify="space-between" align="center" mb={6}>
-        <Flex align="center">
-          <IconButton
-            aria-label="Back to conversations"
-            icon={<FiArrowLeft />}
-            variant="ghost"
-            mr={2}
-            onClick={() => navigate('/conversations')}
-          />
-          
-          {editTitleMode ? (
-            <HStack>
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                size="md"
-                width="auto"
-                onKeyPress={(e) => e.key === 'Enter' && handleUpdateTitle()}
-                autoFocus
-              />
-              <Button size="sm" onClick={handleUpdateTitle}>Save</Button>
-              <Button size="sm" variant="ghost" onClick={handleTitleEditCancel}>Cancel</Button>
-            </HStack>
-          ) : (
-            <Heading as="h1" size="lg" display="flex" alignItems="center">
-              <Box as={FiMessageSquare} mr={2} />
-              {currentConversation.title}
-              <IconButton
-                aria-label="Edit title"
-                icon={<FiEdit />}
-                variant="ghost"
-                size="sm"
-                ml={2}
-                onClick={() => setEditTitleMode(true)}
-              />
+    <Box p={5} maxWidth="1200px" margin="0 auto">
+      {/* Header with back button and conversation title */}
+      <Flex mb={5} align="center">
+        <IconButton
+          icon={<FiArrowLeft />}
+          aria-label="Back to conversations"
+          variant="ghost"
+          mr={3}
+          onClick={() => navigate('/conversations')}
+        />
+        
+        {editTitleMode ? (
+          <Flex flex={1}>
+            <Input
+              value={title}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+              onBlur={() => {
+                if (id && title.trim()) {
+                  updateConversation(id, { title: title.trim() });
+                }
+                setEditTitleMode(false);
+              }}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === 'Enter') {
+                  if (id && title.trim()) {
+                    updateConversation(id, { title: title.trim() });
+                  }
+                  setEditTitleMode(false);
+                } else if (e.key === 'Escape') {
+                  setTitle(currentConversation?.title || '');
+                  setEditTitleMode(false);
+                }
+              }}
+              autoFocus
+            />
+          </Flex>
+        ) : (
+          <Flex flex={1} align="center">
+            <Heading size="lg" flex={1}>
+              {currentConversation?.title || 'New Conversation'}
             </Heading>
-          )}
-        </Flex>
+            <IconButton
+              icon={<FiEdit />}
+              aria-label="Edit title"
+              variant="ghost"
+              size="sm"
+              onClick={() => setEditTitleMode(true)}
+            />
+          </Flex>
+        )}
       </Flex>
       
-      {/* Messages */}
-      <Box
-        bg={bgColor}
+      {/* Message display area */}
+      <Box 
+        flex={1} 
+        overflowY="auto" 
+        mb={5} 
+        height="calc(100vh - 250px)"
         borderRadius="md"
-        p={4}
-        mb={4}
-        height="calc(70vh - 100px)"
-        overflowY="auto"
+        border="1px"
+        borderColor={useColorModeValue('gray.200', 'gray.700')}
       >
-        {currentConversation.messages.length === 0 ? (
+        {isLoading && !currentConversation ? (
+          <MessageSkeleton count={4} />
+        ) : currentConversation ? (
+          <MessageList
+            messages={currentConversation.messages || []}
+            isLoading={isLoading}
+            error={error}
+            onDeleteMessage={(messageId: string) => deleteMessage(id as string, messageId)}
+            onCopyMessage={handleCopyMessage}
+            autoScroll={true}
+          />
+        ) : (
           <Flex
             direction="column"
             align="center"
             justify="center"
             height="100%"
+            p={10}
             color="gray.500"
           >
             <Box as={FiMessageSquare} size="48px" mb={4} />
             <Text>Start the conversation by sending a message below</Text>
           </Flex>
-        ) : (
-          <VStack spacing={4} align="stretch">
-            {currentConversation.messages.map((message) => (
-              <MessageBubble
-                key={message.id}
-                message={message}
-                onDelete={() => id && deleteMessage(id, message.id)}
-                onCopy={() => copyToClipboard(message.content)}
-              />
-            ))}
-            <div ref={messagesEndRef} />
-          </VStack>
         )}
       </Box>
       
-      {/* Message input */}
-      <Flex>
+      {/* Message input area */}
+      <Flex mt={4}>
         <Input
-          placeholder="Type your message here..."
+          flex={1}
+          placeholder="Type your message..."
           value={messageContent}
-          onChange={(e) => setMessageContent(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessageContent(e.target.value)}
           onKeyPress={handleKeyPress}
           mr={2}
-          bg={useColorModeValue('white', 'gray.700')}
         />
         <IconButton
+          colorScheme="blue"
           aria-label="Send message"
           icon={<FiSend />}
-          colorScheme="brand"
           onClick={handleSendMessage}
           isDisabled={!messageContent.trim()}
         />

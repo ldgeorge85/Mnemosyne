@@ -1,3 +1,9 @@
+
+<img align="center"
+     src="https://github.com/ldgeorge85/Mnemosyne/blob/75c4a7e251995b1f3ffa7d6a848846cabcf5c687/artwork/logo.png"
+     height="500px"
+     style="padding-right: 20px">
+
 # Mnemosyne
 
 A web-based conversational AI system with advanced memory capabilities, scheduling features, and agentic task execution abilities.

@@ -61,6 +61,7 @@ This document serves as the definitive reference for the Mnemosyne project struc
 │   ├── architecture.md           # High-level architecture documentation with component diagrams
 │   ├── api_specifications.md     # API endpoints documentation with request/response examples
 │   ├── development_guidelines.md # Code style guide, Git workflow, and review process
+│   ├── phase_2_prompt.md         # Onboarding prompt for Phase 2 with project context and next steps
 │   ├── ai_patterns.md            # Implementation patterns for AI assistants
 │   ├── progress_template.md      # Template for AI progress reporting
 │   ├── feedback_process.md       # Process for AI assistants to request human feedback

@@ -8,7 +8,8 @@ from typing import Dict, List, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
-from app.api import deps
+from app.api.dependencies.db import get_db
+from app.api.dependencies.auth import get_current_user
 from app.services.llm import OpenAIClient
 from app.services.llm.function_calling import (
     function_registry, ToolExecutor, FunctionCallMode
@@ -26,10 +27,14 @@ class FunctionListResponse(BaseModel):
 class FunctionCallRequest(BaseModel):
     """Schema for a function call request."""
     messages: List[Dict[str, str]] = Field(..., description="Conversation messages")
+    # Support both old and new API formats
+    functions: Optional[List[str]] = Field(None, description="[DEPRECATED] Names of available functions")
+    tools: Optional[List[Dict[str, Any]]] = Field(None, description="Tools to use for function calling (OpenAI v1.0+ format)")
     available_functions: Optional[List[str]] = Field(None, description="Names of available functions")
     model: Optional[str] = Field(None, description="Model to use")
     system_prompt: Optional[str] = Field(None, description="System prompt to use")
     mode: str = Field("auto", description="Function calling mode (auto, none, required)")
+    tool_choice: Optional[str] = Field("auto", description="Tool choice mode (OpenAI v1.0+)")
 
 
 class FunctionCallResponse(BaseModel):
@@ -41,8 +46,8 @@ class FunctionCallResponse(BaseModel):
 
 @router.get("/", response_model=FunctionListResponse)
 async def list_functions(
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> FunctionListResponse:
     """
     List all available functions that can be called by LLMs.
@@ -61,8 +66,8 @@ async def list_functions(
 @router.post("/call", response_model=FunctionCallResponse)
 async def call_functions(
     request: FunctionCallRequest,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> FunctionCallResponse:
     """
     Call functions using an LLM.
@@ -92,15 +97,29 @@ async def call_functions(
         else:
             mode = FunctionCallMode.AUTO
         
-        # Run conversation
-        result = await executor.run_conversation(
-            openai_client=client,
-            messages=request.messages,
-            available_functions=request.available_functions,
-            system_prompt=request.system_prompt,
-            model=request.model,
-            max_turns=5
-        )
+        # For v1.0+ API, prioritize tools parameter
+        if request.tools:
+            # Use new tools parameter format
+            result = await executor.run_conversation_with_tools(
+                openai_client=client,
+                messages=request.messages,
+                tools=request.tools,
+                system_prompt=request.system_prompt,
+                model=request.model,
+                tool_choice=request.tool_choice,
+                max_turns=5
+            )
+        else:
+            # Fall back to legacy function calling for backward compatibility
+            available_functions = request.available_functions or request.functions
+            result = await executor.run_conversation(
+                openai_client=client,
+                messages=request.messages,
+                available_functions=available_functions,
+                system_prompt=request.system_prompt,
+                model=request.model,
+                max_turns=5
+            )
         
         return FunctionCallResponse(**result)
         

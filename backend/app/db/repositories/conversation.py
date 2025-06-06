@@ -5,7 +5,7 @@ This module provides repository classes for conversation and message operations.
 """
 
 from typing import List, Optional, Dict, Any, Tuple
-from sqlalchemy import select, func, desc
+from sqlalchemy import select, desc, func, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -31,38 +31,70 @@ class ConversationRepository:
         self, user_id: str, limit: int = 20, offset: int = 0
     ) -> Tuple[List[Conversation], int]:
         """
-        Get a paginated list of conversations for a user.
-        
+        Get paginated conversations for a user.
+
         Args:
-            user_id: ID of the user
-            limit: Maximum number of items to return
-            offset: Pagination offset
-            
+            user_id: The user ID to get conversations for.
+            limit: The maximum number of conversations to return.
+            offset: The offset to start from.
+
         Returns:
             Tuple containing the list of conversations and the total count
         """
-        # Get total count
-        count_query = select(func.count()).select_from(Conversation).where(
-            Conversation.user_id == user_id
-        )
-        total = await self.session.scalar(count_query)
+        # Use raw SQL for count
+        count_query = text("SELECT COUNT(*) FROM conversations WHERE user_id = :user_id")
+        count_result = await self.session.execute(count_query, {"user_id": user_id})
+        total = count_result.scalar() or 0
         
-        # Get paginated conversations with last message
-        query = (
-            select(Conversation)
-            .where(Conversation.user_id == user_id)
-            .options(
-                selectinload(Conversation.messages).order_by(desc(Message.created_at)).limit(1)
+        # Get paginated conversations with raw SQL
+        conv_query = text("""
+            SELECT id, title, created_at, updated_at, user_id 
+            FROM conversations 
+            WHERE user_id = :user_id 
+            ORDER BY updated_at DESC 
+            LIMIT :limit OFFSET :offset
+        """)
+        conv_result = await self.session.execute(
+            conv_query, 
+            {"user_id": user_id, "limit": limit, "offset": offset}
+        )
+        
+        # Convert to Conversation objects
+        conversations = []
+        for row in conv_result.fetchall():
+            conv = Conversation(
+                id=row.id,
+                title=row.title,
+                created_at=row.created_at,
+                updated_at=row.updated_at,
+                user_id=row.user_id,
+                messages=[]
             )
-            .order_by(desc(Conversation.updated_at))
-            .limit(limit)
-            .offset(offset)
-        )
+            conversations.append(conv)
         
-        result = await self.session.execute(query)
-        conversations = result.scalars().all()
-        
-        return conversations, total or 0
+        # For each conversation, get the latest message
+        for conv in conversations:
+            msg_query = text("""
+                SELECT id, content, role, created_at, updated_at, conversation_id 
+                FROM messages 
+                WHERE conversation_id = :conv_id 
+                ORDER BY created_at DESC 
+                LIMIT 1
+            """)
+            msg_result = await self.session.execute(msg_query, {"conv_id": conv.id})
+            msg_row = msg_result.fetchone()
+            if msg_row:
+                msg = Message(
+                    id=msg_row.id,
+                    content=msg_row.content,
+                    role=msg_row.role,
+                    created_at=msg_row.created_at,
+                    updated_at=msg_row.updated_at,
+                    conversation_id=msg_row.conversation_id
+                )
+                conv.messages = [msg]
+            
+        return conversations, total
 
     async def get_conversation(self, conversation_id: str, user_id: str) -> Optional[Conversation]:
         """
@@ -97,10 +129,33 @@ class ConversationRepository:
         Returns:
             The created conversation
         """
-        conversation = Conversation(**data)
+        # Create a new conversation instance
+        conversation = Conversation()
+        
+        # Set attributes manually
+        conversation.title = data.get('title')
+        conversation.user_id = data.get('user_id')
+        
+        # Add to session and flush to generate ID and timestamps
+        # but don't commit yet to avoid detaching the object
         self.session.add(conversation)
         await self.session.flush()
-        return conversation
+        
+        # Create a dictionary copy of the conversation data to return
+        # This avoids issues with detached objects after commit
+        result = {
+            "id": conversation.id,
+            "title": conversation.title,
+            "user_id": conversation.user_id,
+            "created_at": conversation.created_at,
+            "updated_at": conversation.updated_at
+        }
+        
+        # Now commit the transaction
+        await self.session.commit()
+        
+        # Return the conversation data dictionary
+        return Conversation(**result)
 
     async def update_conversation(self, conversation_id: str, user_id: str, data: Dict[str, Any]) -> Optional[Conversation]:
         """
@@ -163,35 +218,48 @@ class MessageRepository:
         self, conversation_id: str, limit: int = 50, offset: int = 0
     ) -> Tuple[List[Message], int]:
         """
-        Get a paginated list of messages for a conversation.
-        
+        Get paginated messages for a conversation.
+
         Args:
-            conversation_id: ID of the conversation
-            limit: Maximum number of items to return
-            offset: Pagination offset
-            
+            conversation_id: The conversation ID to get messages for.
+            limit: The maximum number of messages to return.
+            offset: The offset to start from.
+
         Returns:
             Tuple containing the list of messages and the total count
         """
-        # Get total count
-        count_query = select(func.count()).select_from(Message).where(
-            Message.conversation_id == conversation_id
+        # Use raw SQL for count with the correct table name
+        count_query = text("SELECT COUNT(*) FROM messages WHERE conversation_id = :conversation_id")
+        count_result = await self.session.execute(count_query, {"conversation_id": conversation_id})
+        total = count_result.scalar() or 0
+        
+        # Get paginated messages with raw SQL using the correct table name
+        msg_query = text("""
+            SELECT id, content, role, created_at, updated_at, conversation_id 
+            FROM messages 
+            WHERE conversation_id = :conversation_id 
+            ORDER BY created_at DESC 
+            LIMIT :limit OFFSET :offset
+        """)
+        msg_result = await self.session.execute(
+            msg_query, 
+            {"conversation_id": conversation_id, "limit": limit, "offset": offset}
         )
-        total = await self.session.scalar(count_query)
         
-        # Get paginated messages
-        query = (
-            select(Message)
-            .where(Message.conversation_id == conversation_id)
-            .order_by(desc(Message.created_at))
-            .limit(limit)
-            .offset(offset)
-        )
-        
-        result = await self.session.execute(query)
-        messages = result.scalars().all()
-        
-        return messages, total or 0
+        # Convert to Message objects
+        messages = []
+        for row in msg_result.fetchall():
+            msg = Message(
+                id=row.id,
+                content=row.content,
+                role=row.role,
+                created_at=row.created_at,
+                updated_at=row.updated_at,
+                conversation_id=row.conversation_id
+            )
+            messages.append(msg)
+            
+        return messages, total
 
     async def create_message(self, data: Dict[str, Any]) -> Message:
         """
@@ -206,7 +274,23 @@ class MessageRepository:
         message = Message(**data)
         self.session.add(message)
         await self.session.flush()
-        return message
+        
+        # Create a dictionary copy of the message data to return
+        # This avoids issues with detached objects after commit
+        result = {
+            "id": message.id,
+            "content": message.content,
+            "role": message.role,
+            "conversation_id": message.conversation_id,
+            "created_at": message.created_at,
+            "updated_at": message.updated_at
+        }
+        
+        # Now commit the transaction
+        await self.session.commit()
+        
+        # Return the message data dictionary
+        return Message(**result)
 
     async def delete_message(self, message_id: str, conversation_id: str) -> bool:
         """

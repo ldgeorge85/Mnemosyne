@@ -9,7 +9,8 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query, BackgroundTasks
 from pydantic import BaseModel, Field
 
-from app.api import deps
+from app.api.dependencies.db import get_db
+from app.api.dependencies.auth import get_current_user, is_admin
 from app.services.memory.relevance import memory_relevance_scorer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -51,8 +52,8 @@ class ScoringFeedback(BaseModel):
 async def get_memory_score(
     memory_id: str,
     recalculate: bool = Query(False),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryScore:
     """
     Get the relevance score for a specific memory.
@@ -85,8 +86,8 @@ async def get_memory_score(
 @router.post("/memories/batch-scores", response_model=List[MemoryScore])
 async def get_batch_memory_scores(
     request: BatchScoreRequest,
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> List[MemoryScore]:
     """
     Get relevance scores for multiple memories.
@@ -118,9 +119,9 @@ async def get_batch_memory_scores(
 async def update_memory_scores(
     background_tasks: BackgroundTasks,
     limit: int = Query(100, ge=1, le=500),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id),
-    is_admin: bool = Depends(deps.is_admin)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    is_admin: bool = Depends(is_admin)
 ) -> Dict[str, Any]:
     """
     Update relevance scores for memories.
@@ -161,8 +162,8 @@ async def update_memory_scores(
 @router.post("/feedback", response_model=Dict[str, Any])
 async def submit_scoring_feedback(
     feedback: ScoringFeedback,
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> Dict[str, Any]:
     """
     Submit user feedback on memory relevance.

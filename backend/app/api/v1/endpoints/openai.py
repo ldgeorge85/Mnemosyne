@@ -9,7 +9,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field, validator
 
 from app.core.config import settings
-from app.api import deps
+from app.api.dependencies.db import get_db
+from app.api.dependencies.auth import get_current_user
 from app.services.llm import OpenAIClient
 
 
@@ -58,8 +59,8 @@ class ModerationResponse(BaseModel):
 @router.post("/embeddings", response_model=EmbeddingResponse)
 async def create_embeddings(
     request: EmbeddingRequest,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> EmbeddingResponse:
     """
     Generate embeddings for text using OpenAI's API.
@@ -111,8 +112,8 @@ async def create_embeddings(
 @router.post("/moderation", response_model=ModerationResponse)
 async def check_moderation(
     request: ModerationRequest,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> ModerationResponse:
     """
     Check content against OpenAI's moderation endpoint.

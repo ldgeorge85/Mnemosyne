@@ -13,7 +13,7 @@ from starlette.responses import StreamingResponse
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.dependencies.database import get_db
+from app.api.dependencies.db import get_db
 from app.api.dependencies.auth import get_current_user
 from app.db.repositories.conversation import ConversationRepository
 from app.services.conversation import (
@@ -36,6 +36,16 @@ class StreamingRequest(BaseModel):
     streaming_type: str = Field("sse", pattern="^(sse|chunked)$")
     chunk_size: int = Field(100, gt=0, lt=1000)
     chunk_delay: float = Field(0.05, ge=0, le=1.0)
+
+
+class LLMStreamingRequest(BaseModel):
+    """Schema for LLM streaming request"""
+    conversation_id: str
+    message_content: str = Field(..., min_length=1, max_length=10000)
+    user_id: str
+    max_tokens: Optional[int] = Field(None)
+    temperature: Optional[float] = Field(0.7)
+    stream: bool = Field(True)
 
 
 class StreamingStatusRequest(BaseModel):
@@ -104,7 +114,7 @@ async def stream_text_response(
 
 @router.post("/llm")
 async def stream_llm_response(
-    request: StreamingRequest,
+    request: LLMStreamingRequest,
     db: AsyncSession = Depends(get_db),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
@@ -126,16 +136,20 @@ async def stream_llm_response(
                 detail="Conversation not found"
             )
         
-        # Initialize the LLM response streamer
+        # Initialize the LLM response streamer with the provided parameters
         llm_streamer = LLMResponseStreamer()
         
         # Generate a session ID for this streaming session
         session_id = f"llm-{uuid.uuid4()}"
         
-        # Create streaming response
+        # Create streaming response with all parameters
         return llm_streamer.create_llm_sse_response(
             response_text=request.message_content,
-            session_id=session_id
+            session_id=session_id,
+            user_id=request.user_id,
+            conversation_id=request.conversation_id,
+            max_tokens=request.max_tokens,
+            temperature=request.temperature
         )
     except HTTPException:
         raise

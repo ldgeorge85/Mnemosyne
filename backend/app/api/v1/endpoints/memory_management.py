@@ -8,7 +8,8 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query, BackgroundTasks
 from pydantic import BaseModel, Field
 
-from app.api import deps
+from app.api.dependencies.db import get_db
+from app.api.dependencies.auth import get_current_user, is_admin
 from app.services.memory.management import memory_management_service
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -47,9 +48,9 @@ class RetentionPolicyResponse(BaseModel):
 async def run_maintenance(
     request: MaintenanceRequest,
     background_tasks: BackgroundTasks,
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id),
-    is_admin: bool = Depends(deps.is_admin)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    is_admin: bool = Depends(is_admin)
 ) -> MaintenanceResponse:
     """
     Run memory maintenance tasks.
@@ -101,9 +102,9 @@ async def run_maintenance(
 
 @router.get("/statistics", response_model=Dict[str, Any])
 async def get_memory_statistics(
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id),
-    is_admin: bool = Depends(deps.is_admin)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    is_admin: bool = Depends(is_admin)
 ) -> Dict[str, Any]:
     """
     Get memory statistics.
@@ -131,8 +132,8 @@ async def get_memory_statistics(
 
 @router.get("/policies", response_model=List[RetentionPolicyResponse])
 async def get_retention_policies(
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> List[RetentionPolicyResponse]:
     """
     Get available retention policies.

@@ -8,7 +8,8 @@ from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query, Path, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api import deps
+from app.api.dependencies.db import get_db
+from app.api.dependencies.auth import get_current_user
 from app.db.repositories.memory import MemoryRepository, MemoryChunkRepository
 from app.schemas.memory import (
     MemoryCreate,
@@ -29,8 +30,8 @@ router = APIRouter()
 @router.post("/", response_model=MemoryResponse, status_code=status.HTTP_201_CREATED)
 async def create_memory(
     memory_data: MemoryCreate,
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryResponse:
     """
     Create a new memory.
@@ -62,8 +63,8 @@ async def create_memory(
 async def get_memory(
     memory_id: str = Path(..., description="The ID of the memory to retrieve"),
     include_chunks: bool = Query(False, description="Whether to include memory chunks"),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryWithChunksResponse:
     """
     Get a memory by ID.
@@ -115,8 +116,8 @@ async def list_memories(
     limit: int = Query(50, description="Maximum number of memories to return"),
     offset: int = Query(0, description="Number of memories to skip for pagination"),
     include_inactive: bool = Query(False, description="Whether to include inactive memories"),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> List[MemoryResponse]:
     """
     List memories for the current user.
@@ -145,8 +146,8 @@ async def list_memories(
 async def update_memory(
     memory_data: MemoryUpdate,
     memory_id: str = Path(..., description="The ID of the memory to update"),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryResponse:
     """
     Update a memory.
@@ -187,8 +188,8 @@ async def update_memory(
 async def delete_memory(
     memory_id: str = Path(..., description="The ID of the memory to delete"),
     permanent: bool = Query(False, description="Whether to permanently delete the memory"),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> None:
     """
     Delete a memory.
@@ -230,8 +231,8 @@ async def get_memories_by_tag(
     limit: int = Query(50, description="Maximum number of memories to return"),
     offset: int = Query(0, description="Number of memories to skip for pagination"),
     include_inactive: bool = Query(False, description="Whether to include inactive memories"),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> List[MemoryResponse]:
     """
     Get memories by tag.
@@ -261,8 +262,8 @@ async def get_memories_by_tag(
 @router.post("/search", response_model=MemorySearchResponse)
 async def search_memories(
     search_query: MemorySearchQuery,
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemorySearchResponse:
     """
     Search memories by text.
@@ -318,8 +319,8 @@ async def search_memories(
 @router.post("/chunks", response_model=MemoryChunkResponse, status_code=status.HTTP_201_CREATED)
 async def create_memory_chunk(
     chunk_data: MemoryChunkCreate,
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryChunkResponse:
     """
     Create a new memory chunk.
@@ -359,8 +360,8 @@ async def create_memory_chunk(
 @router.get("/chunks/{chunk_id}", response_model=MemoryChunkResponse)
 async def get_memory_chunk(
     chunk_id: str = Path(..., description="The ID of the memory chunk to retrieve"),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryChunkResponse:
     """
     Get a memory chunk by ID.
@@ -401,8 +402,8 @@ async def get_memory_chunk(
 @router.get("/memories/{memory_id}/chunks", response_model=List[MemoryChunkResponse])
 async def get_memory_chunks(
     memory_id: str = Path(..., description="The ID of the memory to get chunks for"),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> List[MemoryChunkResponse]:
     """
     Get all chunks for a memory.
@@ -443,8 +444,8 @@ async def get_memory_chunks(
 async def update_memory_chunk(
     chunk_data: MemoryChunkUpdate,
     chunk_id: str = Path(..., description="The ID of the memory chunk to update"),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryChunkResponse:
     """
     Update a memory chunk.
@@ -487,8 +488,8 @@ async def update_memory_chunk(
 @router.delete("/chunks/{chunk_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_memory_chunk(
     chunk_id: str = Path(..., description="The ID of the memory chunk to delete"),
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> None:
     """
     Delete a memory chunk.

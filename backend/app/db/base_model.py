@@ -14,6 +14,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import declarative_mixin
 
 from app.utils.common import utc_now
+from app.db.session import Base
 
 
 @declarative_mixin
@@ -26,6 +27,8 @@ class TimestampMixin:
 
 
 class BaseModel(TimestampMixin):
+    """Abstract base model class that all models should inherit from."""
+    __abstract__ = True
     """
     Base model class with common fields and functionality for all models.
     Includes ID and timestamp fields.

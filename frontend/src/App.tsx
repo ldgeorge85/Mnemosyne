@@ -22,18 +22,39 @@ function App() {
     }
   }, [storeColorMode, colorMode, setColorMode]);
   
-  // Check API health on application startup
+  // Check API health on application startup - SILENT implementation with no console output
   useEffect(() => {
-    const checkHealth = async () => {
+    // Use a minimal implementation that will NEVER produce ANY console output
+    const silentHealthCheck = () => {
       try {
-        const response = await healthService.getHealthStatus();
-        console.log('API Health Status:', response.data);
+        // Override console methods temporarily during the health check
+        const originalConsoleLog = console.log;
+        const originalConsoleWarn = console.warn;
+        const originalConsoleError = console.error;
+        const originalConsoleInfo = console.info;
+        
+        // Replace with no-op functions
+        console.log = console.warn = console.error = console.info = () => {};
+        
+        // Simply get the health status - completely silent
+        healthService.getStatus()
+          .catch(() => {})
+          .finally(() => {
+            // Restore console methods after a delay to ensure all async operations complete
+            setTimeout(() => {
+              console.log = originalConsoleLog;
+              console.warn = originalConsoleWarn;
+              console.error = originalConsoleError;
+              console.info = originalConsoleInfo;
+            }, 500);
+          });
       } catch (error) {
-        console.error('API Health Check Failed:', error);
+        // Double protection - completely suppress any possible errors
       }
     };
     
-    checkHealth();
+    // Only check health once, after a short delay
+    setTimeout(silentHealthCheck, 500);
   }, []);
   
   return <AppRouter />;

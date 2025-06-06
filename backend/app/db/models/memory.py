@@ -21,11 +21,11 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 
-from app.db.base_class import Base
-from app.db.mixins import TimestampMixin, UUIDMixin
+from app.db.session import Base
+from app.db.base_model import BaseModel
 
 
-class Memory(Base, UUIDMixin, TimestampMixin):
+class Memory(BaseModel, Base):
     """
     Memory model for storing user memories with vector embeddings.
     
@@ -35,7 +35,7 @@ class Memory(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "memories"
     
     # Core memory fields
-    user_id = Column(String(36), ForeignKey("users.id"), nullable=False)
+    user_id = Column(String(36), nullable=False)  # Temporarily removed ForeignKey until User model is implemented
     title = Column(String(255), nullable=False)
     content = Column(Text, nullable=False)
     
@@ -47,7 +47,7 @@ class Memory(Base, UUIDMixin, TimestampMixin):
     source = Column(String(100), nullable=True)
     source_type = Column(String(50), nullable=True)  # conversation, document, task, etc.
     source_id = Column(String(36), nullable=True)  # ID of the source if applicable
-    metadata = Column(JSON, nullable=True)  # Additional metadata as JSON
+    memory_metadata = Column(JSON, nullable=True)  # Additional metadata as JSON
     
     # Memory management
     importance = Column(Float, default=0.5)  # 0.0 to 1.0
@@ -59,7 +59,7 @@ class Memory(Base, UUIDMixin, TimestampMixin):
     tags = Column(ARRAY(String), nullable=True)
     
     # Relationships
-    user = relationship("User", back_populates="memories")
+    # user = relationship("User", back_populates="memories")  # Commented out until User model is implemented
     chunks = relationship("MemoryChunk", back_populates="memory", cascade="all, delete-orphan")
     
     # Indexes for performance
@@ -74,7 +74,7 @@ class Memory(Base, UUIDMixin, TimestampMixin):
         return f"<Memory {self.id}: {self.title}>"
 
 
-class MemoryChunk(Base, UUIDMixin, TimestampMixin):
+class MemoryChunk(BaseModel, Base):
     """
     Memory chunk model for storing segmented parts of memories.
     
@@ -93,7 +93,7 @@ class MemoryChunk(Base, UUIDMixin, TimestampMixin):
     
     # Metadata
     token_count = Column(Integer, nullable=True)
-    metadata = Column(JSON, nullable=True)  # Additional metadata as JSON
+    chunk_metadata = Column(JSON, nullable=True)  # Additional metadata as JSON
     
     # Relationships
     memory = relationship("Memory", back_populates="chunks")

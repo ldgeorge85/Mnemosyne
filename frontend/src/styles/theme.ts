@@ -91,6 +91,18 @@ const components = {
       },
     },
   },
+  // Add custom Textarea component configuration to prevent autosize-textarea conflict
+  Textarea: {
+    baseStyle: {
+      fontFamily: 'body',
+      borderRadius: 'md',
+    },
+    defaultProps: {
+      focusBorderColor: 'brand.500',
+      errorBorderColor: 'red.500',
+      resize: 'vertical',
+    },
+  },
 };
 
 // Global styles

@@ -8,7 +8,8 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
-from app.api import deps
+from app.api.dependencies.db import get_db
+from app.api.dependencies.auth import get_current_user
 from app.services.llm.prompt_management import PromptLibrary, PromptTemplate
 
 
@@ -72,8 +73,8 @@ class PromptFillRequest(BaseModel):
 @router.post("/", response_model=PromptTemplateResponse)
 async def create_template(
     data: PromptTemplateCreate,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> PromptTemplateResponse:
     """
     Create a new prompt template.
@@ -110,8 +111,8 @@ async def create_template(
 @router.get("/", response_model=List[PromptTemplateResponse])
 async def list_templates(
     tag: Optional[str] = None,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> List[PromptTemplateResponse]:
     """
     List all prompt templates, optionally filtered by tag.
@@ -133,8 +134,8 @@ async def list_templates(
 async def get_template(
     name: str,
     version: Optional[str] = None,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> PromptTemplateResponse:
     """
     Get a prompt template by name and version.
@@ -164,8 +165,8 @@ async def get_template(
 async def update_template(
     name: str,
     data: PromptTemplateUpdate,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> PromptTemplateResponse:
     """
     Update a prompt template or create a new version.
@@ -210,8 +211,8 @@ async def update_template(
 async def delete_template(
     name: str,
     version: Optional[str] = None,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> Dict[str, Any]:
     """
     Delete a prompt template or specific version.
@@ -252,8 +253,8 @@ async def fill_template(
     name: str,
     data: PromptFillRequest,
     version: Optional[str] = None,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> Dict[str, str]:
     """
     Fill a prompt template with variables.

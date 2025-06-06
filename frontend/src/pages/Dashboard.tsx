@@ -26,7 +26,7 @@ import {
   Icon,
   useColorModeValue
 } from '@chakra-ui/react';
-import { FiMessageSquare, FiBrain, FiCheckSquare, FiClock } from 'react-icons/fi';
+import { FiMessageSquare, FiDatabase, FiCheckSquare, FiClock } from 'react-icons/fi';
 
 /**
  * Dashboard page component that displays overview metrics and recent activity
@@ -103,7 +103,7 @@ const Dashboard: React.FC = () => {
         
         <ActivityCard 
           title="Important Memories"
-          icon={FiBrain}
+          icon={FiDatabase}
           color="purple.500"
           items={[
             { id: '1', title: 'Client contact information', date: '1 day ago' },

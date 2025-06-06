@@ -12,7 +12,8 @@ from functools import wraps
 import backoff
 
 import openai
-from openai import error as openai_error
+from openai import OpenAI
+# Generic error handling approach that's compatible with any OpenAI SDK version
 
 from app.core.config import settings
 
@@ -203,19 +204,23 @@ class OpenAIClient:
         Returns:
             Processed exception with additional context
         """
-        if isinstance(e, openai_error.RateLimitError):
+        # Use string-based error detection for compatibility with any OpenAI SDK version
+        error_str = str(e).lower()
+        error_type = e.__class__.__name__
+        
+        if "rate limit" in error_str or "ratelimit" in error_type.lower():
             logger.warning(f"Rate limit exceeded: {str(e)}")
             return RuntimeError(f"OpenAI rate limit exceeded. Please try again later.")
-        elif isinstance(e, openai_error.InvalidRequestError):
+        elif "invalid" in error_str:
             logger.error(f"Invalid request: {str(e)}")
             return ValueError(f"Invalid request to OpenAI API: {str(e)}")
-        elif isinstance(e, openai_error.AuthenticationError):
+        elif "auth" in error_str or "authentication" in error_type.lower():
             logger.critical(f"Authentication error: {str(e)}")
             return RuntimeError("API key error. Please check your OpenAI API key configuration.")
-        elif isinstance(e, openai_error.APIConnectionError):
+        elif "connection" in error_str or "connection" in error_type.lower():
             logger.error(f"API connection error: {str(e)}")
             return RuntimeError("Could not connect to OpenAI API. Please check your internet connection.")
-        elif isinstance(e, openai_error.ServiceUnavailableError):
+        elif "unavailable" in error_str or "service" in error_str:
             logger.error(f"Service unavailable: {str(e)}")
             return RuntimeError("OpenAI service is currently unavailable. Please try again later.")
         else:
@@ -233,24 +238,26 @@ class OpenAIClient:
         Returns:
             True if the request should be retried, False otherwise
         """
-        if isinstance(e, (openai_error.APIConnectionError, 
-                          openai_error.ServiceUnavailableError,
-                          openai_error.Timeout,
-                          asyncio.TimeoutError)):
+        error_str = str(e).lower()
+        error_type = e.__class__.__name__
+        
+        # Check for connection, service, or timeout issues
+        if ("connection" in error_str or 
+            "unavailable" in error_str or 
+            "timeout" in error_str or 
+            "timeout" in error_type.lower() or
+            isinstance(e, asyncio.TimeoutError)):
             logger.warning(f"Request failed with {type(e).__name__}. Retrying...")
             return True
         return False
 
     @backoff.on_exception(
         backoff.expo,
-        (openai_error.APIConnectionError, 
-         openai_error.ServiceUnavailableError,
-         openai_error.Timeout,
-         asyncio.TimeoutError),
+        (Exception),  # Catch all exceptions and filter in the _backoff_handler
         max_tries=5,
         max_time=30,
-        giveup=lambda e: isinstance(e, (openai_error.AuthenticationError, 
-                                        openai_error.InvalidRequestError))
+        giveup=lambda e: "auth" in str(e).lower() or 
+                           ("invalid" in str(e).lower() and "request" in str(e).lower())
     )
     async def chat_completion(
         self,

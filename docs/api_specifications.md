@@ -634,15 +634,15 @@ Deletes a task.
 
 ## Health Endpoints
 
-#### GET /health
+#### GET /health/
 
-Returns the basic health status of the API.
+Returns basic health status of the API.
 
 **Response:**
 ```json
 {
-  "status": "ok",
-  "service": "mnemosyne-api",
+  "status": "healthy",
+  "service": "Mnemosyne",
   "version": "0.1.0",
   "environment": "development"
 }
@@ -650,7 +650,7 @@ Returns the basic health status of the API.
 
 **Status Codes:**
 - 200: Success
-- 503: Service unavailable
+- 500: Internal Server Error
 
 #### GET /health/detailed
 
@@ -659,22 +659,22 @@ Returns detailed health status including component checks.
 **Response:**
 ```json
 {
-  "status": "ok",
-  "service": "mnemosyne-api",
+  "status": "healthy",
+  "service": "Mnemosyne",
   "version": "0.1.0",
   "environment": "development",
   "components": {
     "database": {
-      "status": "ok",
-      "message": "Connected"
+      "status": "healthy",
+      "message": "Database connection successful"
     },
-    "redis": {
-      "status": "ok",
-      "message": "Connected"
+    "vector": {
+      "status": "healthy",
+      "message": "pgvector extension enabled"
     },
-    "vectorstore": {
-      "status": "ok",
-      "message": "Connected"
+    "api": {
+      "status": "healthy",
+      "message": "API is running"
     }
   }
 }
@@ -682,7 +682,39 @@ Returns detailed health status including component checks.
 
 **Status Codes:**
 - 200: Success
-- 503: Service unavailable
+- 500: Internal Server Error
+
+#### GET /health/readiness
+
+Checks if the application is ready to receive traffic. Used for Kubernetes readiness probes.
+
+**Response:**
+```json
+{
+  "status": "ready",
+  "service": "Mnemosyne"
+}
+```
+
+**Status Codes:**
+- 200: Success
+- 503: Service Not Ready
+
+#### GET /health/liveness
+
+Checks if the application is alive. Used for Kubernetes liveness probes.
+
+**Response:**
+```json
+{
+  "status": "alive",
+  "service": "Mnemosyne"
+}
+```
+
+**Status Codes:**
+- 200: Success
+- 503: Service Unavailable
 
 ## Error Responses
 

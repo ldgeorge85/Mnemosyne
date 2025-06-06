@@ -10,8 +10,22 @@ import {
   Routes, 
   Route, 
   Navigate, 
-  Outlet 
+  Outlet
 } from 'react-router-dom';
+
+// ENHANCED: Ensure React Router future flags are recognized
+// This ensures the flags set in index.html are properly recognized by React Router
+const ensureFutureFlags = () => {
+  if (window.__reactRouterFutureFlags === undefined) {
+    window.__reactRouterFutureFlags = {
+      v7_startTransition: true,
+      v7_relativeSplatPath: true
+    };
+  }
+};
+
+// Call the function immediately
+ensureFutureFlags();
 
 // Layout components
 import MainLayout from '../components/layout/MainLayout';

@@ -244,7 +244,11 @@ class LLMResponseStreamer(ResponseStreamer):
     def create_llm_sse_response(
         self,
         response_text: str,
-        session_id: str
+        session_id: str,
+        user_id: Optional[str] = None,
+        conversation_id: Optional[str] = None,
+        max_tokens: Optional[int] = None,
+        temperature: Optional[float] = 0.7
     ) -> StreamingResponse:
         """
         Create a Server-Sent Events response for an LLM response.
@@ -256,6 +260,11 @@ class LLMResponseStreamer(ResponseStreamer):
         Returns:
             StreamingResponse configured for SSE
         """
+        # In a real implementation, these parameters would be passed to an actual LLM service
+        # For now, log them and continue with our simulation
+        print(f"LLM request parameters: user_id={user_id}, conversation_id={conversation_id}, "
+              f"max_tokens={max_tokens}, temperature={temperature}")
+        
         # Create streaming generator
         generator = self.stream_llm_response(
             response_text=response_text,

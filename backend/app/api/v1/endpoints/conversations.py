@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.dependencies.database import get_db
+from app.api.dependencies.db import get_async_db
 from app.api.dependencies.auth import get_current_user
 from app.db.repositories.conversation import ConversationRepository, MessageRepository
 
@@ -112,7 +112,7 @@ router = APIRouter()
 async def get_conversations(
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_async_db),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """
@@ -136,7 +136,7 @@ async def get_conversations(
 @router.post("/", response_model=ConversationResponse, status_code=status.HTTP_201_CREATED)
 async def create_conversation(
     conversation_data: ConversationCreate,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_async_db),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """
@@ -156,7 +156,7 @@ async def get_conversation(
     conversation_id: str,
     limit: int = Query(50, ge=1, le=100),
     offset: int = Query(0, ge=0),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_async_db),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """
@@ -199,7 +199,7 @@ async def get_conversation(
 async def update_conversation(
     conversation_id: str,
     conversation_data: ConversationUpdate,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_async_db),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """
@@ -224,7 +224,7 @@ async def update_conversation(
 @router.delete("/{conversation_id}", response_model=SuccessResponse)
 async def delete_conversation(
     conversation_id: str,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_async_db),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """
@@ -249,7 +249,7 @@ async def delete_conversation(
 async def create_message(
     conversation_id: str,
     message_data: MessageCreate,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_async_db),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """
@@ -295,7 +295,7 @@ async def create_message(
 async def delete_message(
     conversation_id: str,
     message_id: str,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_async_db),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
     """

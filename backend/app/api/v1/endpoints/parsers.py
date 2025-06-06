@@ -8,7 +8,8 @@ from typing import Dict, List, Any, Optional, Type
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field, create_model
 
-from app.api import deps
+from app.api.dependencies.db import get_db
+from app.api.dependencies.auth import get_current_user
 from app.services.llm import (
     ResponseParser, StructuredOutputParser, ResponseParsingResult,
     OpenAIClient, LLMConfig
@@ -43,8 +44,8 @@ class ParseResponse(BaseModel):
 @router.post("/parse", response_model=ParseResponse)
 async def parse_structured_output(
     request: ParseRequest,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> ParseResponse:
     """
     Parse structured output from text using a provided schema.
@@ -86,8 +87,8 @@ async def parse_structured_output(
 @router.post("/generate-structured", response_model=ParseResponse)
 async def generate_structured_output(
     request: StructuredOutputRequest,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> ParseResponse:
     """
     Generate structured output from a prompt using an LLM.

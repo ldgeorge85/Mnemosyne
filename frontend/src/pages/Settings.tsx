@@ -1,52 +1,51 @@
 /**
  * Settings Page Component
  * 
- * This component provides the application settings interface
- * for controlling user preferences and account settings.
+ * This component provides a comprehensive application settings interface
+ * for controlling user preferences, account settings, notifications, and privacy.
  */
 import React from 'react';
 import {
   Box,
   Button,
-  Divider,
+  Container,
   Flex,
-  FormControl,
-  FormLabel,
   Heading,
-  Input,
-  Select,
-  Stack,
-  Switch,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  Text,
-  useColorMode,
   useToast,
+  VStack,
+  useColorModeValue,
+  Text,
+  FormControl,
+  Input
 } from '@chakra-ui/react';
-import { useUIStore } from '../stores';
+import { FiSettings, FiBell, FiUser, FiShield, FiMonitor } from 'react-icons/fi';
+
+// Import our specialized settings components
+import ThemeSettings from '../components/domain/settings/ThemeSettings';
+import NotificationSettings from '../components/domain/settings/NotificationSettings';
+import PrivacySettings from '../components/domain/settings/PrivacySettings';
+import AccountSettings from '../components/domain/settings/AccountSettings';
 
 /**
  * Settings page component for user preferences and account settings
  */
 const Settings: React.FC = () => {
   const toast = useToast();
-  const { colorMode, toggleColorMode } = useColorMode();
-  const { colorMode: storeColorMode, toggleColorMode: toggleStoreColorMode } = useUIStore();
   
-  // Toggle color mode in both Chakra UI and our store
-  const handleToggleColorMode = () => {
-    toggleColorMode();
-    toggleStoreColorMode();
-  };
+  // Background colors for different tab states
+  const tabBg = useColorModeValue('gray.100', 'gray.700');
+  const activeBg = useColorModeValue('white', 'gray.800');
   
   // Handle form submission
   const handleSaveSettings = () => {
     toast({
       title: 'Settings saved',
-      description: 'Your settings have been saved successfully.',
+      description: 'Your settings have been updated successfully.',
       status: 'success',
       duration: 3000,
       isClosable: true,
@@ -54,193 +53,145 @@ const Settings: React.FC = () => {
   };
   
   return (
-    <Box>
-      <Heading as="h1" size="lg" mb={6}>
-        Settings
-      </Heading>
-      
-      <Tabs colorScheme="brand" variant="enclosed">
-        <TabList>
-          <Tab>General</Tab>
-          <Tab>Account</Tab>
-          <Tab>Notifications</Tab>
-          <Tab>API Keys</Tab>
-        </TabList>
+    <Container maxW="container.lg" py={8}>
+      <VStack spacing={6} align="stretch">
+        <Heading as="h1" size="lg" mb={6}>
+          Settings
+        </Heading>
         
-        <TabPanels>
-          {/* General Settings */}
-          <TabPanel>
-            <Stack spacing={6}>
-              <Heading as="h2" size="md" mb={4}>
-                General Settings
-              </Heading>
+        <Box 
+          borderRadius="lg" 
+          overflow="hidden" 
+          boxShadow="sm"
+        >
+          <Tabs colorScheme="brand" variant="soft-rounded" size="md">
+            <TabList
+              bg={tabBg}
+              p={2}
+              borderTopRadius="lg"
+              borderBottomWidth="1px"
+              borderBottomColor={useColorModeValue("gray.200", "gray.600")}
+            >
+              <Tab 
+                _selected={{ bg: activeBg, fontWeight: "semibold" }} 
+                borderRadius="md"
+                display="flex"
+                alignItems="center"
+                gap={2}
+              >
+                <FiMonitor />
+                <Text display={{ base: "none", md: "block" }}>Appearance</Text>
+              </Tab>
+              <Tab 
+                _selected={{ bg: activeBg, fontWeight: "semibold" }} 
+                borderRadius="md"
+                display="flex"
+                alignItems="center"
+                gap={2}
+              >
+                <FiUser />
+                <Text display={{ base: "none", md: "block" }}>Account</Text>
+              </Tab>
+              <Tab 
+                _selected={{ bg: activeBg, fontWeight: "semibold" }} 
+                borderRadius="md"
+                display="flex"
+                alignItems="center"
+                gap={2}
+              >
+                <FiBell />
+                <Text display={{ base: "none", md: "block" }}>Notifications</Text>
+              </Tab>
+              <Tab 
+                _selected={{ bg: activeBg, fontWeight: "semibold" }} 
+                borderRadius="md"
+                display="flex"
+                alignItems="center"
+                gap={2}
+              >
+                <FiShield />
+                <Text display={{ base: "none", md: "block" }}>Privacy</Text>
+              </Tab>
+              <Tab 
+                _selected={{ bg: activeBg, fontWeight: "semibold" }} 
+                borderRadius="md"
+                display="flex"
+                alignItems="center"
+                gap={2}
+              >
+                <FiSettings />
+                <Text display={{ base: "none", md: "block" }}>API Keys</Text>
+              </Tab>
+            </TabList>
+            
+            <TabPanels bg={activeBg} p={6}>
+              {/* Appearance Settings Tab */}
+              <TabPanel>
+                <ThemeSettings />
+              </TabPanel>
               
-              <FormControl display="flex" alignItems="center">
-                <FormLabel htmlFor="dark-mode" mb="0">
-                  Dark Mode
-                </FormLabel>
-                <Switch
-                  id="dark-mode"
-                  isChecked={colorMode === 'dark'}
-                  onChange={handleToggleColorMode}
-                  colorScheme="brand"
-                />
-              </FormControl>
+              {/* Account Settings Tab */}
+              <TabPanel>
+                <AccountSettings />
+              </TabPanel>
               
-              <FormControl>
-                <FormLabel>Language</FormLabel>
-                <Select defaultValue="en">
-                  <option value="en">English</option>
-                  <option value="es">Spanish</option>
-                  <option value="fr">French</option>
-                  <option value="de">German</option>
-                </Select>
-              </FormControl>
+              {/* Notification Settings Tab */}
+              <TabPanel>
+                <NotificationSettings />
+              </TabPanel>
               
-              <FormControl>
-                <FormLabel>Time Zone</FormLabel>
-                <Select defaultValue="utc">
-                  <option value="utc">UTC</option>
-                  <option value="est">Eastern Time (US & Canada)</option>
-                  <option value="pst">Pacific Time (US & Canada)</option>
-                  <option value="cet">Central European Time</option>
-                </Select>
-              </FormControl>
-            </Stack>
-          </TabPanel>
-          
-          {/* Account Settings */}
-          <TabPanel>
-            <Stack spacing={6}>
-              <Heading as="h2" size="md" mb={4}>
-                Account Settings
-              </Heading>
+              {/* Privacy Settings Tab */}
+              <TabPanel>
+                <PrivacySettings />
+              </TabPanel>
               
-              <FormControl>
-                <FormLabel>Full Name</FormLabel>
-                <Input defaultValue="John Doe" />
-              </FormControl>
-              
-              <FormControl>
-                <FormLabel>Email Address</FormLabel>
-                <Input defaultValue="john.doe@example.com" type="email" />
-              </FormControl>
-              
-              <Divider />
-              
-              <Heading as="h3" size="sm" mt={2}>
-                Change Password
-              </Heading>
-              
-              <FormControl>
-                <FormLabel>Current Password</FormLabel>
-                <Input type="password" />
-              </FormControl>
-              
-              <FormControl>
-                <FormLabel>New Password</FormLabel>
-                <Input type="password" />
-              </FormControl>
-              
-              <FormControl>
-                <FormLabel>Confirm New Password</FormLabel>
-                <Input type="password" />
-              </FormControl>
-            </Stack>
-          </TabPanel>
-          
-          {/* Notification Settings */}
-          <TabPanel>
-            <Stack spacing={6}>
-              <Heading as="h2" size="md" mb={4}>
-                Notification Settings
-              </Heading>
-              
-              <FormControl display="flex" alignItems="center">
-                <FormLabel htmlFor="email-notifications" mb="0">
-                  Email Notifications
-                </FormLabel>
-                <Switch id="email-notifications" defaultChecked colorScheme="brand" />
-              </FormControl>
-              
-              <FormControl display="flex" alignItems="center">
-                <FormLabel htmlFor="task-reminders" mb="0">
-                  Task Reminders
-                </FormLabel>
-                <Switch id="task-reminders" defaultChecked colorScheme="brand" />
-              </FormControl>
-              
-              <FormControl display="flex" alignItems="center">
-                <FormLabel htmlFor="system-updates" mb="0">
-                  System Updates
-                </FormLabel>
-                <Switch id="system-updates" defaultChecked colorScheme="brand" />
-              </FormControl>
-              
-              <FormControl>
-                <FormLabel>Notification Frequency</FormLabel>
-                <Select defaultValue="realtime">
-                  <option value="realtime">Real-time</option>
-                  <option value="daily">Daily Digest</option>
-                  <option value="weekly">Weekly Summary</option>
-                </Select>
-              </FormControl>
-            </Stack>
-          </TabPanel>
-          
-          {/* API Keys Settings */}
-          <TabPanel>
-            <Stack spacing={6}>
-              <Heading as="h2" size="md" mb={4}>
-                API Integration
-              </Heading>
-              
-              <Box p={4} borderWidth="1px" borderRadius="md">
-                <Heading as="h3" size="sm">
-                  OpenAI API Key
-                </Heading>
-                <Text fontSize="sm" color="gray.500" mb={2}>
-                  Required for AI-powered features
-                </Text>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter your OpenAI API key"
-                    defaultValue="sk-•••••••••••••••••••••••••••••••"
-                  />
-                </FormControl>
-              </Box>
-              
-              <Box p={4} borderWidth="1px" borderRadius="md">
-                <Heading as="h3" size="sm">
-                  Google Calendar API
-                </Heading>
-                <Text fontSize="sm" color="gray.500" mb={2}>
-                  Required for calendar integration
-                </Text>
-                <FormControl>
-                  <Input
-                    placeholder="Enter your Google Calendar API key"
-                  />
-                </FormControl>
-                <Button size="sm" colorScheme="blue" mt={2}>
-                  Connect Account
-                </Button>
-              </Box>
-            </Stack>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-      
-      <Flex justify="flex-end" mt={8}>
-        <Button colorScheme="gray" mr={3}>
-          Cancel
-        </Button>
-        <Button colorScheme="brand" onClick={handleSaveSettings}>
-          Save Settings
-        </Button>
-      </Flex>
-    </Box>
+              {/* API Keys Settings Tab */}
+              <TabPanel>
+                <Box p={0}>
+                  <VStack spacing={6} align="stretch">
+                    <Heading size="md" mb={2}>API Integration</Heading>
+                    
+                    <Box p={5} borderRadius="md" borderWidth="1px" borderColor={useColorModeValue("gray.200", "gray.700")}>
+                      <Heading as="h3" size="sm">
+                        OpenAI API Key
+                      </Heading>
+                      <Text fontSize="sm" color="gray.500" mb={2}>
+                        Required for AI functionality. Get your API key from OpenAI.
+                      </Text>
+                      <Input 
+                        type="password" 
+                        placeholder="sk-..." 
+                        mb={4} 
+                      />
+                      
+                      <Heading as="h3" size="sm">
+                        Pinecone API Key (Optional)
+                      </Heading>
+                      <Text fontSize="sm" color="gray.500" mb={2}>
+                        For enhanced vector search capabilities.
+                      </Text>
+                      <Input 
+                        type="password" 
+                        placeholder="Enter your Pinecone API key" 
+                      />
+                    </Box>
+                  </VStack>
+                </Box>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Box>
+        
+        <Flex justify="flex-end" mt={6}>
+          <Button variant="outline" mr={3}>
+            Cancel
+          </Button>
+          <Button colorScheme="brand" onClick={handleSaveSettings}>
+            Save Settings
+          </Button>
+        </Flex>
+      </VStack>
+    </Container>
   );
 };
 

@@ -15,7 +15,7 @@ from app.db.base_model import BaseModel  # noqa
 
 # As new models are created, add imports for them below:
 # from app.db.models.user import User  # noqa
-# from app.db.models.memory import Memory  # noqa
-# from app.db.models.conversation import Conversation  # noqa
+from app.db.models.memory import Memory, MemoryChunk  # noqa
+from app.db.models.conversation import Conversation, Message  # noqa
 # from app.db.models.task import Task  # noqa
 # from app.db.models.agent_tool import AgentTool  # noqa

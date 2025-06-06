@@ -8,7 +8,8 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from pydantic import BaseModel, Field
 
-from app.api import deps
+from app.api.dependencies.db import get_db
+from app.api.dependencies.auth import get_current_user
 from app.services.memory import memory_retrieval_service
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -54,8 +55,8 @@ class MemoryListResponse(BaseModel):
 @router.post("/search", response_model=MemoryListResponse)
 async def search_memories(
     query: MemorySearchQuery,
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryListResponse:
     """
     Search for memories by similarity to the query text.
@@ -107,8 +108,8 @@ async def search_memories(
 @router.post("/tags", response_model=MemoryListResponse)
 async def search_memories_by_tags(
     query: MemoryTagSearchQuery,
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryListResponse:
     """
     Search for memories by tags.
@@ -157,8 +158,8 @@ async def search_memories_by_tags(
 @router.get("/{memory_id}", response_model=MemoryResponse)
 async def get_memory(
     memory_id: str,
-    db: AsyncSession = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> MemoryResponse:
     """
     Get a memory by its ID.

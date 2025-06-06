@@ -8,7 +8,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
   Flex,
-  Textarea,
+  Input,
   IconButton,
   Button,
   useColorModeValue,
@@ -161,24 +161,20 @@ const ChatInput: React.FC<ChatInputProps> = ({
     >
       <Flex direction="column" width="100%">
         <Box position="relative" width="100%">
-          <Textarea
+          <Input
             ref={textareaRef}
             value={message}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            minHeight="40px"
-            maxHeight={`${maxHeight}px`}
-            resize="none"
+            height="40px"
             borderRadius="md"
             py={2}
             px={4}
             pr={16} // Space for the send button
             focusBorderColor="blue.400"
-            disabled={isLoading}
+            isDisabled={isLoading}
             fontSize="md"
-            rows={1}
-            overflow="auto"
             bg={useColorModeValue('gray.50', 'gray.700')}
           />
           

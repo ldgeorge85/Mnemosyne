@@ -10,7 +10,8 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.core.config import settings
-from app.api import deps
+from app.api.dependencies.db import get_db
+from app.api.dependencies.auth import get_current_user
 from app.services.llm import LangChainService, LLMConfig
 
 
@@ -45,8 +46,8 @@ class ChatCompletionResponse(BaseModel):
 async def create_chat_completion(
     request: ChatCompletionRequest,
     background_tasks: BackgroundTasks,
-    db = Depends(deps.get_db),
-    current_user_id: str = Depends(deps.get_current_user_id)
+    db = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
 ) -> Any:
     """
     Generate a chat completion from the LLM.

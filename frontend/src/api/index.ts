@@ -1,23 +1,24 @@
 /**
- * API module exports
- * 
- * This file exports all API services to provide a unified API interface.
+ * API module index file
+ * Re-exports all API services for clean imports
  */
 
-import apiClient from './client';
-import healthService from './health';
-import conversationsService from './conversations';
+// Import and re-export all API services
+export { client, apiClient, get, post, put, del } from "./client";
+export { healthService, getHealthStatus } from "./health";
+export { default as conversationsService } from "./conversations";
 
-// Export all service modules
-export {
-  apiClient,
-  healthService,
-  conversationsService
-};
+// Import services
+import { client as clientService } from "./client";
+import { healthService } from "./health";
+import conversationsDefault from "./conversations";
 
-// Export default object with all services
-export default {
-  client: apiClient,
+// Create a default export with all services
+const api = {
+  client: clientService,
   health: healthService,
-  conversations: conversationsService
+  conversations: conversationsDefault
 };
+
+// Export default API object for compatibility
+export default api;

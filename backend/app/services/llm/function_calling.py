@@ -397,6 +397,118 @@ class ToolExecutor:
         
         return params
     
+    async def run_conversation_with_tools(
+        self,
+        openai_client: Any,
+        messages: List[Dict[str, str]],
+        tools: List[Dict[str, Any]],
+        system_prompt: Optional[str] = None,
+        model: Optional[str] = None,
+        tool_choice: str = "auto",
+        max_turns: int = 5
+    ) -> Dict[str, Any]:
+        """
+        Run a conversation with OpenAI API v1.0+ tools format.
+        
+        Args:
+            openai_client: The OpenAI client instance
+            messages: List of conversation messages
+            tools: List of tool definitions in OpenAI v1.0+ format
+            system_prompt: Optional system prompt
+            model: Optional model to use
+            tool_choice: Tool choice strategy ('auto', 'none', or specific tool)
+            max_turns: Maximum number of turns to run
+            
+        Returns:
+            Dictionary with updated messages and function calls
+        """
+        # Create a copy of the messages
+        conversation_messages = messages.copy()
+        function_calls = []
+        truncated = False
+        
+        # Add system prompt if provided
+        if system_prompt and not any(m.get("role") == "system" for m in conversation_messages):
+            conversation_messages.insert(0, {
+                "role": "system",
+                "content": system_prompt
+            })
+        
+        # Run the conversation
+        for _ in range(max_turns):
+            try:
+                # Generate a response with the updated messages
+                response = await openai_client.chat_completion(
+                    messages=conversation_messages,
+                    model=model,
+                    tools=tools,
+                    tool_choice=tool_choice,
+                    stream=False
+                )
+                
+                # Extract content and tool calls
+                assistant_message = {
+                    "role": "assistant",
+                    "content": response.get("content", "")
+                }
+                
+                # Check if the response contains tool calls
+                if "tool_calls" in response:
+                    assistant_message["tool_calls"] = response["tool_calls"]
+                    conversation_messages.append(assistant_message)
+                    
+                    # Process each tool call
+                    for tool_call in response["tool_calls"]:
+                        function_name = tool_call["function"]["name"]
+                        function_args = json.loads(tool_call["function"]["arguments"])
+                        
+                        try:
+                            # Execute the function
+                            function_result = self.registry.execute(function_name, **function_args)
+                            
+                            # Record the function call and result
+                            function_calls.append({
+                                "name": function_name,
+                                "arguments": function_args,
+                                "result": function_result
+                            })
+                            
+                            # Add the function result to the conversation
+                            conversation_messages.append({
+                                "role": "tool",
+                                "tool_call_id": tool_call["id"],
+                                "name": function_name,
+                                "content": str(function_result)
+                            })
+                        except Exception as e:
+                            logger.error(f"Error executing function {function_name}: {str(e)}")
+                            # Add the error to the conversation
+                            conversation_messages.append({
+                                "role": "tool",
+                                "tool_call_id": tool_call["id"],
+                                "name": function_name,
+                                "content": f"Error: {str(e)}"
+                            })
+                else:
+                    # No function call, just add the response
+                    conversation_messages.append(assistant_message)
+                    # End the conversation since no more function calls
+                    break
+            except Exception as e:
+                logger.error(f"Error in function calling conversation: {str(e)}")
+                truncated = True
+                break
+        
+        # Check if we ran out of turns
+        if len(conversation_messages) >= max_turns * 2:
+            truncated = True
+        
+        return {
+            "messages": conversation_messages,
+            "function_calls": function_calls,
+            "truncated": truncated
+        }
+    
     async def run_conversation(
         self,
         openai_client: Any,

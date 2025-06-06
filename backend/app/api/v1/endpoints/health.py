@@ -5,9 +5,10 @@ This module provides health check endpoints for the API to verify that various
 components of the system are working properly.
 """
 
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from fastapi import APIRouter, Depends, status
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies.db import get_async_db
@@ -15,6 +16,26 @@ from app.core.config import settings
 from app.core.logging import get_logger
 from app.db.connection import connection_health_check
 from app.db.vector import ensure_extension
+
+# Define Pydantic models for response validation
+class HealthResponse(BaseModel):
+    """Basic health check response model."""
+    status: str
+    service: str
+    version: str
+    environment: str
+
+
+class ComponentStatus(BaseModel):
+    """Status information for a system component."""
+    status: str
+    message: str
+
+
+class DetailedHealthResponse(HealthResponse):
+    """Detailed health check response with component statuses."""
+    components: Dict[str, ComponentStatus]
+
 
 router = APIRouter()
 logger = get_logger(__name__)
@@ -25,8 +46,9 @@ logger = get_logger(__name__)
     summary="Basic health check",
     description="Returns a simple health status to confirm the API is running",
     status_code=status.HTTP_200_OK,
+    response_model=HealthResponse,
 )
-async def health_check() -> Dict[str, str]:
+async def health_check() -> HealthResponse:
     """
     Basic health check endpoint that confirms the API is running.
     
@@ -46,8 +68,9 @@ async def health_check() -> Dict[str, str]:
     summary="Detailed health check",
     description="Performs checks on all system components and returns detailed status",
     status_code=status.HTTP_200_OK,
+    response_model=DetailedHealthResponse,
 )
-async def detailed_health_check(db: AsyncSession = Depends(get_async_db)) -> Dict[str, Dict]:
+async def detailed_health_check(db: AsyncSession = Depends(get_async_db)) -> DetailedHealthResponse:
     """
     Detailed health check that verifies all system components.
     
@@ -125,8 +148,9 @@ async def detailed_health_check(db: AsyncSession = Depends(get_async_db)) -> Dic
     summary="Readiness probe",
     description="Checks if the application is ready to receive traffic",
     status_code=status.HTTP_200_OK,
+    response_model=HealthResponse,
 )
-async def readiness_probe() -> Dict[str, str]:
+async def readiness_probe() -> HealthResponse:
     """
     Readiness probe for Kubernetes or other orchestration systems.
     
@@ -144,8 +168,9 @@ async def readiness_probe() -> Dict[str, str]:
     summary="Liveness probe",
     description="Checks if the application is alive and running",
     status_code=status.HTTP_200_OK,
+    response_model=HealthResponse,
 )
-async def liveness_probe() -> Dict[str, str]:
+async def liveness_probe() -> HealthResponse:
     """
     Liveness probe for Kubernetes or other orchestration systems.
     

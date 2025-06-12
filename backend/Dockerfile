@@ -26,7 +26,7 @@ COPY requirements.txt .
 RUN python -m venv .venv
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Install Python dependencies
+# Install Python dependencies (includes CrewAI and Cognee for Phase 3)
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 

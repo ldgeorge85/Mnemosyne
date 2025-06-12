@@ -4,18 +4,18 @@
 
 ### 1.1 Backend API Testing
 
-| Test Case | Description | Expected Result | Status | Notes |
-|-----------|-------------|----------------|--------|-------|
-| Create Memory | Test creating a new memory entry via API | Memory created and retrievable | ❌ | Returns 500 internal server error |
-| Retrieve Memory | Test retrieving a memory by ID | Memory details match expected | ❌ | Cannot test - ID not available |
-| Search Memory by Text | Test semantic search functionality | Relevant memories returned | ❌ | Returns 422 - Missing required user_id parameter |
-| Search Memory by Tags | Test filtering memories by tags | Only tag-matching memories returned | ❌ | Not tested yet |
-| Memory Maintenance | Test maintenance endpoints | Proper pruning and archiving | ❌ | Not tested yet |
-| Memory Statistics | Verify memory statistics endpoint | Accurate statistics returned | ❌ | Returns 500 internal server error |
-| Memory Chunks | Test chunking of large memories | Proper chunk creation and retrieval | ❌ | Not tested yet |
-| Update Memory | Test updating memory metadata | Memory properly updated | ❌ | Not tested yet |
-| Delete Memory | Test memory deletion | Memory marked as inactive | ❌ | Not tested yet |
-| Memory Embedding | Verify vector embeddings creation | Embeddings properly stored | ❌ | Not tested yet |
+| Test Case | Description | Expected Result | Status |
+|-----------|-------------|----------------|--------|
+| Create Memory | Test creating a new memory entry via API | Memory created and retrievable | ⬜ |
+| Retrieve Memory | Test retrieving a memory by ID | Memory details match expected | ⬜ |
+| Search Memory by Text | Test semantic search functionality | Relevant memories returned | ⬜ |
+| Search Memory by Tags | Test filtering memories by tags | Only tag-matching memories returned | ⬜ |
+| Memory Maintenance | Test maintenance endpoints | Proper pruning and archiving | ⬜ |
+| Memory Statistics | Verify memory statistics endpoint | Accurate statistics returned | ⬜ |
+| Memory Chunks | Test chunking of large memories | Proper chunk creation and retrieval | ⬜ |
+| Update Memory | Test updating memory metadata | Memory properly updated | ⬜ |
+| Delete Memory | Test memory deletion | Memory marked as inactive | ⬜ |
+| Memory Embedding | Verify vector embeddings creation | Embeddings properly stored | ⬜ |
 
 ### 1.2 Frontend Integration Testing
 
@@ -38,30 +38,30 @@
 
 ### 2.1 API Connectivity
 
-| Test Case | Description | Expected Result | Status | Notes |
-|-----------|-------------|----------------|--------|-------|
-| LLM API Connection | Test connection to LLM provider | Successful connection established | ❌ | Chat completion endpoint returns 404 Not Found |
-| API Key Validation | Test API key validation | Invalid keys properly rejected | ❌ | Cannot test since basic connectivity fails |
-| Rate Limiting | Test behavior under rate limiting | Proper error handling and retry logic | ❌ | Cannot test since basic connectivity fails |
-| Timeout Handling | Test timeout handling | Graceful handling of timeouts | ❌ | Cannot test since basic connectivity fails |
+| Test Case | Description | Expected Result | Status |
+|-----------|-------------|----------------|--------|
+| LLM API Connection | Test connection to LLM provider | Successful connection established | ⬜ |
+| API Key Validation | Test API key validation | Invalid keys properly rejected | ⬜ |
+| Rate Limiting | Test behavior under rate limiting | Proper error handling and retry logic | ⬜ |
+| Timeout Handling | Test timeout handling | Graceful handling of timeouts | ⬜ |
 
 ### 2.2 Prompt Templates
 
-| Test Case | Description | Expected Result | Status | Notes |
-|-----------|-------------|----------------|--------|-------|
-| System Message | Verify system message functionality | LLM behavior matches system instructions | ❌ | Cannot test - Chat completion endpoint returns 404 |
-| User Prompts | Test various user prompt types | Appropriate responses generated | ❌ | Cannot test - Chat completion endpoint returns 404 |
-| Context Handling | Test handling of conversation context | Coherent multi-turn conversations | ❌ | Cannot test - Chat completion endpoint returns 404 |
-| Memory Integration | Test integration of memories into prompts | Memories properly incorporated | ❌ | Cannot test - Both memory and LLM APIs failing |
+| Test Case | Description | Expected Result | Status |
+|-----------|-------------|----------------|--------|
+| System Message | Verify system message functionality | LLM behavior matches system instructions | ⬜ |
+| User Prompts | Test various user prompt types | Appropriate responses generated | ⬜ |
+| Context Handling | Test handling of conversation context | Coherent multi-turn conversations | ⬜ |
+| Memory Integration | Test integration of memories into prompts | Memories properly incorporated | ⬜ |
 
 ### 2.3 Response Handling
 
-| Test Case | Description | Expected Result | Status | Notes |
-|-----------|-------------|----------------|--------|-------|
-| Response Formatting | Verify formatting of LLM responses | Proper parsing and display | ❌ | Cannot test - LLM APIs failing |
-| Streaming Responses | Test streaming response functionality | Smooth rendering of streaming text | ❌ | Streaming API returns 422 - Missing required fields |
-| Error Handling | Test handling of LLM errors | User-friendly error messages | ✅ | Function calling returns proper OpenAI migration error message |
-| Response Caching | Verify caching of responses when appropriate | Improved performance for repeated queries | ❌ | Cannot test - LLM APIs failing |
+| Test Case | Description | Expected Result | Status |
+|-----------|-------------|----------------|--------|
+| Response Formatting | Verify formatting of LLM responses | Proper parsing and display | ⬜ |
+| Streaming Responses | Test streaming response functionality | Smooth rendering of streaming text | ⬜ |
+| Error Handling | Test handling of LLM errors | User-friendly error messages | ⬜ |
+| Response Caching | Verify caching of responses when appropriate | Improved performance for repeated queries | ⬜ |
 
 ## 3. Documentation Updates
 

@@ -38,16 +38,6 @@ class StreamingRequest(BaseModel):
     chunk_delay: float = Field(0.05, ge=0, le=1.0)
 
 
-class LLMStreamingRequest(BaseModel):
-    """Schema for LLM streaming request"""
-    conversation_id: str
-    message_content: str = Field(..., min_length=1, max_length=10000)
-    user_id: str
-    max_tokens: Optional[int] = Field(None)
-    temperature: Optional[float] = Field(0.7)
-    stream: bool = Field(True)
-
-
 class StreamingStatusRequest(BaseModel):
     """Schema for streaming status request"""
     session_id: str
@@ -114,7 +104,7 @@ async def stream_text_response(
 
 @router.post("/llm")
 async def stream_llm_response(
-    request: LLMStreamingRequest,
+    request: StreamingRequest,
     db: AsyncSession = Depends(get_db),
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
@@ -136,20 +126,16 @@ async def stream_llm_response(
                 detail="Conversation not found"
             )
         
-        # Initialize the LLM response streamer with the provided parameters
+        # Initialize the LLM response streamer
         llm_streamer = LLMResponseStreamer()
         
         # Generate a session ID for this streaming session
         session_id = f"llm-{uuid.uuid4()}"
         
-        # Create streaming response with all parameters
+        # Create streaming response
         return llm_streamer.create_llm_sse_response(
             response_text=request.message_content,
-            session_id=session_id,
-            user_id=request.user_id,
-            conversation_id=request.conversation_id,
-            max_tokens=request.max_tokens,
-            temperature=request.temperature
+            session_id=session_id
         )
     except HTTPException:
         raise

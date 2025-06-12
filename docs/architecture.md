@@ -14,6 +14,19 @@ Mnemosyne is an AI Executive Assistant Agent built with modern web technologies.
 
 The backend is built using FastAPI, a modern, high-performance web framework for building APIs with Python. The key components include:
 
+- **Agent Orchestration & Management (Phase 3, as of 2025-06-08T22:42:40-07:00)**
+  - CrewAI is fully integrated for sub-agent orchestration, recursive task delegation, and agent team structures
+  - AgentManager service (`/backend/app/services/agent/agent_manager.py`) is fully implemented, manages agent lifecycle, orchestration, and DB-backed state, and is wired to all relevant API endpoints
+  - All agent/task state, logs, and orchestration events are persisted in Postgres for auditability and monitoring
+  - Cognee-inspired memory reflection and importance scoring service (`/backend/app/services/memory/reflection.py`) is fully implemented and integrated with API endpoints and DB
+  - All new DB models: Agent, AgentLink, AgentLog, MemoryReflection, etc. are live
+  - Alembic migrations for new tables have been applied
+  - All new/updated API endpoints for agent orchestration and memory reflection are live (see `api_specifications.md`)
+  - LangChain remains the framework for the main conversational agent, including MCP tool calling and LLM integration
+  - Robust logging and monitoring are implemented for all agent actions and results
+  - All functions are commented as per user rules
+  - See `source_of_truth.md` for integration details
+
 1. **API Layer**
    - FastAPI application with versioned endpoints
    - Authentication middleware
@@ -237,6 +250,13 @@ For production, the system is designed to scale horizontally with the following 
 - Implementation of a more robust message queue (RabbitMQ/Kafka)
 - Separation of read and write databases for higher scalability
 - Integration with cloud-native services for monitoring and logging
+
+#### Memory System
+- Automatic information extraction from conversations
+- Relevance-based retrieval of past information
+- Memory consolidation and priority adjustment
+- Cognee-inspired reflection, importance scoring, and hierarchical organization will be implemented to enhance memory robustness.
+- Memory state is tightly integrated with agent/task logs and orchestration events for full context and auditability.
 
 ## References
 

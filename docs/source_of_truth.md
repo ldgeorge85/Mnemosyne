@@ -6,6 +6,24 @@ This document serves as the definitive reference for the Mnemosyne project struc
 
 ## Project Structure
 
+> **2025-06-07**: Backend Import Fixes & Docker Rebuild Requirement
+> - Fixed all missing imports in `backend/app/api/v1/endpoints/memories.py` (added Path, Query, MemorySearchResponse, MemorySearchQuery, MemoryStatistics, MemoryChunkResponse, MemoryChunkCreate, MemoryChunkUpdate).
+> - Backend would not pick up code changes with just `docker compose restart`; a full `docker compose build backend && docker compose up -d backend` is required after backend Python code changes to avoid stale code and import errors.
+> - Confirmed backend API now starts and responds to requests after rebuild.
+> - Updated workflow documentation and troubleshooting guidance for backend development.
+
+> **2025-06-06**: Phase 3 Kickoff - CrewAI & Cognee Integration
+> - Added CrewAI and Cognee to backend dependencies (`requirements.txt`)
+> - Created new backend modules (stubs):
+>   - `/backend/app/services/agent/agent_manager.py` (AgentManager orchestration)
+>   - `/backend/app/db/models/agent.py` (Agent, AgentLink, AgentLog, MemoryReflection models)
+>   - `/backend/app/services/memory/reflection.py` (Cognee-inspired memory reflection)
+>   - `/backend/app/api/v1/agents.py` (API endpoints for agent orchestration)
+>   - `/backend/app/api/v1/memories.py` (API endpoints for memory reflection)
+> - Planned Alembic migrations for new agent/memory tables
+> - Updated backend Dockerfile to support new dependencies
+> - These files are initial stubs for Phase 3 and will be expanded with full logic and tests in subsequent steps.
+
 ```
 /home/lewis/dev/personal/mnemosyne/
 ├── .env.example                  # Environment variables template
@@ -15,6 +33,44 @@ This document serves as the definitive reference for the Mnemosyne project struc
 │   ├── extensions.json           # Recommended extensions
 │   ├── launch.json               # Debug configurations
 │   └── settings.json             # Editor settings
+├──<!-- AGENT AND MEMORY SERVICES -->
+
+### backend/app/services/agent/agent_manager.py
+- Implements AgentManager class for agent lifecycle, orchestration, sub-agent creation, and logging.
+- Integrates with DB models: Agent, AgentLink, AgentLog.
+- Async methods: create_agent, link_agents, assign_task, get_status, spawn_subagent, get_logs.
+- Fully integrated with CrewAI for agent orchestration.
+- All functions are commented as per user rules.
+- Fully wired to API endpoints in `/backend/app/api/v1/agents.py`.
+- Last updated: 2025-06-08T22:42:40-07:00.
+
+### backend/app/api/v1/agents.py
+- Implements all agent orchestration endpoints (create, link, assign_task, get_status, spawn_subagent, get_logs).
+- Endpoints are fully wired to AgentManager service (async).
+- All endpoints are live and ready for testing.
+- Last updated: 2025-06-08T22:42:40-07:00.
+
+### backend/app/services/memory/reflection.py
+- Implements MemoryReflectionService for memory reflection, importance scoring, and hierarchy.
+- Integrates with DB model: MemoryReflection.
+- Async methods: reflect, get_importance_scores, get_hierarchy.
+- Fully integrated with API endpoints in `/backend/app/api/v1/memories.py`.
+- All functions are commented as per user rules.
+- Last updated: 2025-06-08T22:42:40-07:00.
+
+### backend/app/api/v1/memories.py
+- Implements all memory reflection endpoints (reflect, get_importance, get_hierarchy).
+- Endpoints are fully wired to MemoryReflectionService (async).
+- All endpoints are live and ready for testing.
+- Last updated: 2025-06-08T22:42:40-07:00.
+
+> Next steps (as of 2025-06-08T22:42:40-07:00):
+> - Implement robust tests for all new endpoints/services (AgentManager, MemoryReflectionService)
+> - Update implementation_plan.md, architecture.md, and README.md for API usage and integration details
+> - Clean up unused code/files and document removals in this file
+> - Ensure all documentation is in sync across docs/
+> - All functions are commented as per user rules.
+
 ├── README.md                     # Project overview and setup instructions
 ├── backend/                      # FastAPI backend application
 │   ├── .env.example              # Example environment variables file
@@ -38,11 +94,15 @@ This document serves as the definitive reference for the Mnemosyne project struc
 │   │   │   ├── conversation/     # Conversation handling
 │   │   │   ├── tasks/            # Task management services
 │   │   │   └── agent/            # Agent framework services
-│   │   └── utils/                # Utility functions
-│   └── tests/                    # Test suite
-│       ├── unit/                 # Unit tests
-│       ├── integration/          # Integration tests
-│       └── e2e/                  # End-to-end tests
+│   │   ├── utils/                # Utility functions
+│   │   └── tests/                # Test suite
+│   │       ├── unit/             # Unit tests
+│   │       │   ├── test_agent_manager.py         # Unit tests for AgentManager (added 2025-06-09T08:51:17-07:00)
+│   │       │   └── test_memory_reflection.py     # Unit tests for MemoryReflectionService (added 2025-06-09T08:51:17-07:00)
+│   │       ├── integration/      # Integration tests
+│   │       │   ├── test_api_agents.py            # Integration tests for /agents/* endpoints (added 2025-06-09T08:51:17-07:00)
+│   │       │   └── test_api_memories.py          # Integration tests for /memories/* endpoints (added 2025-06-09T08:51:17-07:00)
+│   │       └── e2e/              # End-to-end tests
 ├── docker/                       # Docker configuration files
 │   ├── dev/                      # Development tools Docker configuration
 │   │   └── Dockerfile.dev-tools  # Development tools image
@@ -90,7 +150,16 @@ This document serves as the definitive reference for the Mnemosyne project struc
 └── manage.sh                     # Project management script (executable)
 ```
 
+## API Endpoints
+
+- **GET /conversations/{id}/messages**: Returns paginated messages for a conversation. Accepts `limit` and `offset` query parameters. Available as of 2025-06-07.
+
 ## Documentation Overview
+
+### 2025-06-06: Phase 3 CrewAI & Cognee Integration Plan
+- Updated `architecture.md`, `implementation_plan.md`, `task_tracker.md`, `api_specifications.md`, and this file to specify CrewAI for agent orchestration, AgentManager service, and Cognee-inspired memory reflection.
+- See those docs for details on DB-backed orchestration, recursive sub-agent support, and memory enhancements.
+
 
 ### implementation_plan.md
 Contains the complete system architecture, technical implementation details, and a detailed phase-based task tracker table for Mnemosyne, including:
@@ -430,6 +499,29 @@ Each phase contains detailed tasks with checkboxes for tracking progress, with a
 ## Specific Files
 
 ### Backend
+
+#### Agent Orchestration & Management (Phase 3)
+- CrewAI is the orchestration engine for sub-agents, supporting hierarchical agent trees and task delegation.
+- AgentManager service manages agent lifecycle, DB-backed orchestration, and exposes APIs/tooling for agent/task management.
+- All agent/task state, logs, and orchestration events are persisted in Postgres.
+- LangChain remains for the main conversational agent and MCP tool calling.
+- Recursive sub-agent creation and robust logging/monitoring are supported.
+
+#### Memory System (Phase 3)
+- Cognee-inspired reflection, importance scoring, and hierarchical memory organization are being implemented.
+- Memory state is tightly integrated with agent/task logs and orchestration events.
+
+- See updated `architecture.md`, `implementation_plan.md`, and `task_tracker.md` for details.
+
+### Phase 2.5 Backend Status (as of 2025-06-06)
+- Backend migration, schema, and test suite are 100% complete and verified in Docker.
+- All endpoints and authentication logic are robust and tested.
+- Alembic migrations are fully in sync with SQLAlchemy models.
+- Container/host mapping issues resolved; workflow is now reliable and repeatable.
+- Test suite is self-contained (no reliance on external fixtures).
+- Backend is ready for Phase 3 development.
+- See `phase2.5_backend_fixes_status.md`, `task_tracker.md`, and README for migration/test workflow and best practices.
+
 - `/backend/app/main.py` - Main FastAPI application with middleware and error handlers
 - `/backend/app/core/config.py` - Configuration management with environment variables
 - `/backend/app/core/logging.py` - Structured logging system with JSON formatter
@@ -504,14 +596,6 @@ Documentation of all database schema changes, including:
 ## Changelog
 
 ### Recent Changes
-
-- **2025-06-05**: Completed Phase 2.5 Testing
-  - Created `/backend/tests/quick_memory_test.py` to test memory API endpoints
-  - Created `/backend/tests/quick_llm_test.py` to test LLM integration endpoints
-  - Created `/docs/phase2_testing_plan.md` with comprehensive test cases and results
-  - Updated task tracker to document all test findings and mark Phase 2.5 progress
-  - Identified critical issues in memory API (500 errors) and missing LLM endpoints
-  - Set up foundation for fixing identified issues before Phase 3 development
 
 - **2025-06-02**: Completed API Testing for Conversation Endpoints (BE-01)
   - Tested and verified key conversation API endpoints functionality

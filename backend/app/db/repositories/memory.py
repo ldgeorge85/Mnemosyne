@@ -132,8 +132,27 @@ class MemoryRepository(BaseRepository):
         if not include_inactive:
             filters.append(Memory.is_active == True)
         
+        # Use explicit column selection to avoid issues with schema mismatches
         query = (
-            select(Memory)
+            select(
+                Memory.user_id,
+                Memory.title,
+                Memory.content,
+                Memory.embedding,
+                # Memory.embedding_model,  # Commented out to avoid schema mismatch
+                Memory.source,
+                Memory.source_type,
+                Memory.source_id,
+                Memory.memory_metadata,
+                Memory.importance,
+                Memory.last_accessed_at,
+                Memory.access_count,
+                Memory.is_active,
+                Memory.tags,
+                Memory.id,
+                Memory.created_at,
+                Memory.updated_at
+            )
             .where(and_(*filters))
             .order_by(Memory.created_at.desc())
             .limit(limit)

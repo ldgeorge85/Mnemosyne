@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  test-backend:
+    build:
+      context: .
+      dockerfile: ./docker/test-backend.Dockerfile
+    container_name: mnemosyne-test-backend
+    environment:
+      - APP_ENV=testing
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE=mnemosyne
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=redis
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    networks:
+      - mnemosyne-network
+    # Run tests and exit
+    command: ["pytest", "--maxfail=3", "--disable-warnings", "-v", "/app/tests/integration/"]
+
+networks:
+  mnemosyne-network:
+    external: true

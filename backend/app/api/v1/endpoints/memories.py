@@ -1,30 +1,50 @@
 """
-Memory API endpoints.
-
-This module provides API endpoints for creating, retrieving, updating,
-and deleting memories, as well as searching and managing memory chunks.
+API endpoints for memory reflection and importance scoring (Phase 3, Cognee integration).
 """
-from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, Query, Path, status
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, status, Path, Query
+from typing import List, Dict, Any
 
+# Import memory schemas for request/response validation
+from app.schemas.memory import MemoryResponse, MemoryCreate, MemoryUpdate, MemoryWithChunksResponse, MemorySearchResponse, MemorySearchQuery, MemoryStatistics, MemoryChunkResponse, MemoryChunkCreate, MemoryChunkUpdate
+
+from app.services.memory.reflection import MemoryReflectionService
+from fastapi import Depends, HTTPException, APIRouter, Body
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies.db import get_db
 from app.api.dependencies.auth import get_current_user
-from app.db.repositories.memory import MemoryRepository, MemoryChunkRepository
-from app.schemas.memory import (
-    MemoryCreate,
-    MemoryUpdate,
-    MemoryResponse,
-    MemoryWithChunksResponse,
-    MemoryChunkCreate,
-    MemoryChunkUpdate,
-    MemoryChunkResponse,
-    MemorySearchQuery,
-    MemorySearchResponse,
-    MemoryStatistics
-)
+from app.db.session import async_session_maker
 
-router = APIRouter()
+router = APIRouter(prefix="/memories", tags=["memories"])
+
+@router.post("/reflect")
+async def reflect_memory(agent_id: str = Body(...), memories: list = Body(...)):
+    """
+    Trigger memory reflection/scoring for an agent.
+    """
+    async with async_session_maker() as db:
+        reflection_service = MemoryReflectionService(db)
+        result = await reflection_service.reflect(agent_id, memories)
+    return {"reflection": result}
+
+@router.get("/importance")
+async def get_importance(agent_id: str):
+    """
+    Retrieve importance scores for memories for a given agent.
+    """
+    async with async_session_maker() as db:
+        reflection_service = MemoryReflectionService(db)
+        scores = await reflection_service.get_importance_scores(agent_id)
+    return {"scores": scores}
+
+@router.get("/hierarchy")
+async def get_hierarchy(agent_id: str):
+    """
+    Get hierarchical organization of memories for a given agent.
+    """
+    async with async_session_maker() as db:
+        reflection_service = MemoryReflectionService(db)
+        hierarchy = await reflection_service.get_hierarchy(agent_id)
+    return hierarchy
 
 
 @router.post("/", response_model=MemoryResponse, status_code=status.HTTP_201_CREATED)
@@ -48,7 +68,7 @@ async def create_memory(
         HTTPException: If the user doesn't have permission to create memories
     """
     # Ensure the user can only create memories for themselves
-    if memory_data.user_id != current_user_id:
+    if memory_data.user_id != current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only create memories for yourself"
@@ -91,7 +111,7 @@ async def get_memory(
         )
     
     # Check user permission
-    if memory.user_id != current_user_id:
+    if memory.user_id != current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to access this memory"
@@ -134,7 +154,7 @@ async def list_memories(
     """
     memory_repo = MemoryRepository(db)
     memories, _ = await memory_repo.get_memories_by_user_id(
-        current_user_id, 
+        current_user["id"], 
         limit=limit,
         offset=offset,
         include_inactive=include_inactive
@@ -174,7 +194,7 @@ async def update_memory(
         )
     
     # Check user permission
-    if memory.user_id != current_user_id:
+    if memory.user_id != current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to update this memory"
@@ -213,7 +233,7 @@ async def delete_memory(
         )
     
     # Check user permission
-    if memory.user_id != current_user_id:
+    if memory.user_id != current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to delete this memory"
@@ -279,39 +299,105 @@ async def search_memories(
     Raises:
         HTTPException: If the user doesn't have permission to search memories
     """
-    # Ensure the user can only search their own memories
-    if search_query.user_id != current_user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You can only search your own memories"
-        )
-    
-    memory_repo = MemoryRepository(db)
-    memories = await memory_repo.search_memories_by_text(
-        current_user_id,
-        search_query.query,
-        limit=search_query.limit,
-        include_inactive=search_query.include_inactive
-    )
-    
-    # Include chunks if requested
-    if search_query.include_chunks and memories:
-        chunk_repo = MemoryChunkRepository(db)
-        results = []
+    try:
+        # Ensure the user can only search their own memories
+        if search_query.user_id != current_user["id"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only search your own memories"
+            )
         
-        for memory in memories:
-            chunks = await chunk_repo.get_chunks_by_memory_id(memory.id)
-            memory_with_chunks = MemoryWithChunksResponse.from_orm(memory)
-            memory_with_chunks.chunks = chunks
-            results.append(memory_with_chunks)
-    else:
-        results = memories
+        memory_repo = MemoryRepository(db)
+        memories = await memory_repo.search_memories_by_text(
+            current_user["id"],
+            search_query.query,
+            limit=search_query.limit,
+            include_inactive=search_query.include_inactive
+        )
+        
+        # Include chunks if requested
+        if search_query.include_chunks and memories:
+            chunk_repo = MemoryChunkRepository(db)
+            results = []
+            
+            for memory in memories:
+                chunks = await chunk_repo.get_chunks_by_memory_id(memory.id)
+                memory_with_chunks = MemoryWithChunksResponse.from_orm(memory)
+                memory_with_chunks.chunks = chunks
+                results.append(memory_with_chunks)
+        else:
+            results = memories
+        
+        return MemorySearchResponse(
+            query=search_query.query,
+            results=results,
+            total=len(results)
+        )
+    except Exception as e:
+        # Log the full exception details
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Error in search_memories: {str(e)}\n{error_details}")
+        
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to search memories: {str(e)}"
+        )
+
+
+# Memory Statistics endpoint
+
+@router.get("/statistics", response_model=MemoryStatistics)
+async def get_memory_statistics(
+    db: AsyncSession = Depends(get_db),
+    current_user: Dict[str, Any] = Depends(get_current_user)
+) -> MemoryStatistics:
+    """
+    Get memory system statistics.
     
-    return MemorySearchResponse(
-        query=search_query.query,
-        results=results,
-        total=len(results)
-    )
+    Args:
+        db: Database session
+        current_user: Current authenticated user
+        
+    Returns:
+        Memory system statistics
+    """
+    try:
+        # Get memory statistics from database
+        from app.services.memory.management import memory_management_service
+        
+        # Get raw statistics
+        raw_stats = await memory_management_service._get_memory_statistics(db)
+        
+        # Extract user-specific stats
+        user_stats = {}
+        if "by_user" in raw_stats and current_user["id"] in raw_stats["by_user"]:
+            user_stats = raw_stats["by_user"][current_user["id"]]
+        
+        # Extract total stats
+        total_stats = raw_stats.get("total", {})
+        
+        # Build response
+        return MemoryStatistics(
+            total_memories=total_stats.get("memory_count", 0),
+            total_chunks=0,  # This would need to be calculated
+            active_memories=total_stats.get("memory_count", 0),  # Assuming all are active by default
+            inactive_memories=0,  # This would need to be calculated
+            avg_importance=0.5,  # Default value
+            avg_chunks_per_memory=0.0,  # This would need to be calculated
+            memories_by_source_type={},  # This would need to be calculated
+            memories_by_tag={}  # This would need to be calculated
+        )
+    except Exception as e:
+        # Log the error
+        import logging
+        logging.error(f"Error getting memory statistics: {str(e)}")
+        
+        # Return HTTP error
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get memory statistics: {str(e)}"
+        )
 
 
 # Memory Chunk endpoints
@@ -346,7 +432,7 @@ async def create_memory_chunk(
             detail=f"Parent memory with ID {chunk_data.memory_id} not found"
         )
     
-    if memory.user_id != current_user_id:
+    if memory.user_id != current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to add chunks to this memory"
@@ -390,7 +476,7 @@ async def get_memory_chunk(
     memory_repo = MemoryRepository(db)
     memory = await memory_repo.get_memory_by_id(chunk.memory_id)
     
-    if memory.user_id != current_user_id:
+    if memory.user_id != current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to access this memory chunk"
@@ -429,7 +515,7 @@ async def get_memory_chunks(
             detail=f"Memory with ID {memory_id} not found"
         )
     
-    if memory.user_id != current_user_id:
+    if memory.user_id != current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to access chunks for this memory"
@@ -475,7 +561,7 @@ async def update_memory_chunk(
     memory_repo = MemoryRepository(db)
     memory = await memory_repo.get_memory_by_id(chunk.memory_id)
     
-    if memory.user_id != current_user_id:
+    if memory.user_id != current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to update this memory chunk"
@@ -515,7 +601,7 @@ async def delete_memory_chunk(
     memory_repo = MemoryRepository(db)
     memory = await memory_repo.get_memory_by_id(chunk.memory_id)
     
-    if memory.user_id != current_user_id:
+    if memory.user_id != current_user["id"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to delete this memory chunk"

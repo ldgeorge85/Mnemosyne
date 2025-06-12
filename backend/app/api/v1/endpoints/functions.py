@@ -27,14 +27,10 @@ class FunctionListResponse(BaseModel):
 class FunctionCallRequest(BaseModel):
     """Schema for a function call request."""
     messages: List[Dict[str, str]] = Field(..., description="Conversation messages")
-    # Support both old and new API formats
-    functions: Optional[List[str]] = Field(None, description="[DEPRECATED] Names of available functions")
-    tools: Optional[List[Dict[str, Any]]] = Field(None, description="Tools to use for function calling (OpenAI v1.0+ format)")
     available_functions: Optional[List[str]] = Field(None, description="Names of available functions")
     model: Optional[str] = Field(None, description="Model to use")
     system_prompt: Optional[str] = Field(None, description="System prompt to use")
     mode: str = Field("auto", description="Function calling mode (auto, none, required)")
-    tool_choice: Optional[str] = Field("auto", description="Tool choice mode (OpenAI v1.0+)")
 
 
 class FunctionCallResponse(BaseModel):
@@ -97,29 +93,15 @@ async def call_functions(
         else:
             mode = FunctionCallMode.AUTO
         
-        # For v1.0+ API, prioritize tools parameter
-        if request.tools:
-            # Use new tools parameter format
-            result = await executor.run_conversation_with_tools(
-                openai_client=client,
-                messages=request.messages,
-                tools=request.tools,
-                system_prompt=request.system_prompt,
-                model=request.model,
-                tool_choice=request.tool_choice,
-                max_turns=5
-            )
-        else:
-            # Fall back to legacy function calling for backward compatibility
-            available_functions = request.available_functions or request.functions
-            result = await executor.run_conversation(
-                openai_client=client,
-                messages=request.messages,
-                available_functions=available_functions,
-                system_prompt=request.system_prompt,
-                model=request.model,
-                max_turns=5
-            )
+        # Run conversation
+        result = await executor.run_conversation(
+            openai_client=client,
+            messages=request.messages,
+            available_functions=request.available_functions,
+            system_prompt=request.system_prompt,
+            model=request.model,
+            max_turns=5
+        )
         
         return FunctionCallResponse(**result)
         

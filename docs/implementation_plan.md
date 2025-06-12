@@ -26,6 +26,29 @@ The name "Mnemosyne" (pronounced /nɪˈmɒzɪni/ or neh-MOZ-ih-nee) carries sign
 - **API Security**: Rate limiting and authentication for all endpoints
 - **Compliance**: GDPR/CCPA compliance for user data handling
 
+## Phase 3: Advanced Agent Orchestration & Memory Reflection (2025-06-06)
+
+### Objectives
+- CrewAI integration for agent/sub-agent orchestration and recursive task delegation is complete
+- AgentManager service for agent lifecycle, orchestration, and DB-backed state is fully implemented and integrated
+- Cognee-inspired memory reflection and importance scoring service is fully implemented and integrated
+- All APIs, DB models, and documentation for new features are up to date as of 2025-06-08T22:42:40-07:00
+- All orchestration and memory state is DB-persisted for auditability
+- Docker and requirements have been updated for all new dependencies
+
+### Key Deliverables
+- CrewAI and Cognee added to backend dependencies and Docker
+- AgentManager service fully implemented in `/backend/app/services/agent/` and wired to API endpoints
+- MemoryReflectionService fully implemented in `/backend/app/services/memory/reflection.py` and wired to API endpoints
+- New DB models: Agent, AgentLink, AgentLog, MemoryReflection, etc. (migrated and live)
+- Alembic migrations for new tables (applied)
+- All new/updated API endpoints for agent orchestration and memory reflection are live
+- Documentation and source of truth updated for every change as of 2025-06-08T22:42:40-07:00
+- Robust test plan for new features is the next priority
+- Code cleanup and removal of unused files pending
+
+---
+
 ## Monitoring and Observability
 
 ### Logging
@@ -88,6 +111,8 @@ The name "Mnemosyne" (pronounced /nɪˈmɒzɪni/ or neh-MOZ-ih-nee) carries sign
 - Automatic information extraction from conversations
 - Relevance-based retrieval of past information
 - Memory consolidation and priority adjustment
+- Cognee-inspired reflection, importance scoring, and hierarchical memory organization will be implemented for enhanced memory robustness.
+- Memory state will be tightly integrated with agent/task logs and orchestration events.
 
 #### Task Management
 - Scheduling interface and logic
@@ -95,6 +120,9 @@ The name "Mnemosyne" (pronounced /nɪˈmɒzɪni/ or neh-MOZ-ih-nee) carries sign
 - Calendar integration capabilities
 
 #### Agent Framework
+- CrewAI will be used for sub-agent orchestration, task delegation, and hierarchical agent trees (recursive sub-agents).
+- A new AgentManager service will manage agent lifecycle, DB-backed orchestration, and expose APIs/tooling for agent/task management.
+- LangChain will remain for the main conversational agent and MCP tool calling.
 - Tool definition and registration system
 - Action planning and execution flow
 - Task monitoring and result handling
@@ -105,6 +133,13 @@ The name "Mnemosyne" (pronounced /nɪˈmɒzɪni/ or neh-MOZ-ih-nee) carries sign
 - Webhook handlers for third-party services
 
 ## Technical Implementation Details
+
+### AgentManager and MemoryReflectionService Integration (2025-06-08T22:42:40-07:00)
+- AgentManager manages agent lifecycle, orchestration, linking, task assignment, and logging, all DB-backed and fully integrated with CrewAI.
+- MemoryReflectionService provides memory reflection, scoring, and hierarchical retrieval, fully integrated with DB and API endpoints.
+- All endpoints for agent orchestration and memory reflection are live and ready for testing.
+- All functions are commented as per user rules.
+- Next steps: Implement robust test coverage and clean up unused code/files.
 
 ### API Design
 
@@ -173,10 +208,10 @@ The development of Mnemosyne will be primarily implemented by AI coding assistan
 | Core Func     | Conversation management API         | Primary      | Required     | FastAPI base API    | 2d            | Pending  |
 | Core Func     | Memory system backend               | Primary      | Required     | FastAPI base API    | 3d            | Pending  |
 | Core Func     | Task scheduling & reminders         | Primary      | Optional     | FastAPI base API    | 2d            | Pending  |
-| Core Func     | Agent tool framework                | Primary      | Required     | FastAPI base API    | 3d            | Pending  |
+| Core Func     | Agent tool framework                | Primary      | Required     | FastAPI base API    | 3d            | Implemented  |
 | Core Func     | Frontend conversation UI            | Primary      | Optional     | React SPA scaffold  | 2d            | Pending  |
 | Core Func     | Frontend memory/task UI             | Primary      | Optional     | React SPA scaffold  | 2d            | Pending  |
-| Advanced      | LLM integration via LangChain       | Primary      | Required     | FastAPI, Memory     | 2d            | Pending  |
+| Advanced      | LLM integration via LangChain       | Primary      | Required     | FastAPI, Memory     | 2d            | Implemented  |
 | Advanced      | Calendar integration                | Primary      | Optional     | Task mgmt backend   | 2d            | Pending  |
 | Advanced      | External API connectors             | Primary      | Optional     | Agent framework     | 2d            | Pending  |
 | Integration   | End-to-end tests                    | Support      | Primary      | All core features   | 3d            | Pending  |

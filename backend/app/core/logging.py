@@ -92,7 +92,7 @@ class StructuredLogger(logging.Logger):
             extra = extra or {}
             extra.update(context)
         
-        super().log(level, msg, args, exc_info, extra, stack_info)
+        super().log(level, msg, args if args else (), exc_info, extra, stack_info)
     
     def debug(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """

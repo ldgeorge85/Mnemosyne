@@ -6,7 +6,7 @@ This module defines the main API router and includes all route handlers.
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import health, conversations, conversation_context, message_handling, streaming, memories, llm, openai, prompts, parsers, functions, memory_retrieval, memory_management, memory_scoring
+from app.api.v1.endpoints import health, conversations, conversation_context, message_handling, streaming, memories, llm, openai, prompts, parsers, functions, memory_retrieval, memory_management, memory_scoring, agents
 from app.core.config import settings
 
 # Create the main API router
@@ -29,6 +29,9 @@ api_router.include_router(streaming.router, prefix="/streaming", tags=["streamin
 
 # Include the memories router
 api_router.include_router(memories.router, prefix="/memories", tags=["memories"])
+
+# Include the agents router
+api_router.include_router(agents.router, prefix="/agents", tags=["agents"])
 
 # Include the LLM router
 api_router.include_router(llm.router, prefix="/llm", tags=["llm"])

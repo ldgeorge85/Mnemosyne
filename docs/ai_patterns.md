@@ -1,5 +1,19 @@
 # Mnemosyne - AI Implementation Patterns
 
+---
+
+## Pattern: CrewAI-Based Agent Orchestration with DB-Backed Tracking
+- Use CrewAI for sub-agent orchestration, task delegation, and hierarchical agent trees.
+- Integrate with a custom AgentManager service for agent lifecycle, DB-backed orchestration, and API/tooling.
+- Support recursive sub-agent creation and robust logging/monitoring.
+- Persist all agent/task state, logs, and orchestration events in Postgres.
+- Expose endpoints for agent definition, linking, tasking, monitoring, and log retrieval.
+
+## Pattern: Cognee-Inspired Memory Reflection and Scoring
+- Implement reflection and importance scoring for memories, inspired by Cognee.
+- Organize memory hierarchically and link to agent/task logs.
+- Integrate memory reflection and scoring with agent/task lifecycle events.
+
 This document outlines standardized implementation patterns for AI assistants working on the Mnemosyne codebase. Following these patterns ensures consistency, maintainability, and high quality across the project.
 
 ## Code Organization

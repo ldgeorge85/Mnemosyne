@@ -21,7 +21,7 @@ Most conversation API endpoints have been tested and are working as expected:
 4. ✅ PUT /conversations/{id} - Successfully updates conversation title
 5. ✅ DELETE /conversations/{id} - Appears to implement soft deletion
 6. ✅ POST /conversations/{id}/messages - Successfully adds messages to conversations
-7. ❌ GET /conversations/{id}/messages - Not implemented (returns Method Not Allowed)
+7. ✅ GET /conversations/{id}/messages - Now implemented (returns paginated messages, see API docs for usage)
 8. ❌ Memory API endpoints - Return 500 error (requires authentication)
 
 ### Current Status (Updated 2025-06-05)

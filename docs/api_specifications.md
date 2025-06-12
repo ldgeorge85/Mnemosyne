@@ -4,6 +4,26 @@
 
 This document details the REST API endpoints provided by the Mnemosyne backend service. All API requests and responses are in JSON format unless otherwise specified.
 
+---
+
+## Planned API Extensions: CrewAI & Cognee Integration (Phase 3)
+
+### Agent Orchestration (AgentManager Endpoints)
+- `POST /agents/` — Define a new agent (role, config, capabilities)
+- `POST /agents/{id}/link` — Link agents (parent/child, team structures)
+- `POST /agents/{id}/task` — Assign a task to an agent
+- `GET /agents/{id}/status` — Monitor agent/task status
+- `GET /agents/` — List all agents and their state
+- `POST /agents/{id}/spawn` — Create sub-agents recursively
+- `GET /agents/{id}/logs` — Retrieve agent/task logs
+
+### Memory Reflection & Scoring
+- `POST /memories/reflect` — Trigger memory reflection/scoring
+- `GET /memories/importance` — Retrieve importance scores for memories
+- `GET /memories/hierarchy` — Get hierarchical organization of memories
+
+*See implementation_plan.md and architecture.md for more details on these planned endpoints and flows.*
+
 ## Base URL
 
 ```

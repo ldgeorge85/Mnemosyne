@@ -1,4 +1,52 @@
-# Mnemosyne Project - AI Assistant Prompt
+# Mnemosyne Phase 3 Coding Assistant Kickoff Prompt
+
+## Current State
+- **Phase 2.5 backend is fully fixed, tested, and documented.**
+- All migrations, database schema, and backend tests pass 100% in Docker.
+- Documentation and source of truth are up to date and reflect the latest backend architecture and workflow.
+- The project is ready to begin **Phase 3: Advanced Agent Orchestration and Memory Reflection**.
+
+## Phase 3 Objective
+Integrate CrewAI for sub-agent orchestration, build the AgentManager service for agent lifecycle and orchestration, implement Cognee-inspired memory reflection and importance scoring, and update all APIs, documentation, and test plans accordingly.
+
+## Relevant Context
+- **Backend stack:** FastAPI, SQLAlchemy ORM, Alembic, PostgreSQL (with pgvector), Redis (with RQ), LangChain for LLM integration and tool calling.
+- **Frontend:** React (TypeScript) with Chakra UI (not the focus for Phase 3).
+- **Agent orchestration:** CrewAI for sub-agent/task delegation and recursive agent trees.
+- **Memory system:** Cognee-inspired reflection, scoring, and hierarchical memory organization.
+- **Architecture:** Modular, layered, containerized; all orchestration/memory state must be DB-persisted for auditability.
+- **Security/auth:** Mock OAuth2 for dev, user-level access enforced, API tokens planned.
+- **User preferences:**
+  - All code and migrations must work in Docker.
+  - Documentation (especially `docs/source_of_truth.md`) must be updated with every code or architecture change.
+  - Minimal, precise code edits; modular, maintainable, and auditable design.
+  - Source of truth (`docs/source_of_truth.md`) is the definitive file/project guide.
+
+## Onboarding and Priorities
+1. **Review the following docs:**
+   - `docs/source_of_truth.md` (project/file structure, history, and all major changes)
+   - `docs/implementation_plan.md` (system architecture, phase roadmap, and technical risks)
+   - `docs/task_tracker.md` (detailed tasks and priorities)
+   - `docs/api_specifications.md` (API endpoints, including planned CrewAI/AgentManager/memory reflection APIs)
+   - `docs/architecture.md` (backend, agent, and memory system design)
+2. **Understand the modular backend and DB-persistence requirements.**
+3. **Prioritize:**
+   - Updating documentation and source of truth for every change
+   - Keeping all code container-ready (Docker Compose, .env, etc.)
+   - Implementing robust, auditable agent orchestration and memory flows
+   - Writing clear, maintainable, and well-commented code
+4. **Coordinate all changes with the source of truth doc.**
+
+## Phase 3 Kickoff Checklist
+- [ ] Update all documentation to reflect CrewAI/AgentManager/Cognee integration plans
+- [ ] Add CrewAI and Cognee to backend dependencies (requirements.txt, Docker, etc.)
+- [ ] Scaffold AgentManager service (API, DB models, orchestration logic)
+- [ ] Design and document new/updated API endpoints for agent orchestration and memory reflection
+- [ ] Plan and document a robust test strategy for all new features
+- [ ] Ensure all changes are reflected in `docs/source_of_truth.md`
+
+**Reference `docs/source_of_truth.md` for project structure and file guide. All work must be auditable, documented, and container-ready.**
+
 
 ## Project Overview
 
@@ -17,6 +65,39 @@ The project is currently transitioning from Phase 2 (Core Functionality) to Phas
 - Backend development of conversation management, LLM integration, and memory storage system
 - Debugging and fixing backend dependency issues and API response validation errors
 - Initial frontend-backend connectivity testing
+
+---
+
+## CrewAI & Cognee Integration Phase Kickoff Prompt
+
+**Objective:**
+Integrate CrewAI for agent/sub-agent orchestration and Cognee-inspired memory reflection into the Mnemosyne project, updating all relevant documentation, plans, and API/tooling.
+
+**Context Acquisition:**
+- Review the following docs: `architecture.md`, `implementation_plan.md`, `task_tracker.md`, `api_specifications.md`, `source_of_truth.md`.
+- Understand the current backend stack (FastAPI, LangChain, SQLAlchemy, pgvector, Redis) and planned agent/memory architecture.
+- Familiarize yourself with CrewAI and Cognee Python modules (see their official docs for API and usage).
+
+**Next Steps:**
+1. Update documentation to reflect CrewAI as the orchestration engine for sub-agents, and Cognee-inspired memory reflection/scoring.
+2. Plan and document the AgentManager service for agent lifecycle management, DB integration, and tool/API exposure.
+3. Specify changes to API/tooling for agent management and memory reflection.
+4. Add/adjust tasks in the tracker for all new integration and refactor work.
+5. If any prior plans need to be revised or backtracked, note and document this.
+
+**Implementation Guidelines:**
+- Keep the conversational agent on LangChain, but add CrewAI for orchestration.
+- Ensure all orchestration and memory state is tracked in the DB.
+- Enable recursive agent creation and robust logging/monitoring.
+- Use Cognee’s memory reflection/scoring as inspiration for the memory service.
+- Document all architectural and API changes clearly.
+
+**Deliverables:**
+- Updated documentation and plans.
+- Clear, actionable tasks for implementation.
+- (Optional) Initial code scaffolding for AgentManager and memory enhancements.
+
+---
 
 ## Important Resources
 

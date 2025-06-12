@@ -1,7 +1,11 @@
 """
 Conversation API Endpoints
 
-This module defines the API endpoints for managing conversations and messages.
+This module defines the API endpoints for managing conversations and messages, including:
+- Listing, creating, updating, and deleting conversations
+- Adding and deleting messages
+- Fetching a specific conversation with its messages
+- Fetching paginated messages for a conversation (GET /conversations/{conversation_id}/messages)
 """
 
 from typing import List, Optional, Dict, Any
@@ -106,6 +110,44 @@ class SuccessResponse(BaseModel):
 
 # Create router
 router = APIRouter()
+
+
+@router.get("/{conversation_id}/messages", response_model=PaginatedMessageResponse)
+async def get_conversation_messages(
+    conversation_id: str,
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: AsyncSession = Depends(get_async_db),
+    current_user: Dict[str, Any] = Depends(get_current_user),
+):
+    """
+    Get paginated messages for a specific conversation.
+
+    Args:
+        conversation_id: ID of the conversation
+        limit: Maximum number of messages to return (default: 50)
+        offset: Offset for pagination (default: 0)
+        db: Async database session (injected)
+        current_user: Authenticated user (injected)
+
+    Returns:
+        PaginatedMessageResponse: List of messages and pagination info
+    """
+    # Ensure the conversation exists and belongs to the user
+    repo = ConversationRepository(db)
+    conversation = await repo.get_conversation(conversation_id=conversation_id, user_id=current_user["id"])
+    if not conversation:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Conversation not found")
+    # Fetch messages
+    message_repo = MessageRepository(db)
+    messages, total = await message_repo.get_messages(conversation_id=conversation_id, limit=limit, offset=offset)
+    return {
+        "total": total,
+        "offset": offset,
+        "limit": limit,
+        "items": messages
+    }
+
 
 
 @router.get("/", response_model=PaginatedConversationResponse)

@@ -12,17 +12,21 @@ import requests
 from datetime import datetime
 
 # Configuration
-API_BASE = "http://backend:8000"  # Using 'backend' which is the service name in Docker network
+API_BASE = "http://localhost:8000"
 API_VERSION = "v1"
-HEADERS = {"Content-Type": "application/json", "Authorization": "Bearer test-token"}
-TEST_USER_ID = "test-user-1"  # Replace with a valid user ID if needed
-ADMIN_USER_ID = "admin-user-1"  # Admin user ID for admin-required endpoints
+# Include Authorization header with a dummy token to trigger the mock auth system
+HEADERS = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer dummy-token"  # Any token will work in the dev environment
+}
+# Use the mock user ID that matches the authentication system
+TEST_USER_ID = "mock-user-id"  # This matches the ID returned by get_current_user
 
 # Define test cases
 def test_memory_creation():
     """Test creating a new memory."""
     print("\n📝 Testing memory creation...")
-    url = f"{API_BASE}/api/{API_VERSION}/memory-management/memories"
+    url = f"{API_BASE}/api/{API_VERSION}/memories/"
     
     test_memory = {
         "user_id": TEST_USER_ID,
@@ -46,19 +50,37 @@ def test_memory_creation():
         print(f"Error during memory creation: {str(e)}")
         return None
 
-def test_memory_retrieval(memory_id):
-    """Test retrieving a memory by ID."""
-    if not memory_id:
-        print("No memory ID provided for retrieval test")
+def test_memory_retrieval():
+    """
+    Test retrieving a memory by ID.
+    This function is self-contained: it creates a new memory, then immediately retrieves it by ID.
+    This avoids reliance on external fixtures or test order.
+    """
+    # Create a new memory to retrieve
+    print("\n📝 Creating memory for retrieval test...")
+    url_create = f"{API_BASE}/api/{API_VERSION}/memories/"
+    test_memory = {
+        "user_id": TEST_USER_ID,
+        "title": f"Retrieval Test Memory {datetime.now().isoformat()}",
+        "content": "This is a retrieval test memory.",
+        "tags": ["test", "retrieval"]
+    }
+    try:
+        response = requests.post(url_create, json=test_memory, headers=HEADERS)
+        if response.status_code != 201:
+            print(f"Failed to create memory for retrieval: {response.text}")
+            return False
+        memory_id = response.json().get("id")
+    except Exception as e:
+        print(f"Error during memory creation for retrieval: {str(e)}")
         return False
-        
-    print(f"\n📚 Testing memory retrieval for ID: {memory_id}")
-    url = f"{API_BASE}/api/{API_VERSION}/memory-retrieval/{memory_id}"
     
+    # Now retrieve the memory by ID
+    print(f"\n📚 Testing memory retrieval for ID: {memory_id}")
+    url = f"{API_BASE}/api/{API_VERSION}/memories/{memory_id}"
     try:
         response = requests.get(url, headers=HEADERS)
         print(f"Status code: {response.status_code}")
-        
         if response.status_code == 200:
             result = response.json()
             print(f"Memory retrieved: {result.get('title')}")
@@ -73,13 +95,13 @@ def test_memory_retrieval(memory_id):
 def test_memory_search():
     """Test semantic search functionality."""
     print("\n🔍 Testing memory search...")
-    url = f"{API_BASE}/api/{API_VERSION}/memory-retrieval/search"
+    url = f"{API_BASE}/api/{API_VERSION}/memories/search"
     
     search_query = {
         "query": "test memory",
-        "tags": None,
-        "min_relevance_score": 0.5,
-        "limit": 5
+        "user_id": TEST_USER_ID,
+        "limit": 5,
+        "include_chunks": False
     }
     
     try:
@@ -105,14 +127,10 @@ def test_memory_search():
 def test_memory_statistics():
     """Test memory statistics endpoint."""
     print("\n📊 Testing memory statistics...")
-    url = f"{API_BASE}/api/{API_VERSION}/memory-management/statistics"
-    
-    # Note: This endpoint requires admin privileges
-    admin_headers = HEADERS.copy()
-    admin_headers["X-Admin-Role"] = "true"  # Add admin role header
+    url = f"{API_BASE}/api/{API_VERSION}/memories/statistics"
     
     try:
-        response = requests.get(url, headers=admin_headers)
+        response = requests.get(url, headers=HEADERS)
         print(f"Status code: {response.status_code}")
         
         if response.status_code == 200:
@@ -121,7 +139,6 @@ def test_memory_statistics():
             return True
         else:
             print(f"Failed to get memory statistics: {response.text}")
-            print("Note: This endpoint requires admin privileges")
             return False
     except Exception as e:
         print(f"Error during memory statistics retrieval: {str(e)}")
@@ -168,13 +185,11 @@ def run_all_tests():
             print(f"{test_name.title()}: {status}")
     
     # Save results to file
-    try:
-        # Create docs directory if it doesn't exist
-        os.makedirs("/app/docs", exist_ok=True)
-        results_file = "/app/docs/memory_test_results.json"
-        
-        with open(results_file, "w") as f:
-            json.dump(results, f, indent=2)
+    results_file = os.path.join(os.path.dirname(__file__), 
+                               "../docs/memory_test_results.json")
+    
+    with open(results_file, "w") as f:
+        json.dump(results, f, indent=2)
     
     print(f"\nResults saved to: {results_file}")
     

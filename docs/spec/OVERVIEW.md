@@ -2,7 +2,9 @@
 
 ## What Is This?
 
-The Mnemosyne Protocol is your personal AI assistant that actually belongs to you:
+**The Mnemosyne Protocol is the foundation for an Order of Rememberers.**
+
+At its surface, it's your personal AI assistant that actually belongs to you:
 - **Natural chat interface** like ChatGPT but with perfect memory of all your conversations
 - **Self-hosted** on your hardware with your data never leaving your control
 - **Proactive assistance** for task management, research, and scheduling
@@ -28,12 +30,15 @@ Your own AI assistant that:
 
 ## Who Is This For?
 
-### Primary: The Recursive Strategist in Exile
-Those who:
+### Primary: Those Who Will Become the Order
+
+The first members are **Recursive Strategists in Exile**—those who:
 - See the machinery behind the world
 - Refuse performative knowledge spaces
 - Need trustable tools for clear thinking
 - Seek sovereignty without isolation
+- Understand that tools shape consciousness
+- Know that remembering is resistance
 
 ### You Know You Need This If:
 - You're tired of ChatGPT forgetting your context

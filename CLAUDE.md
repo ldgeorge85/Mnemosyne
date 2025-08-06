@@ -1,196 +1,179 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+# Instructions for AI Assistants (Claude, GPT, etc.)
 
 ## Project Overview
 
-The Mnemosyne Protocol is a cognitive-symbolic operating system combining personal memory management with collective intelligence. It integrates four existing codebases (Mnemosyne, Shadow, Dialogues, Chatter) into a unified protocol for individual sovereignty and community coordination.
+You are working on **The Mnemosyne Protocol** - a cognitive-symbolic operating system for preserving human agency. This is a personal project that will grow into a platform.
 
-**Core Philosophy**: No mocking or fake implementations. Build real features or defer them.
+## Core Philosophy
 
-## Development Commands
+**CRITICAL**: Follow the "No Mocking Policy"
+- Build real features or explicitly defer them
+- No fake implementations, no placeholder code
+- If something can't be built now, mark it as "DEFERRED TO PHASE X"
 
-### Initial Setup
+## Project Structure
+
+```
+protocol/
+├── docs/              # All documentation (START HERE)
+│   ├── spec/         # Protocol specifications
+│   ├── guides/       # Implementation guides
+│   ├── reference/    # API and database docs
+│   └── philosophy/   # Vision and principles
+├── backend/          # FastAPI + Python backend
+├── frontend/         # React + TypeScript frontend
+├── shadow/           # Agent orchestration system
+├── dialogues/        # 50+ philosophical agents
+├── collective/       # Collective intelligence service
+├── scripts/          # Setup and utilities
+└── archive/          # Old documentation (for reference)
+```
+
+## Key Commands
+
 ```bash
-# First time setup
+# Setup
 ./scripts/setup.sh
-cp .env.example .env  # Then add API keys
 
-# Start all services
+# Development
 docker-compose up
+docker-compose exec backend pytest
+docker-compose logs -f
 
-# Start specific services
-docker-compose up backend frontend  # Main app
-docker-compose up shadow dialogues  # Agents
-docker-compose up collective        # Collective instance
+# Database
+docker-compose exec postgres psql -U postgres -d mnemosyne
+docker-compose run --rm backend alembic upgrade head
+
+# Git
+git add -A && git commit -m "message"
 ```
 
-### Backend Development (FastAPI + PostgreSQL)
-```bash
-cd backend
+## Working Guidelines
 
-# Virtual environment
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+### 1. Always Read First
+- Read relevant files before editing
+- Check `docs/` for specifications
+- Review existing code patterns
 
-# Database operations
-alembic upgrade head              # Apply migrations
-alembic revision --autogenerate -m "description"  # New migration
-python migrate.py                 # Alternative migration runner
+### 2. Database Schema
+The schema needs completion. Key tables:
+- `memories` - Personal memory storage with vector embeddings
+- `users` - Authentication (NEEDS IMPLEMENTATION)
+- `signals` - Deep Signal storage (NEEDS IMPLEMENTATION)
+- `sharing_contracts` - Collective sharing rules
+- `trust_relationships` - Trust scores (NEEDS IMPLEMENTATION)
 
-# Run tests
-pytest                            # All tests
-pytest app/tests/unit/           # Unit tests only
-pytest app/tests/integration/    # Integration tests
-pytest -k "test_memory"          # Specific test pattern
-pytest -v -s                     # Verbose with print statements
+### 3. API Endpoints
+See `docs/reference/API.md` for complete specification. Many endpoints need implementation.
 
-# Run backend locally
-uvicorn app.main:app --reload --port 8000
+### 4. Agent System
+- Base agents in `shadow/` directory
+- Philosophical agents in `dialogues/` directory
+- Resource management needed for 50+ agents
+
+### 5. Privacy Requirements
+- K-anonymity minimum of 3
+- AES-256-GCM encryption
+- No data leaves system without explicit contract
+
+### 6. Testing
+- Always write tests for new features
+- Run `pytest` before committing
+- Security > Features > Performance
+
+## Current Priorities (Week 1)
+
+1. Complete database schema with auth tables
+2. Implement core memory operations
+3. Basic agent orchestration
+4. Authentication system
+5. Docker deployment
+
+## Architecture Notes
+
+### Technology Stack
+- **Backend**: FastAPI, PostgreSQL, pgvector, Redis
+- **Frontend**: React, TypeScript, Vite
+- **AI**: OpenAI/Anthropic/Ollama
+- **Deployment**: Docker Compose → Kubernetes
+
+### Key Patterns
+```python
+# Memory capture pattern
+async def capture_memory(content: str) -> Memory:
+    embedding = generate_embedding(content)
+    metadata = extract_metadata(content)
+    importance = calculate_importance(content)
+    return store_memory(content, embedding, metadata, importance)
+
+# Agent reflection pattern
+async def reflect(memory: Memory) -> Reflection:
+    prompt = build_prompt(memory)
+    response = await llm_call(prompt)
+    return process_reflection(response)
 ```
 
-### Frontend Development (React + TypeScript + Vite)
-```bash
-cd frontend
+## Philosophy Reminders
 
-# Install and run
-npm install
-npm run dev              # Development server on :5173
-npm run build           # Production build
-npm run test            # Run tests
-npm run test:watch      # Watch mode
-```
+1. **Build for the builder first** - Every feature must serve the person building it
+2. **Sovereignty over convenience** - Privacy and control are non-negotiable
+3. **Real or nothing** - No mocking, no faking, no pretending
+4. **Depth over breadth** - Better to serve 100 deeply than 10,000 shallowly
 
-### Shadow Orchestration
-```bash
-cd shadow
+## Common Tasks
 
-# Run Shadow API
-python -m uvicorn api.fastapi_server:app --reload --port 8001
+### Adding a New Agent
+1. Create agent class inheriting from `BaseAgent`
+2. Define system prompt
+3. Implement reflection logic
+4. Add to agent registry
+5. Test with real memories
 
-# Test collaboration
-python test_collaboration.py
-python test_memory_integration.py
-```
+### Implementing an API Endpoint
+1. Check specification in `docs/reference/API.md`
+2. Implement in appropriate router
+3. Add input validation
+4. Write tests
+5. Update documentation if needed
 
-### Dialogues Agents
-```bash
-cd dialogues
+### Adding a Database Table
+1. Create SQLAlchemy model
+2. Generate migration: `alembic revision --autogenerate`
+3. Review migration file
+4. Apply: `alembic upgrade head`
+5. Add indexes for performance
 
-# Run debate system
-python src/main.py              # Basic debate
-python src/main_dynamic.py      # Dynamic agents
-python src/main_with_memory.py  # With memory persistence
+## Warnings
 
-# Explore agent memory
-./explore_memory.sh
-```
+⚠️ **DO NOT**:
+- Add features for hypothetical users
+- Implement fake/mock functionality
+- Compromise on privacy
+- Add unnecessary dependencies
+- Over-engineer before need
 
-## Architecture Overview
+✅ **DO**:
+- Build what you need today
+- Test with real data
+- Maintain security first
+- Keep it simple
+- Document decisions
 
-### Layer Architecture
-```
-Layer 4: Collective Codex (Community Intelligence)
-    ↓ Selective sharing with contracts
-Layer 3: Quiet Network (Discovery & Trust) 
-    ↓ Progressive revelation protocol
-Layer 2: Deep Signal Protocol (Identity Compression)
-    ↓ Symbolic representation as kartouches
-Layer 1: Mnemosyne Engine (Personal Memory + Agents)
-```
+## Getting Help
 
-### Service Communication
-- **Backend (8000)** ← → **Shadow (8001)**: Agent orchestration via REST
-- **Shadow** ← → **Dialogues (8002)**: Philosophical agent loading
-- **Backend** ← → **Collective (8003)**: Sharing contracts and collective operations
-- **Frontend (3000)** → All services via API calls
+1. Check `docs/` directory first
+2. Review similar code in codebase
+3. Look at test files for examples
+4. Check archive/ for historical context
 
-### Key Database Models
-- `memories`: Personal memory storage with pgvector embeddings
-- `sharing_contracts`: Defines what/how users share with collectives
-- `collective_knowledge`: Anonymized shared knowledge (k-anonymity enforced)
-- `agents`: Agent configurations and orchestration metadata
+## Remember
 
-### Agent System
-1. **Shadow Agents** (Python): Engineer, Librarian, Priest - task-specific
-2. **Philosophical Agents** (50+ from Dialogues): Deep reflection and debate
-3. **Collective Agents**: Matchmaker, Gap Finder, Synthesizer
-4. **Mycelium Meta-Agent**: Monitors coherence across all agents
+You're not building a product. You're building a new way of thinking about cognitive sovereignty. Every line of code should reflect that philosophy.
 
-## Critical Implementation Notes
+**Current Phase**: Building personal tool (1 user)
+**Next Phase**: Early adopters (10 users)
+**Philosophy**: Real implementation or explicit deferral
 
-### Privacy Implementation (No Mocking)
-- **Week 1**: AES-256-GCM local encryption (real)
-- **Week 2**: Selective sharing contracts (real)
-- **Week 5**: K-anonymity (k=3 minimum) (real)
-- **Deferred to v2**: Zero-knowledge proofs (NOT mocked, build when ready)
+---
 
-### Memory Sharing Flow
-1. User creates `SharingContract` specifying domains, depth, duration
-2. Memory filtered through contract before export
-3. K-anonymity checked before collective storage
-4. Revocation tracked via Merkle tree
-
-### A2A Protocol Integration
-- Generate Agent Cards for interoperability
-- Use existing A2A patterns from industry standard
-- Located in: `backend/app/services/agent/`
-
-### Critical Path Dependencies
-```
-Memory Model → Sharing Contracts → Collective Instance → Synthesis
-Shadow Integration → Agent Loading → Mycelium Coherence
-```
-
-## Development Workflow
-
-### AI-Assisted Development Model
-- AI agents write implementation (2-4 hours per feature)
-- Human reviews security and logic
-- Target: 5-10 features per day
-- Timeline: 2-3 weeks to MVP (not 8-10 weeks)
-
-### Task Tracking
-Primary task list: `TASK_TRACKING.md`
-- Tasks marked with time estimates in hours (not days)
-- Next task: TASK-004 (Memory model extension for sharing)
-
-### Testing Requirements
-- Security review mandatory before deployment
-- K-anonymity validation on all collective queries
-- Integration tests for sharing contracts
-- Human verification of privacy guarantees
-
-## Environment Configuration
-
-Required API keys in `.env`:
-```
-OPENAI_API_KEY=       # For LLM operations
-ANTHROPIC_API_KEY=    # Alternative LLM
-POSTGRES_PASSWORD=    # Database
-SECRET_KEY=          # JWT signing
-```
-
-## Key Files for Context
-
-- `MNEMOSYNE_PROTOCOL_SPECIFICATION_v3.md`: Latest clean specification
-- `CRITICAL_PATH.md`: Dependencies and blocking chains
-- `ROADMAP.md`: Day-by-day implementation plan
-- `AI_DEVELOPMENT_STRATEGY.md`: Time compression approach
-- `PRIVACY_IMPLEMENTATION.md`: 5-layer privacy architecture
-
-## Important Constraints
-
-1. **No Mocking Policy**: Never create mock implementations. Either build real features or defer to later phases.
-
-2. **Privacy First**: Every collective feature must enforce k-anonymity (k=3 minimum).
-
-3. **Existing Code**: 70% of individual components exist. Focus on integration and collective features.
-
-4. **Naming Convention**: 
-   - "The Mnemosyne Protocol" = entire system
-   - "Collective Codex" = special Mnemosyne instance for communities
-   - "Mnemosyne Engine" = personal memory layer
-
-5. **Testing**: AI writes code, humans validate security and privacy.
+*"For those who see too much and belong nowhere."*

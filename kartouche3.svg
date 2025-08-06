@@ -1,0 +1,50 @@
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e1e2f"/>
+      <stop offset="100%" stop-color="#0a0a14"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background Circle -->
+  <circle cx="250" cy="250" r="240" fill="url(#bg)" stroke="#8888aa" stroke-width="2"/>
+
+  <!-- Radiating Lines (Clock-style) -->
+  <g stroke="#444" stroke-width="1">
+    <line x1="250" y1="30" x2="250" y2="60"/>
+    <line x1="250" y1="470" x2="250" y2="440"/>
+    <line x1="30" y1="250" x2="60" y2="250"/>
+    <line x1="470" y1="250" x2="440" y2="250"/>
+    <!-- Diagonals -->
+    <line x1="90" y1="90" x2="115" y2="115"/>
+    <line x1="410" y1="410" x2="385" y2="385"/>
+    <line x1="410" y1="90" x2="385" y2="115"/>
+    <line x1="90" y1="410" x2="115" y2="385"/>
+  </g>
+
+  <!-- Outer Symbol Ring -->
+  <g>
+    <circle cx="250" cy="70" r="20" fill="#6ac" />
+    <text x="250" y="70" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="16">🜁</text>
+
+    <circle cx="430" cy="250" r="20" fill="#6ac" />
+    <text x="430" y="250" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="16">🜂</text>
+
+    <circle cx="250" cy="430" r="20" fill="#6ac" />
+    <text x="250" y="430" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="16">🜃</text>
+
+    <circle cx="70" cy="250" r="20" fill="#6ac" />
+    <text x="70" y="250" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="16">🜄</text>
+  </g>
+
+  <!-- Middle Ring Dashes -->
+  <circle cx="250" cy="250" r="180" fill="none" stroke="#999" stroke-width="4" stroke-dasharray="12,8"/>
+
+  <!-- Inner Memory Ring (Fracture Index) -->
+  <circle cx="250" cy="250" r="120" fill="none" stroke="#ff6f61" stroke-width="8" stroke-dasharray="40,20"/>
+
+  <!-- Core Sigil -->
+  <circle cx="250" cy="250" r="40" fill="#333" stroke="#ccc" stroke-width="2"/>
+  <text x="250" y="250" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="28">⚚</text>
+
+</svg>

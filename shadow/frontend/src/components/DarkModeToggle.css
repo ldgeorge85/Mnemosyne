@@ -1,0 +1,110 @@
+/* Dark Mode Toggle Component Styles */
+
+.dark-mode-toggle {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.dark-mode-toggle:hover {
+  transform: scale(1.05);
+}
+
+.dark-mode-toggle:focus {
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.5);
+}
+
+.toggle-track {
+  width: 50px;
+  height: 26px;
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  border-radius: 13px;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode-toggle.dark .toggle-track {
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+}
+
+.toggle-thumb {
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode-toggle.dark .toggle-thumb {
+  transform: translateX(24px);
+  background: #2c3e50;
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+  transition: all 0.3s ease;
+}
+
+.icon.sun {
+  color: #ff8c00;
+}
+
+.icon.moon {
+  color: #ffd700;
+}
+
+/* Light theme styles */
+.light-theme .dark-mode-toggle {
+  color: #333;
+}
+
+/* Dark theme styles */
+.dark-theme .dark-mode-toggle {
+  color: #fff;
+}
+
+/* Animation for smooth icon transitions */
+.dark-mode-toggle .icon {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+.dark-mode-toggle:hover .icon {
+  transform: rotate(15deg);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .toggle-track {
+    width: 45px;
+    height: 24px;
+  }
+  
+  .toggle-thumb {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .dark-mode-toggle.dark .toggle-thumb {
+    transform: translateX(21px);
+  }
+  
+  .icon {
+    width: 12px;
+    height: 12px;
+  }
+}

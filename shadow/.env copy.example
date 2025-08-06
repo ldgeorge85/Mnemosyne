@@ -1,0 +1,36 @@
+# Shadow AI System Environment Variables
+# Copy this file to .env and set your actual API keys and configuration
+
+# LLM Configuration (OpenAI API Compatible)
+LLM_BASE_URL=https://api.ai1.infra.innoscale.net/v1
+LLM_API_KEY=a884498c-45e6-4bcc-a128-680f0c04a74d
+LLM_MODEL_NAME=InnoGPT-1
+LLM_MAX_TOKENS=42000
+LLM_TEMPERATURE=1.0
+
+# Embedding Configuration (OpenAI API Compatible)
+EMBEDDING_BASE_URL=https://api.ai1.infra.innoscale.net/v1
+EMBEDDING_API_KEY=a884498c-45e6-4bcc-a128-680f0c04a74d
+EMBEDDING_MODEL_NAME=embedding-inno1
+
+# Alternative: Use different providers
+# For local deployments or other OpenAI-compatible endpoints:
+# LLM_BASE_URL=http://localhost:11434/v1
+# LLM_MODEL_NAME=llama2:7b
+# EMBEDDING_BASE_URL=http://localhost:11434/v1
+# EMBEDDING_MODEL_NAME=nomic-embed-text
+
+# Legacy Environment Variables (for backward compatibility)
+OPENAI_API_KEY=a884498c-45e6-4bcc-a128-680f0c04a74d
+ANTHROPIC_API_KEY=your-anthropic-api-key-here
+
+# Local Model Configuration (optional)
+LOCAL_MODEL_PATH=/path/to/your/local/model
+
+# Memory System Configuration
+MEMORY_PROVIDER=openai
+EMBEDDING_PROVIDER=openai
+
+# Development Settings
+DEBUG=true
+LOG_LEVEL=INFO

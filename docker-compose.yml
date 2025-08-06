@@ -1,0 +1,164 @@
+version: '3.8'
+
+services:
+  # PostgreSQL with pgvector
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: mnemosyne
+      POSTGRES_USER: mnemosyne
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mnemosyne_pass}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-pgvector.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mnemosyne"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Mnemosyne Backend (Personal Instance)
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - MODE=personal
+      - DATABASE_URL=postgresql://mnemosyne:${POSTGRES_PASSWORD:-mnemosyne_pass}@postgres:5432/mnemosyne
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - ./backend:/app
+      - ./data/memories:/data/memories
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  # Shadow Orchestration Service
+  shadow:
+    build:
+      context: ./shadow
+      dockerfile: Dockerfile
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - REDIS_URL=redis://redis:6379
+      - BACKEND_URL=http://backend:8000
+    volumes:
+      - ./shadow:/app
+      - ./data/shadow:/data
+    ports:
+      - "8001:8001"
+    depends_on:
+      - backend
+      - redis
+    command: ["python", "-m", "uvicorn", "api.fastapi_server:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]
+
+  # Dialogues Philosophical Agents
+  dialogues:
+    build:
+      context: ./dialogues
+      dockerfile: Dockerfile
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - REDIS_URL=redis://redis:6379
+      - SHADOW_URL=http://shadow:8001
+    volumes:
+      - ./dialogues:/app
+      - ./data/dialogues:/data
+    ports:
+      - "8002:8002"
+    depends_on:
+      - shadow
+      - redis
+
+  # Collective Codex (Collective Instance)
+  collective:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - MODE=collective
+      - DATABASE_URL=postgresql://mnemosyne:${POSTGRES_PASSWORD:-mnemosyne_pass}@postgres:5432/mnemosyne_collective
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SHADOW_URL=http://shadow:8001
+    volumes:
+      - ./backend:/app
+      - ./collective:/collective
+      - ./data/collective:/data/collective
+    ports:
+      - "8003:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      shadow:
+        condition: service_started
+    command: ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  # Frontend Web UI
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_SHADOW_URL=http://localhost:8001
+      - VITE_COLLECTIVE_URL=http://localhost:8003
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:5173"
+    depends_on:
+      - backend
+      - shadow
+    command: ["npm", "run", "dev", "--", "--host"]
+
+  # Optional: IPFS for distributed storage (post-MVP)
+  # ipfs:
+  #   image: ipfs/go-ipfs:latest
+  #   environment:
+  #     - IPFS_PROFILE=server
+  #   volumes:
+  #     - ipfs_data:/data/ipfs
+  #   ports:
+  #     - "4001:4001"  # Swarm
+  #     - "5001:5001"  # API
+  #     - "8080:8080"  # Gateway
+
+volumes:
+  postgres_data:
+  redis_data:
+  ipfs_data:
+
+networks:
+  default:
+    name: mnemosyne_network

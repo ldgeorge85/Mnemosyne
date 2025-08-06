@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  debate-system:
+    build: .
+    container_name: philosophical-debate-system
+    working_dir: /app
+    volumes:
+      - ./src:/app/src
+      - ./requirements.txt:/app/requirements.txt
+      - ./setup.py:/app/setup.py
+      - ./debate_history.jsonl:/app/debate_history.jsonl
+      - ./memory:/app/memory
+      - ./agent_definitions:/app/agent_definitions
+      - ./agents:/app/agents
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      - OPENAI_MODEL_NAME=${OPENAI_MODEL_NAME:-gpt-3.5-turbo}
+      - OPENAI_TEMPERATURE=${OPENAI_TEMPERATURE:-0.7}
+      - OPENAI_MAX_TOKENS=${OPENAI_MAX_TOKENS:-512}
+      - PARALLEL_AGENTS=${PARALLEL_AGENTS:-2}
+    command: ["python", "src/main_with_memory.py"]
+    tty: true

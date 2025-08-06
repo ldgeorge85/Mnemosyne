@@ -1,0 +1,4 @@
+# Project dependencies
+openai
+pyautogen
+python-dotenv

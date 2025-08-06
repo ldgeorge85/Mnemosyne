@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  # Main API application
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: chatter-api
+    ports:
+      - "8000:8000"
+    environment:
+      # Application settings
+      - APP_NAME=Chatter Knowledge Platform
+      - LOG_LEVEL=info
+      
+      # Data source credentials (set in .env)
+      - OUTLINE_API_KEY=${OUTLINE_API_KEY}
+      - OUTLINE_URL=${OUTLINE_URL}
+      
+      # LLM settings
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4}
+      - LLM_TEMPERATURE=${LLM_TEMPERATURE:-0.7}
+      
+      # Storage connections
+      - POSTGRES_URL=postgresql://chatter:chatter@postgres:5432/knowledge
+      - REDIS_URL=redis://redis:6379
+      - QDRANT_URL=http://qdrant:6333
+      
+    depends_on:
+      - postgres
+      - redis
+      - qdrant
+    volumes:
+      - ./sources:/app/sources
+      - ./processors:/app/processors
+      - ./storage:/app/storage
+      - ./app:/app/app
+    networks:
+      - chatter-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Vector database for embeddings
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: chatter-qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT__LOG_LEVEL=INFO
+    networks:
+      - chatter-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL for structured data
+  postgres:
+    image: postgres:15-alpine
+    container_name: chatter-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=chatter
+      - POSTGRES_PASSWORD=chatter
+      - POSTGRES_DB=knowledge
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - chatter-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chatter"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and queues
+  redis:
+    image: redis:7-alpine
+    container_name: chatter-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - chatter-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  chatter-network:
+    driver: bridge
+
+volumes:
+  qdrant_data:
+  postgres_data:
+  redis_data:

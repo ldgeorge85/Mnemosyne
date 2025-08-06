@@ -1,0 +1,42 @@
+# Core dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+python-dotenv==1.0.0
+
+# API and networking
+httpx==0.25.2
+python-multipart==0.0.6
+
+# LangChain and LLM
+langchain==0.1.0
+langchain-community==0.0.10
+openai==1.6.1
+tiktoken==0.5.2
+
+# Vector storage
+qdrant-client==1.7.0
+numpy==1.26.2
+
+# Database
+sqlalchemy==2.0.23
+asyncpg==0.29.0
+alembic==1.13.0
+
+# Redis
+redis==5.0.1
+
+# Data processing
+beautifulsoup4==4.12.2
+markdownify==0.11.6
+python-dateutil==2.8.2
+
+# Monitoring and logging
+structlog==23.2.0
+prometheus-client==0.19.0
+
+# Development tools (optional but helpful)
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.11.0
+isort==5.13.0

@@ -1,0 +1,58 @@
+###
+# Shadow AI Agent System Configuration
+###
+
+system:
+  name: "Shadow AI Agent System"
+  version: "0.1.0"
+  log_level: "INFO"
+  max_history_length: 10
+  
+api:
+  host: "0.0.0.0"
+  port: 8000
+  debug: true
+  cors_origins: ["*"]  # For production, restrict to specific origins
+  
+orchestrator:
+  default_agent: "librarian"
+  task_decomposition_threshold: 30  # Words threshold for complex tasks
+  
+agents:
+  engineer:
+    enabled: true
+    priority: 2
+  librarian:
+    enabled: true
+    priority: 1
+  priest:
+    enabled: true
+    priority: 3
+    
+llm:
+  default_provider: "openai"
+  providers:
+    openai:
+      model: "gpt-4o"
+      temperature: 0.7
+      max_tokens: 1024
+    anthropic:
+      model: "claude-3-5-sonnet"
+      temperature: 0.7
+      max_tokens: 1024
+    local:
+      model: "gemma-7b-it"
+      temperature: 0.8
+      max_tokens: 768
+      
+memory:
+  vector_db:
+    provider: "qdrant"  # Options: weaviate, qdrant, pinecone
+    collection_name: "shadow_memory"
+    dimensions: 1536
+  relational_db:
+    provider: "sqlite"  # Options: postgres, sqlite
+    connection: "shadow.db"
+  document_store:
+    provider: "filesystem"  # Options: s3, minio, filesystem
+    path: "./documents"

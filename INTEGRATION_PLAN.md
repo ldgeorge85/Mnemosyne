@@ -88,7 +88,7 @@ This document outlines the plan to integrate existing codebases (Mnemosyne, Shad
 
 ### Task 1.1: Create Unified Repository ✅ COMPLETED
 ```bash
-/home/lewis/dev/personal/protocol/
+mnemosyne-protocol/
 ├── backend/           # From Mnemosyne - COPIED ✅
 ├── frontend/          # From Mnemosyne - COPIED ✅
 ├── shadow/            # From Shadow - COPIED ✅

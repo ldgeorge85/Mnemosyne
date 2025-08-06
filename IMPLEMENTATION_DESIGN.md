@@ -526,8 +526,8 @@ GET    /api/agents/capabilities # List capabilities
 ### Phase 3: Protocol (Weeks 5-6)
 1. Full signal generation
 2. A2A integration
-3. ZK proof mocks
-4. Network discovery
+3. Trust system (no ZK for MVP)
+4. Basic peer discovery
 
 ### Phase 4: Polish (Weeks 7-8)
 1. UI/UX refinement

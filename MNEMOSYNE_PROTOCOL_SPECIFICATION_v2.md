@@ -478,12 +478,39 @@ The protocol develops along two parallel paths that converge into a unified syst
 
 ### Additional Protocol Stack
 - **Agent Protocol**: A2A (Agent-to-Agent) for interoperability
-- **Cryptography**: libsodium, zk-SNARK libraries
-- **P2P**: libp2p or custom DHT
-- **Storage**: IPFS for distributed persistence
-- **Federation**: ActivityPub for social layer
-- **Sandboxing**: WASM for plugin safety
-- **Privacy**: Differential privacy in agent outputs
+- **Cryptography**: libsodium for encryption, zk-SNARK libraries (post-MVP)
+- **P2P**: libp2p or custom DHT (post-MVP)
+- **Storage**: PostgreSQL + pgvector (MVP), IPFS for distributed persistence (v2)
+- **Federation**: ActivityPub for social layer (future)
+- **Sandboxing**: WASM for plugin safety (future)
+- **Privacy**: K-anonymity (k=3) for MVP, Differential privacy (ε=1.0) post-MVP
+
+### Technology Decisions from Research (2025)
+
+#### Competitive Landscape Analysis
+- **PKM Leaders**: Mem.ai, MyMind lack collective features
+- **Agent Frameworks**: OpenAI Swarm (experimental), CrewAI, AutoGen lack philosophical depth
+- **Our Moat**: 50+ philosophical agents, dual sovereignty, symbolic compression
+
+#### MVP Technology Stack
+1. **Existing Assets (70% complete)**:
+   - Mnemosyne: Memory engine with pgvector
+   - Shadow: Agent orchestration
+   - Dialogues: 50+ philosophical agents
+   - Chatter: Template system
+
+2. **Privacy Implementation (Phased)**:
+   - Layer 1: Local encryption (AES-256-GCM) - Week 1
+   - Layer 2: Selective sharing contracts - Week 2
+   - Layer 3: K-anonymity enforcement - Week 5
+   - Layer 4: ZK proofs - DEFERRED to v2 (not mocked)
+   - Layer 5: Merkle tree revocation - Week 6
+
+3. **Deferred to Post-MVP**:
+   - CKKS homomorphic encryption
+   - Full zero-knowledge proofs
+   - IPFS integration
+   - Federated learning
 
 ---
 
@@ -832,7 +859,7 @@ Target high-trust communities with verification problems:
 3. **Trust Mechanics**: Basic reputation without gaming
 
 ### Not in MVP (Future)
-- Full zero-knowledge proofs (mock for now)
+- Zero-knowledge proofs (deferred to v2 - no mocking)
 - Complete P2P network discovery
 - Advanced visual kartouche system
 - Crisis Mode and acceleration flags
@@ -896,11 +923,11 @@ Start with 3-5 core glyphs that are:
    - **Privacy Layer**: Add encryption/signing on top of A2A for sensitive data
    - **Why A2A**: De facto industry standard with massive adoption momentum
 
-3. **ZK Implementation Path**: Start with mock for v0.1, real implementation for v1.0
+3. **ZK Implementation Path**: Deferred to v2.0 - no mocking, real implementation only when ready
 
 4. **Memory Consolidation Prototype**: Implement with existing Mnemosyne base
 
-5. **Kartouche Visual Mock**: Create SVG generator for signal badges
+5. **Kartouche Visual Generator**: Create real SVG generator for signal badges (Week 3)
 
 6. **Onboarding Guide**: Write guide for overwhelmed but aligned users
    - Start with memory capture

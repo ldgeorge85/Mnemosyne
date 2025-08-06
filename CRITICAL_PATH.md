@@ -115,7 +115,7 @@ def check_k_anonymity(data, k=3):
 **Dependency**: Agent Card generation and task handling
 **Blocks**: External system integration, agent discovery
 **Risk**: Medium - New specification
-**Mitigation**: Mock implementation first, iterate
+**Mitigation**: Start with basic implementation, enhance over time
 
 ```python
 # Critical: Must be completed by Week 4
@@ -215,7 +215,7 @@ graph TD
 | Sharing Contracts | Critical | Low | High | Simple first version |
 | Collective Instance | High | Medium | High | Inherit base class |
 | K-Anonymity | Critical | Low | Medium | Conservative k=3 |
-| A2A Protocol | Medium | Medium | Medium | Mock first |
+| A2A Protocol | Medium | Medium | Medium | Basic first |
 | Mycelium Agent | High | Low | Medium | Based on existing |
 | Trust System | Medium | Medium | Low | Simple scoring |
 
@@ -295,7 +295,7 @@ graph TD
 
 ### If Memory Model Delayed
 - Reduce sharing contract complexity
-- Mock collective features for testing
+- Build minimal collective features first
 - Extended timeline by 1 week
 
 ### If Shadow Integration Fails

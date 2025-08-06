@@ -2,13 +2,14 @@
 
 ## What Is This?
 
-The Mnemosyne Protocol is a cognitive-symbolic operating system that combines:
-- **Personal knowledge management** with AI-powered reflection
-- **Agent orchestration** for automated thinking and synthesis  
-- **Symbolic compression** for identity and trust signaling
-- **Selective sharing** for collective intelligence without surveillance
+The Mnemosyne Protocol is your personal AI assistant that actually belongs to you:
+- **Natural chat interface** like ChatGPT but with perfect memory of all your conversations
+- **Self-hosted** on your hardware with your data never leaving your control
+- **Proactive assistance** for task management, research, and scheduling
+- **Deep intelligence** with 50+ specialized agents for complex analysis
+- **Collective layer** for sharing knowledge with others without surveillance
 
-Think of it as: *Obsidian + AutoGPT + Signal Protocol + Ritual Magic*
+Think of it as: *ChatGPT + Perfect Memory + Your Hardware + Zero Surveillance*
 
 ## Why Build This?
 
@@ -19,11 +20,11 @@ Think of it as: *Obsidian + AutoGPT + Signal Protocol + Ritual Magic*
 - We lack systems for building trust without surveillance
 
 ### The Solution
-A protocol that enables:
-- **Sovereign memory** - Your thoughts remain yours
-- **Trustable AI agents** - That work for you, not against you
-- **Symbolic coordination** - Beyond pure rationality
-- **Collective intelligence** - Without sacrificing privacy
+Your own AI assistant that:
+- **Remembers everything** - Every conversation, forever searchable
+- **Works for you** - Running on your hardware, serving your interests
+- **Handles complexity** - From daily tasks to deep philosophical questions
+- **Connects selectively** - Share knowledge without sacrificing privacy
 
 ## Who Is This For?
 
@@ -35,20 +36,20 @@ Those who:
 - Seek sovereignty without isolation
 
 ### You Know You Need This If:
-- You've built your own note-taking system multiple times
-- You distrust cloud services but need synchronization
-- You see patterns others miss but struggle to communicate them
-- You want AI assistance without AI surveillance
-- You believe tools should amplify agency, not extract attention
+- You're tired of ChatGPT forgetting your context
+- You want AI assistance without corporate surveillance
+- You need an AI that actually knows your work history
+- You believe your conversations shouldn't train someone else's model
+- You want the power of AI with the privacy of local software
 
 ## Core Innovation
 
 ### What Makes This Different
 
-1. **Memory + Agents + Symbolism**
-   - No other system combines all three
-   - Agents that reflect on your memories
-   - Symbolic compression for rapid coordination
+1. **Chat + Memory + Sovereignty**
+   - ChatGPT-like interface with perfect recall
+   - Your data never leaves your control
+   - AI that learns YOU, not everyone
 
 2. **Dual Sovereignty Architecture**
    - Individual privacy preserved
@@ -102,16 +103,21 @@ Those who:
 ## Quick Example
 
 ### Personal Use
-```python
-# Capture a memory
-memory = capture("The pattern I'm seeing in markets resembles 2008")
+```
+You: "What did we discuss about market patterns last month?"
 
-# Agents reflect
-engineer_view = agents.engineer.analyze(memory)
-philosopher_view = agents.sage.contemplate(memory)
+Mnemosyne: "On January 3rd, you noted similarities to 2008's 
+liquidity cascades. You identified three key indicators:
+1. Volume divergence in tech sectors
+2. Unusual options activity
+3. Your 'canary indicators' showing stress
 
-# Consolidate insights
-synthesis = consolidate([engineer_view, philosopher_view])
+Would you like me to compare this with current market data?"
+
+You: "Yes, and create a task to review my portfolio"
+
+Mnemosyne: "✓ Task created for tomorrow 8:30 AM. 
+Searching current market data..."
 ```
 
 ### Collective Sharing

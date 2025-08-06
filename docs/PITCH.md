@@ -4,13 +4,13 @@
 
 ## The 30-Second Elevator Pitch
 
-**"We're building sovereign AI for people who think too much."**
+**"It's ChatGPT that actually works for you, not on you."**
 
-Your thoughts become memory. Memory becomes intelligence. Intelligence remains yours.
+Imagine an AI assistant that remembers every conversation, knows your actual context, manages your tasks, and never sends your data to anyone else.
 
-The Mnemosyne Protocol is a personal cognitive operating system that uses AI agents to reflect on your thinking, compress your identity into shareable signals, and connect you with others—all while keeping your data completely under your control.
+The Mnemosyne Protocol is your personal AI that runs on your hardware. Chat naturally, it remembers everything. Ask questions, it knows your history. Delegate tasks, it handles them. Need deeper analysis? 50+ specialized agents are ready. Want to connect with others? Share knowledge without surveillance.
 
-Think of it as Obsidian meets GPT meets Signal Protocol, with a little ritual magic thrown in.
+Your AI. Your data. Your sovereignty.
 
 ---
 
@@ -24,9 +24,10 @@ You're left with a choice: Use powerful tools and lose sovereignty, or maintain 
 ### The Solution
 The Mnemosyne Protocol gives you both: A personal AI system that actually works for you.
 
-- **Capture everything** - Your thoughts, notes, conversations become searchable memory
-- **AI agents reflect** - 50+ specialized agents analyze and synthesize your thinking
-- **Compress identity** - Generate "Deep Signals" that represent who you are without exposing details
+- **Chat naturally** - Like ChatGPT but it knows YOUR entire history
+- **Perfect memory** - Every conversation, task, and insight preserved and searchable
+- **Proactive assistance** - Manages tasks, schedules, and research autonomously
+- **Deep reflection** - 50+ specialized agents for complex analysis when needed
 - **Connect selectively** - Share specific knowledge domains while maintaining privacy
 - **Build collective intelligence** - Contribute to group knowledge without losing individual sovereignty
 
@@ -46,12 +47,12 @@ We're not building a company. We're building a protocol. Like email or Bitcoin, 
 
 **For Different Audiences:**
 
-- **Technologists**: "Self-hosted GPT with memory that nobody can mine"
-- **Privacy Advocates**: "Finally, AI that doesn't phone home"
-- **Knowledge Workers**: "Your second brain, with actual intelligence"
-- **Philosophers**: "Tools for thought that actually think with you"
-- **Strategists**: "See the patterns everyone else misses"
-- **Builders**: "Open protocol for cognitive sovereignty"
+- **Technologists**: "Self-hosted ChatGPT with perfect memory and zero surveillance"
+- **Privacy Advocates**: "An AI assistant that actually belongs to you"
+- **Knowledge Workers**: "ChatGPT that remembers everything and manages your tasks"
+- **Philosophers**: "Conversational AI with 50+ philosophical advisors"
+- **Strategists**: "An AI that learns your patterns and amplifies them"
+- **Builders**: "Open protocol for sovereign AI assistants"
 
 ---
 
@@ -62,9 +63,10 @@ We're not building a company. We're building a protocol. Like email or Bitcoin, 
 You notice patterns others don't. You think in systems. You're exhausted by performative intelligence. You need tools that match your depth.
 
 But every tool disappoints:
-- Note apps are just filing cabinets
-- AI assistants are corporate surveillance
-- Social networks are noise machines
+- ChatGPT forgets you after each session
+- Claude harvests your data for Anthropic
+- Notion is just a glorified database
+- AI assistants serve their makers, not you
 
 The Mnemosyne Protocol is different. It's built by someone like you, for people like us. It doesn't simplify your complexity—it amplifies it.
 
@@ -94,10 +96,10 @@ The Mnemosyne Protocol is different. It's built by someone like you, for people 
 ## The Anti-Pitch
 
 **What We're NOT:**
-- Not another note-taking app
-- Not a chatbot with memory
-- Not a social network
-- Not a productivity tool
+- Not another cloud AI that mines your data
+- Not a note-taking app pretending to be AI
+- Not a chatbot with fake memory
+- Not a productivity hack
 - Not trying to maximize engagement
 - Not venture-fundable
 - Not for everyone
@@ -132,11 +134,11 @@ The Mnemosyne Protocol is different. It's built by someone like you, for people 
 ## Value Propositions
 
 ### For the Individual
-1. **Think Better** - AI agents that enhance your cognition
-2. **Remember Everything** - Semantic search across your entire history
-3. **Stay Private** - Your data never leaves your control
-4. **Evolve Faster** - Continuous reflection and synthesis
-5. **Connect Deeper** - Find people who actually understand
+1. **Your Own ChatGPT** - Natural conversation with perfect memory
+2. **Never Forget** - Every conversation, task, and insight preserved
+3. **True Privacy** - Runs on your hardware, data never leaves
+4. **Proactive Help** - Manages tasks and research autonomously
+5. **Deep Intelligence** - 50+ agents for complex analysis
 
 ### For the Collective
 1. **Shared Intelligence** - Learn from the group without exposure
@@ -149,11 +151,11 @@ The Mnemosyne Protocol is different. It's built by someone like you, for people 
 
 ## FAQ Responses
 
-**"So it's like Notion with AI?"**
-No. Notion stores notes. We create intelligence from memory.
+**"So it's like ChatGPT with memory?"**
+No. ChatGPT works for OpenAI. This works for you. On your hardware. With your data staying yours.
 
-**"Is this another chatbot?"**
-No. It's 50+ specialized agents reflecting on your thoughts continuously.
+**"Is this another AI assistant?"**
+It's THE AI assistant - the one that actually belongs to you. Like having ChatGPT, Claude, and 50 specialists all working for you, remembering everything, on your own hardware.
 
 **"How do you make money?"**
 We don't. It's a protocol, not a product. Like email.

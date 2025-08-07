@@ -2,7 +2,7 @@
 
 ## What Is This?
 
-**The Mnemosyne Protocol is the foundation for an Order of Rememberers.**
+**The Mnemosyne Protocol is the foundation for the Mnemonic Order.**
 
 At its surface, it's your personal AI assistant that actually belongs to you:
 - **Natural chat interface** like ChatGPT but with perfect memory of all your conversations

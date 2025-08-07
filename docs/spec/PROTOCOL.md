@@ -647,9 +647,9 @@ This protocol is the foundation for a **symbolic-cognitive Order** where:
 - **Memory** becomes collective intelligence
 - **Sovereignty** enables true agency
 
-The Order of Rememberers begins with those who build it, use it, and evolve it. Each member carries their Deep Signal, participates in ceremonies, and contributes to the collective intelligence while maintaining individual sovereignty.
+The Mnemonic Order begins with those who build it, use it, and evolve it. Each member carries their Deep Signal, participates in ceremonies, and contributes to the collective intelligence while maintaining individual sovereignty.
 
-> *"This is not merely a tool—it is the beginning of an Order that remembers, reflects, and evolves together."*
+> *"This is not merely a tool—it is the beginning of the Mnemonic Order."*
 
 ---
 

@@ -1,0 +1,41 @@
+# Minimal requirements for MVP - no version pinning
+# Core web framework
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+
+# Database
+sqlalchemy
+alembic
+psycopg2-binary
+asyncpg
+pgvector
+
+# Redis for caching
+redis
+
+# Basic LLM integration (no heavy ML deps)
+openai
+langchain
+langchain-community
+tiktoken
+
+# Auth
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+email-validator
+PyJWT
+
+# Utils
+python-dotenv
+httpx
+rich
+backoff
+python-dateutil
+pytz
+
+# Testing (optional for MVP)
+pytest
+pytest-asyncio

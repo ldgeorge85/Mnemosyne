@@ -1,7 +1,0 @@
-{
-  "chat_completion": false,
-  "structured_output": true,
-  "function_calling": true,
-  "streaming": false,
-  "timestamp": "2025-06-06T06:26:50.110052"
-}

@@ -14,7 +14,7 @@ You are working on **The Mnemosyne Protocol** - a cognitive-symbolic operating s
 ## Project Structure
 
 ```
-protocol/
+mnemosyne/
 ├── docs/              # All documentation (START HERE)
 │   ├── spec/         # Protocol specifications
 │   ├── guides/       # Implementation guides
@@ -26,7 +26,7 @@ protocol/
 ├── dialogues/        # 50+ philosophical agents
 ├── collective/       # Collective intelligence service
 ├── scripts/          # Setup and utilities
-└── archive/          # Old documentation (for reference)
+└── tests/            # Test suites
 ```
 
 ## Key Commands
@@ -164,7 +164,7 @@ async def reflect(memory: Memory) -> Reflection:
 1. Check `docs/` directory first
 2. Review similar code in codebase
 3. Look at test files for examples
-4. Check archive/ for historical context
+4. Review existing patterns in code
 
 ## Remember
 

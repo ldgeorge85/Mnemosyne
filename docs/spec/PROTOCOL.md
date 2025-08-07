@@ -21,6 +21,28 @@ Layer 1: Mnemosyne Engine - Personal memory & agent orchestra
 3. **Progressive Trust** - Relationships deepen through interaction
 4. **Dual Sovereignty** - Individual autonomy with collective benefit
 5. **No Mocking** - Real implementation or explicit deferral
+6. **Async-First** - Everything async by default for performance
+7. **Event-Driven** - Loose coupling via event streams
+8. **Pipeline-Based** - Composable processing stages
+
+### 1.3 Technology Stack
+
+#### Core Services
+- **API Framework**: FastAPI with async/await throughout
+- **Database**: PostgreSQL with Async SQLAlchemy
+- **Vector Store**: Qdrant (multi-embedding support)
+- **Queue/Events**: Redis/KeyDB streams
+- **Configuration**: Pydantic Settings
+
+#### AI Integration
+- **LLM Framework**: LangChain for structured interactions
+- **Embeddings**: OpenAI/Local models with fallbacks
+- **Local Models**: Ollama for privacy-first inference
+
+#### Deployment
+- **Containerization**: Docker with multi-stage builds
+- **Orchestration**: Docker Swarm for production
+- **Monitoring**: Prometheus + structured JSON logging
 
 ---
 
@@ -218,7 +240,76 @@ class KartoucheRenderer {
 }
 ```
 
-### 3.3 Signal Management
+### 3.3 Reflection Layer
+
+#### Journaling and Drift Detection
+
+```python
+class ReflectionLayer:
+    """Manages journaling, reflection fragments, and drift indicators"""
+    
+    async def create_fragment(self, memory: Memory, agent_reflections: List[Reflection]):
+        """Create a reflection fragment from memory and agent insights"""
+        fragment = {
+            "memory_id": memory.id,
+            "timestamp": datetime.utcnow(),
+            "reflections": agent_reflections,
+            "drift_index": self.calculate_drift(memory, agent_reflections),
+            "decay_timer": 7 * 24 * 3600,  # 7 days default
+            "consolidation_eligible": True
+        }
+        
+        # Trigger re-evaluation if drift exceeds threshold
+        if fragment["drift_index"] > 0.7:
+            await self.trigger_signal_reevaluation(memory.user_id)
+        
+        return fragment
+    
+    def calculate_drift(self, memory: Memory, reflections: List[Reflection]) -> float:
+        """Calculate semantic drift from original memory"""
+        # Compare embedding distances
+        drift_scores = []
+        for reflection in reflections:
+            distance = cosine_distance(memory.embedding, reflection.embedding)
+            drift_scores.append(distance)
+        
+        return np.mean(drift_scores) if drift_scores else 0.0
+```
+
+#### Signal Lifecycle
+
+```python
+class SignalLifecycle:
+    """Manages signal decay and event-driven reflection"""
+    
+    def __init__(self):
+        self.decay_timer_default = 30 * 24 * 3600  # 30 days
+        self.reevaluation_threshold = 0.5
+    
+    async def process_signal_decay(self, signal: DeepSignal):
+        """Handle signal decay and re-evaluation"""
+        if signal.age_days > signal.decay_timer:
+            # Soft expiration - reduce visibility
+            signal.visibility *= 0.5
+            
+        if signal.local_fracture_index > self.reevaluation_threshold:
+            # Trigger re-evaluation due to high fracture
+            await self.reevaluate_signal(signal)
+    
+    async def reevaluate_signal(self, signal: DeepSignal):
+        """Re-evaluate signal based on recent memories"""
+        recent_memories = await self.get_recent_memories(signal.user_id, days=7)
+        new_fragments = await self.generate_fragments(recent_memories)
+        
+        # Update signal with new coherence metrics
+        signal.update_coherence(new_fragments)
+        
+        # Reset decay timer if signal strengthened
+        if signal.coherence.strength > 0.7:
+            signal.decay_timer = self.decay_timer_default
+```
+
+### 3.4 Signal Management
 
 ```python
 class SignalManager:
@@ -352,9 +443,153 @@ class KAnonymityProtector:
         return protected
 ```
 
+### 5.5 Security & Anti-Spam Measures
+
+#### Rate Limiting and Reputation
+
+```python
+class SecurityLayer:
+    """Prevents symbolic misuse and spam"""
+    
+    def __init__(self):
+        self.rate_limiter = RateLimiter()
+        self.reputation_tracker = ReputationTracker()
+    
+    async def validate_signal_propagation(self, signal: DeepSignal, source: str):
+        """Two-layer protection against spam"""
+        
+        # Layer 1: Rate-limit propagation
+        if signal.drift_index > 0.8:  # High drift signals
+            max_propagations = 5  # Limit spread
+            if self.rate_limiter.check(source) > max_propagations:
+                raise RateLimitExceeded("High-drift signal rate limit exceeded")
+        
+        # Layer 2: Reputation decay
+        reputation = self.reputation_tracker.get(source)
+        if not self.has_reciprocity(source):
+            reputation *= 0.9  # Decay without reciprocity
+        
+        if reputation < 0.1:
+            raise LowReputation("Source reputation too low for propagation")
+        
+        return True
+    
+    def has_reciprocity(self, source: str) -> bool:
+        """Check for consolidation or reciprocal sharing"""
+        recent_interactions = self.get_interactions(source, days=30)
+        return any(i.type in ['consolidation', 'reciprocal_share'] 
+                  for i in recent_interactions)
+```
+
+#### A2A Protocol Compatibility
+
+```python
+class A2ACompatibilityLayer:
+    """Ensures compatibility with Agent-to-Agent protocol standard"""
+    
+    def __init__(self):
+        self.message_formatter = A2AMessageFormatter()
+        self.capability_registry = A2ACapabilityRegistry()
+    
+    async def export_to_a2a(self, signal: DeepSignal) -> A2AMessage:
+        """Convert Deep Signal to A2A format"""
+        return A2AMessage(
+            type="mnemosyne.deepsignal",
+            version="1.0",
+            capabilities=["symbolic", "memory", "reflection"],
+            payload=self.message_formatter.format(signal),
+            metadata={
+                "protocol": "mnemosyne",
+                "interop_version": "a2a-1.0"
+            }
+        )
+    
+    async def import_from_a2a(self, message: A2AMessage) -> Optional[Memory]:
+        """Import A2A messages as memories"""
+        if self.is_compatible(message):
+            return Memory(
+                content=message.payload,
+                metadata={
+                    "source": "a2a",
+                    "original_type": message.type,
+                    "capabilities": message.capabilities
+                },
+                importance=self.calculate_importance(message)
+            )
+        return None
+```
+
 ---
 
-## 6. Ritual & Symbolic Layer
+## 6. Governance & Evolution
+
+### 6.1 Initiation Pathways
+
+```python
+class InitiationSystem:
+    """Progressive trust and capability unlocking"""
+    
+    LEVELS = [
+        Level("Observer", symbol="👁", capabilities=["read", "basic_signal"]),
+        Level("Fragmentor", symbol="◈", capabilities=["create_fragments", "share_k3"]),
+        Level("Agent", symbol="☿", capabilities=["spawn_agents", "ritual_participation"]),
+        Level("Keeper", symbol="🗝", capabilities=["all", "governance_vote"])
+    ]
+    
+    async def initiate(self, user: User, action: SymbolicAction) -> Level:
+        """Progress through initiation based on symbolic actions"""
+        
+        triggers = {
+            "first_consolidation": "Observer",
+            "successful_resonance": "Fragmentor", 
+            "ritual_completion": "Agent",
+            "trust_web_depth_5": "Keeper"
+        }
+        
+        if action.type in triggers:
+            new_level = triggers[action.type]
+            await self.advance_user(user, new_level)
+            
+            # Emit ceremonial signal
+            await self.emit_initiation_signal(user, new_level)
+        
+        return user.level
+```
+
+### 6.2 Trust Mechanics
+
+```python
+class TrustMechanics:
+    """Zero-knowledge trust fragments and tiered exposure"""
+    
+    async def create_trust_fragment(self, user_a: User, user_b: User) -> TrustFragment:
+        """Create ZK-wrapped trust fragment"""
+        
+        # Generate trust proof without revealing details
+        proof = await self.generate_zk_proof({
+            "interaction_count": self.count_interactions(user_a, user_b),
+            "resonance_score": self.calculate_resonance(user_a, user_b),
+            "shared_domains": self.find_shared_domains(user_a, user_b)
+        })
+        
+        return TrustFragment(
+            proof=proof,
+            tier=self.calculate_tier(proof),
+            expires=datetime.utcnow() + timedelta(days=90)
+        )
+    
+    def calculate_tier(self, proof: ZKProof) -> int:
+        """Calculate trust tier for progressive exposure"""
+        score = proof.get_score()
+        if score > 0.8: return 3  # Deep trust
+        if score > 0.5: return 2  # Moderate trust
+        if score > 0.2: return 1  # Initial trust
+        return 0  # No trust
+```
+
+---
+
+## 7. Ritual & Symbolic Layer
 
 ### 6.1 Ritual Architecture
 

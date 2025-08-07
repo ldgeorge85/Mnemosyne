@@ -92,26 +92,70 @@ See `docs/reference/API.md` for complete specification. Many endpoints need impl
 ## Architecture Notes
 
 ### Technology Stack
-- **Backend**: FastAPI, PostgreSQL, pgvector, Redis
+- **Backend**: FastAPI, PostgreSQL, Async SQLAlchemy, Redis/KeyDB
+- **Vector Store**: Qdrant (multi-embedding support)
+- **Configuration**: Pydantic Settings
 - **Frontend**: React, TypeScript, Vite
-- **AI**: OpenAI/Anthropic/Ollama
-- **Deployment**: Docker Compose → Kubernetes
+- **AI**: OpenAI/Anthropic/Ollama, LangChain
+- **Testing**: Pytest with real integration tests (no mocks)
+- **Deployment**: Docker Compose → Docker Swarm
 
-### Key Patterns
+### Core Architectural Patterns
+
+#### 1. Configuration Management
 ```python
-# Memory capture pattern
-async def capture_memory(content: str) -> Memory:
-    embedding = generate_embedding(content)
-    metadata = extract_metadata(content)
-    importance = calculate_importance(content)
-    return store_memory(content, embedding, metadata, importance)
+from pydantic_settings import BaseSettings
+from functools import lru_cache
 
-# Agent reflection pattern
-async def reflect(memory: Memory) -> Reflection:
-    prompt = build_prompt(memory)
-    response = await llm_call(prompt)
-    return process_reflection(response)
+class Settings(BaseSettings):
+    database_url: str
+    redis_url: str = "redis://redis:6379/0"
+    qdrant_host: str = "qdrant"
+    encryption_key: str
+    
+    class Config:
+        env_file = ".env"
+
+@lru_cache()
+def get_settings():
+    return Settings()
 ```
+
+#### 2. Async Pipeline Architecture
+```python
+class MemoryPipeline(ABC):
+    async def process(self, memory: Dict) -> Dict:
+        # Pipeline stages run concurrently
+        embedding = await self.generate_embedding(memory)
+        metadata = await self.extract_metadata(memory)
+        importance = await self.calculate_importance(memory)
+        return await self.store_memory(memory, embedding, metadata, importance)
+    
+    async def run(self, memories: List[Dict]):
+        tasks = [self.process(m) for m in memories]
+        return await asyncio.gather(*tasks, return_exceptions=True)
+```
+
+#### 3. Event-Driven Agent Orchestration
+```python
+class AgentOrchestrator:
+    async def trigger_reflection(self, memory: Memory):
+        # Publish to Redis stream
+        await self.redis.xadd("events:reflection", {
+            "memory_id": memory.id,
+            "agents": self.select_agents(memory)
+        })
+        # Agents process in parallel via workers
+```
+
+#### 4. Vector Storage with Named Embeddings
+```python
+# Qdrant with multiple embedding strategies
+await vector_store.store({
+    "content": openai_embedding,      # 1536d
+    "semantic": local_embedding,      # 768d
+    "contextual": context_embedding   # 384d
+})
 
 ## Philosophy Reminders
 
@@ -124,24 +168,39 @@ async def reflect(memory: Memory) -> Reflection:
 
 ### Adding a New Agent
 1. Create agent class inheriting from `BaseAgent`
-2. Define system prompt
-3. Implement reflection logic
-4. Add to agent registry
-5. Test with real memories
+2. Define system prompt and LangChain tools
+3. Implement async reflection logic
+4. Register with orchestrator
+5. Test with real memories (no mocks)
 
 ### Implementing an API Endpoint
 1. Check specification in `docs/reference/API.md`
-2. Implement in appropriate router
-3. Add input validation
-4. Write tests
-5. Update documentation if needed
+2. Implement in appropriate router with Pydantic models
+3. Add async processing with pipelines
+4. Write real integration tests
+5. Add OpenAPI documentation
 
 ### Adding a Database Table
-1. Create SQLAlchemy model
+1. Create Async SQLAlchemy model
 2. Generate migration: `alembic revision --autogenerate`
 3. Review migration file
 4. Apply: `alembic upgrade head`
 5. Add indexes for performance
+6. Create corresponding Qdrant collection if needed
+
+### Setting Up a Pipeline
+1. Inherit from `MemoryPipeline` base class
+2. Implement `process()` method with async stages
+3. Add error handling and retry logic
+4. Register with pipeline registry
+5. Test with concurrent processing
+
+### Adding Event Handlers
+1. Define event schema with Pydantic
+2. Create handler function (async)
+3. Register pattern with webhook handler
+4. Set up Redis stream consumer
+5. Test with real events
 
 ## Warnings
 

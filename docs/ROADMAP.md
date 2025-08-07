@@ -9,29 +9,42 @@
 
 ## Phase 1: MVP - Personal Tool (Weeks 1-3)
 
-### Week 1: Foundation
+### Week 1: Foundation & Core Infrastructure
 - [x] Repository structure and setup
 - [x] Documentation framework
-- [ ] Database schema with auth
-- [ ] Basic memory capture and storage
-- [ ] Vector embeddings with pgvector
-- [ ] Core API endpoints
+- [ ] Pydantic Settings configuration system
+- [ ] Database schema with async SQLAlchemy
+- [ ] Qdrant vector database integration (multi-embedding support)
+- [ ] Async pipeline architecture for memory processing
+- [ ] Core API endpoints with OpenAI-compatible interface
+- [ ] Redis/KeyDB for event streaming and queues
+- [ ] Reflection layer with drift detection
+- [ ] Signal lifecycle management (decay and re-evaluation)
 
-### Week 2: Intelligence Layer
-- [ ] Agent orchestration system
-- [ ] Port 3 core agents (Engineer, Librarian, Philosopher)
-- [ ] Memory consolidation cycles
-- [ ] Reflection generation
-- [ ] Basic sharing contracts
-- [ ] K-anonymity implementation
+### Week 2: Intelligence Layer & Agent Orchestration
+- [ ] Event-driven agent orchestration via Redis streams
+- [ ] LangChain integration for structured agent interactions
+- [ ] Pipeline-based memory processing workflows
+- [ ] Port 3 core agents with async reflection patterns
+- [ ] Memory consolidation with concurrent processing
+- [ ] Webhook system for external event capture
+- [ ] Real integration testing framework (no mocks)
+- [ ] K-anonymity implementation with privacy pipelines
+- [ ] A2A protocol compatibility layer
+- [ ] Security layer with rate limiting and reputation
 
-### Week 3: Identity & Interface
-- [ ] Deep Signal generation
-- [ ] Kartouche visualization
-- [ ] Basic web UI
-- [ ] Collective instance setup
-- [ ] Trust scoring system
-- [ ] Deployment with Docker
+### Week 3: Production Deployment & Interface
+- [ ] Deep Signal generation with vector embeddings
+- [ ] Kartouche visualization (SVG with interactive layers)
+- [ ] Streaming API responses (Server-Sent Events)
+- [ ] Docker Swarm orchestration configuration
+- [ ] Service mesh with health checks and scaling
+- [ ] Collective instance with distributed processing
+- [ ] Trust mechanics with ZK-wrapped fragments
+- [ ] Initiation system with progressive levels
+- [ ] Prometheus metrics and structured logging
+- [ ] Production secrets management
+- [ ] Symbolic interpreter for signal analysis
 
 **Deliverable**: Fully functional personal cognitive tool
 

@@ -24,45 +24,141 @@ The minimum viable path to a working protocol:
 
 ## Phase 1: Personal Memory System (Days 1-3)
 
-### Step 1: Database Setup
+### Step 1: Configuration Setup
+
+```python
+# core/config.py
+from pydantic_settings import BaseSettings
+from functools import lru_cache
+
+class Settings(BaseSettings):
+    database_url: str
+    redis_url: str = "redis://redis:6379/0"
+    qdrant_host: str = "qdrant"
+    qdrant_port: int = 6333
+    openai_api_key: str = ""
+    encryption_key: str
+    
+    class Config:
+        env_file = ".env"
+
+@lru_cache()
+def get_settings():
+    return Settings()
+```
+
+### Step 2: Database Setup with Async SQLAlchemy
 
 ```python
 # models/memory.py
-from sqlalchemy import Column, String, DateTime, Float, JSON
-from sqlalchemy.dialects.postgresql import UUID, VECTOR
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import declarative_base, Mapped, mapped_column
+from sqlalchemy import String, Text, JSON, Float, DateTime
+import uuid
 
 Base = declarative_base()
 
 class Memory(Base):
     __tablename__ = 'memories'
     
-    id = Column(UUID, primary_key=True)
-    user_id = Column(UUID, nullable=False)
-    content = Column(String, nullable=False)
-    embedding = Column(VECTOR(1536))  # OpenAI embedding size
-    metadata = Column(JSON)
-    importance = Column(Float, default=0.5)
-    created_at = Column(DateTime)
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    metadata: Mapped[dict] = mapped_column(JSON, default=dict)
+    importance: Mapped[float] = mapped_column(Float, default=0.5)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     
-    def to_dict(self):
-        return {
-            'id': str(self.id),
-            'content': self.content,
-            'metadata': self.metadata,
-            'importance': self.importance,
-            'created_at': self.created_at.isoformat()
-        }
+    @classmethod
+    async def create(cls, session: AsyncSession, **kwargs):
+        memory = cls(**kwargs)
+        session.add(memory)
+        await session.commit()
+        return memory
 ```
 
-### Step 2: Memory Capture
+### Step 3: Vector Storage with Qdrant
 
 ```python
-# services/memory_service.py
-import openai
-from typing import List, Dict, Any
-import numpy as np
+# core/vectors.py
+from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams, PointStruct
 
+class VectorStore:
+    def __init__(self):
+        settings = get_settings()
+        self.client = QdrantClient(
+            host=settings.qdrant_host,
+            port=settings.qdrant_port
+        )
+        self.collection_name = "memories"
+        
+    async def init_collection(self):
+        await self.client.create_collection(
+            collection_name=self.collection_name,
+            vectors_config={
+                "content": VectorParams(size=1536, distance=Distance.COSINE),
+                "semantic": VectorParams(size=768, distance=Distance.COSINE)
+            }
+        )
+    
+    async def store_memory(self, memory_id: str, embeddings: dict, metadata: dict):
+        point = PointStruct(
+            id=memory_id,
+            vector=embeddings,
+            payload=metadata
+        )
+        await self.client.upsert(
+            collection_name=self.collection_name,
+            points=[point]
+        )
+```
+
+### Step 4: Memory Capture Pipeline
+
+```python
+# pipelines/memory.py
+from abc import ABC, abstractmethod
+import asyncio
+from typing import Dict, Any, List
+
+class MemoryPipeline(ABC):
+    """Base pipeline for async memory processing"""
+    
+    def __init__(self):
+        self.settings = get_settings()
+        self.vector_store = VectorStore()
+        
+    @abstractmethod
+    async def process(self, memory: Dict[str, Any]) -> Dict[str, Any]:
+        pass
+    
+    async def run(self, memories: List[Dict]):
+        """Process multiple memories concurrently"""
+        tasks = [self.process(m) for m in memories]
+        return await asyncio.gather(*tasks, return_exceptions=True)
+
+class CaptureMemoryPipeline(MemoryPipeline):
+    async def process(self, content: Dict[str, Any]) -> Dict[str, Any]:
+        # Concurrent processing stages
+        embedding_task = self.generate_embedding(content['text'])
+        metadata_task = self.extract_metadata(content)
+        
+        embedding, metadata = await asyncio.gather(embedding_task, metadata_task)
+        
+        # Calculate importance
+        importance = await self.calculate_importance(content, metadata)
+        
+        # Store in database and vector store
+        memory = await self.store_memory({
+            'content': content,
+            'embedding': embedding,
+            'metadata': metadata,
+            'importance': importance
+        })
+        
+        return memory
+
+# services/memory_service.py
 class MemoryService:
     def __init__(self, user_id: str):
         self.user_id = user_id

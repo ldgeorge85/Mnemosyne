@@ -207,23 +207,33 @@ Each sprint is designed for a single uninterrupted AI coding session (2-4 hours)
 
 ## 🚀 Sprint 6: Privacy & Cognitive Signature System
 **Goal**: Complete Cognitive Signatures, Kartouche, and privacy layers  
-**Duration**: Single session (~3 hours)  
+**Duration**: Single session (~4 hours)  
 **Dependencies**: Sprint 4
 
 ### Implementation Block
 ```python
 # Complete these files in sequence:
 1. backend/signatures/generator.py      # Cognitive signature generation
-2. backend/signatures/kartouche.py      # Kartouche visualization
-3. backend/signatures/lifecycle.py      # Signature decay/re-evaluation
-4. backend/privacy/k_anonymity.py       # K-anonymity implementation
-5. backend/privacy/sharing.py           # Sharing contracts
-6. backend/privacy/trust.py             # Trust mechanics
-7. backend/privacy/initiation.py        # Initiation levels
-8. backend/interop/a2a.py              # A2A protocol compatibility
-9. backend/services/signature_service.py # Cognitive signature management
-10. backend/api/v1/privacy.py          # Privacy endpoints
+2. backend/signatures/symbolic.py       # 5 operators + Tarot mapping
+3. backend/signatures/kartouche.py      # Kartouche SVG visualization
+4. backend/signatures/lifecycle.py      # Signature decay/re-evaluation
+5. backend/privacy/eigentrust.py        # EigenTrust implementation
+6. backend/privacy/trust_ceremonies.py  # Ritual trust protocols
+7. backend/privacy/k_anonymity.py       # K-anonymity implementation
+8. backend/privacy/sharing.py           # Sharing contracts
+9. backend/privacy/initiation.py        # Tarot-based progression
+10. backend/memory/decay.py             # Ebbinghaus + multi-factor
+11. backend/memory/consolidation.py     # REM cycles
+12. backend/services/signature_service.py # Cognitive signature management
 ```
+
+### New Features from Research
+- **22 Tarot Archetypes**: Map agents to Major Arcana
+- **5 Symbolic Operators**: SEEK, REVOKE, AMPLIFY, STABILIZE, DRIFT
+- **Unicode Glyphs**: Alchemical symbols (U+1F700-1F77F)
+- **EigenTrust**: Mathematical trust scoring
+- **Trust Ceremonies**: Progressive, Dissonance, Echo Drift paths
+- **Memory Dynamics**: Ebbinghaus curve with collective pressure
 
 ### Deliverable
 - Complete privacy and signal system

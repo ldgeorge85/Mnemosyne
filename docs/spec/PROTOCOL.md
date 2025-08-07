@@ -107,13 +107,13 @@ class MemoryConsolidator:
 
 ### 2.2 Agent Orchestra
 
-#### Core Agents (from Shadow)
-- **Engineer**: Technical analysis and implementation
-- **Librarian**: Knowledge organization and retrieval
-- **Priest**: Pattern recognition and meaning-making
+#### Core Agents (Tarot Archetypes)
+- **The Magician (I)**: Engineer - Technical manifestation and will
+- **The High Priestess (II)**: Librarian - Hidden knowledge and memory
+- **The Hermit (IX)**: Philosopher - Deep wisdom and introspection
 
 #### Meta Agent
-- **Mycelium**: Monitors coherence, coordinates agents
+- **The Fool (0)**: Mycelium - Pure potential, coordinates journeys
 
 #### Philosophical Agents (from Dialogues)
 - Initial: 10 agents with symbolic mappings:
@@ -130,10 +130,25 @@ class MemoryConsolidator:
 - Full set: 50+ specialized perspectives, each with unique glyph
 - Agents emit **sub-signals** that modulate user's Deep Signal
 
+#### Agent Lifecycle (6 Stages)
+```python
+class AgentLifecycle(Enum):
+    INIT = "awakening"        # The Fool begins
+    ORIENT = "observing"      # The Magician gathers
+    ACT = "manifesting"       # The Emperor commands
+    ECHO = "resonating"       # The Hierophant teaches
+    CONSOLIDATE = "integrating" # The Hermit reflects
+    REST = "dreaming"         # The Hanged Man waits
+```
+
 #### Agent Communication Protocol (A2A)
 ```python
 class AgentProtocol:
     async def send_reflection(self, memory: Memory) -> Reflection:
+        # Check lifecycle state
+        if self.state != AgentLifecycle.ACT:
+            await self.transition_to(AgentLifecycle.ACT)
+        
         # Agent analyzes memory
         analysis = await self.analyze(memory)
         
@@ -145,6 +160,9 @@ class AgentProtocol:
             confidence=self.calculate_confidence(),
             timestamp=now()
         )
+        
+        # Transition to ECHO state
+        await self.transition_to(AgentLifecycle.ECHO)
         
         # Broadcast to other agents
         await self.broadcast(reflection)
@@ -171,6 +189,19 @@ class AgentResourceManager:
 ---
 
 ## 3. Layer 2: Cognitive Signature Protocol
+
+### 3.0 Symbolic Operators (System-Wide)
+
+Five fundamental operators that cut across all operations:
+
+```python
+class SymbolicOperator(Enum):
+    SEEK = "🜁"      # Air - Discovery, search, exploration
+    REVOKE = "🜃"    # Earth - Withdrawal, cancellation, grounding
+    AMPLIFY = "🜂"   # Fire - Boost, strengthen, energize
+    STABILIZE = "🜄" # Water - Balance, flow, reduce chaos
+    DRIFT = "🜀"     # Quintessence - Transform, evolve, mutate
+```
 
 ### 3.1 Cognitive Signature Format
 
@@ -679,27 +710,58 @@ class InitiationSystem:
 
 ```python
 class TrustMechanics:
-    """Zero-knowledge trust fragments and tiered exposure"""
+    """EigenTrust + Symbolic ceremonies for trust establishment"""
+    
+    async def calculate_eigentrust(self, network: TrustNetwork) -> dict:
+        """EigenTrust algorithm for global trust scores"""
+        # Initialize with pre-trusted peers
+        trust_vector = self.get_pretrusted_vector()
+        
+        # Power iteration to find eigenvector
+        for _ in range(self.MAX_ITERATIONS):
+            trust_vector = (1 - self.ALPHA) * network.matrix @ trust_vector + \
+                          self.ALPHA * self.pretrusted
+            
+            if self.has_converged(trust_vector):
+                break
+        
+        return trust_vector
     
     async def create_trust_fragment(self, user_a: User, user_b: User) -> TrustFragment:
-        """Create ZK-wrapped trust fragment"""
+        """Multi-dimensional trust scoring"""
         
-        # Generate trust proof without revealing details
-        proof = await self.generate_zk_proof({
-            "interaction_count": self.count_interactions(user_a, user_b),
-            "resonance_score": self.calculate_resonance(user_a, user_b),
-            "shared_domains": self.find_shared_domains(user_a, user_b)
-        })
+        # Calculate component scores
+        eigen_score = await self.get_eigentrust_score(user_b)
+        echo_resonance = self.calculate_echo_resonance(user_a, user_b)
+        fractal_coherence = self.calculate_fractal_coherence(user_b)
+        drift_stability = self.calculate_drift_stability(user_b)
+        
+        # Composite trust
+        trust_score = (
+            eigen_score * 0.4 +
+            echo_resonance * 0.3 +
+            fractal_coherence * 0.2 +
+            drift_stability * 0.1
+        )
+        
+        # Apply symbolic modifiers
+        if await self.completed_ceremony(user_a, user_b):
+            trust_score *= 1.5
         
         return TrustFragment(
-            proof=proof,
-            tier=self.calculate_tier(proof),
+            score=trust_score,
+            components={
+                'mathematical': eigen_score,
+                'resonance': echo_resonance,
+                'coherence': fractal_coherence,
+                'stability': drift_stability
+            },
+            tier=self.calculate_tier(trust_score),
             expires=datetime.utcnow() + timedelta(days=90)
         )
     
-    def calculate_tier(self, proof: ZKProof) -> int:
+    def calculate_tier(self, score: float) -> int:
         """Calculate trust tier for progressive exposure"""
-        score = proof.get_score()
         if score > 0.8: return 3  # Deep trust
         if score > 0.5: return 2  # Moderate trust
         if score > 0.2: return 1  # Initial trust

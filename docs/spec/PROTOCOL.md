@@ -5,25 +5,28 @@
 
 ## 1. Core Architecture
 
-### 1.1 Four-Layer System
+### 1.1 Five-Layer System
 
 ```
-Layer 4: Collective Codex - Community intelligence & coordination
-Layer 3: Quiet Network - Discovery & trust establishment  
-Layer 2: Deep Signal Protocol - Identity compression & signaling
+Layer 5: Collective Codex - Community intelligence & coordination
+Layer 4: Secure Communications - E2E encrypted messaging via Signal Protocol
+Layer 3: Quiet Network - Peer discovery & trust establishment  
+Layer 2: Cognitive Signature Protocol - Identity compression & symbolic representation
 Layer 1: Mnemosyne Engine - Personal memory & agent orchestra
 ```
 
 ### 1.2 Design Principles
 
-1. **Local First** - Data sovereignty by default
-2. **Selective Sharing** - Explicit control over data flow
-3. **Progressive Trust** - Relationships deepen through interaction
-4. **Dual Sovereignty** - Individual autonomy with collective benefit
-5. **No Mocking** - Real implementation or explicit deferral
-6. **Async-First** - Everything async by default for performance
-7. **Event-Driven** - Loose coupling via event streams
-8. **Pipeline-Based** - Composable processing stages
+1. **Security First** - End-to-end encryption for all communications
+2. **Local First** - Data sovereignty by default
+3. **Selective Sharing** - Explicit control over data flow
+4. **Progressive Trust** - Relationships deepen through interaction
+5. **Dual Sovereignty** - Individual autonomy with collective benefit
+6. **No Mocking** - Real implementation or explicit deferral
+7. **Async-First** - Everything async by default for performance
+8. **Event-Driven** - Loose coupling via event streams
+9. **Pipeline-Based** - Composable processing stages
+10. **Cryptographic Guarantees** - Real privacy, not theater
 
 ### 1.3 Technology Stack
 
@@ -38,6 +41,13 @@ Layer 1: Mnemosyne Engine - Personal memory & agent orchestra
 - **LLM Framework**: LangChain for structured interactions
 - **Embeddings**: OpenAI/Local models with fallbacks
 - **Local Models**: Ollama for privacy-first inference
+
+#### Security & Cryptography
+- **Messaging Protocol**: Signal Protocol for E2E encryption
+- **Key Management**: Double Ratchet algorithm (forward & future secrecy)
+- **General Crypto**: libsodium/NaCl for encryption primitives
+- **Group Chat**: Signal's sender keys for secure group messaging
+- **Trust Proofs**: zk-SNARKs for verification (future phase)
 
 #### Deployment
 - **Containerization**: Docker with multi-stage builds
@@ -160,9 +170,9 @@ class AgentResourceManager:
 
 ---
 
-## 3. Layer 2: Deep Signal Protocol
+## 3. Layer 2: Cognitive Signature Protocol
 
-### 3.1 Signal Format
+### 3.1 Cognitive Signature Format
 
 ```python
 {
@@ -337,9 +347,59 @@ class SignalManager:
 
 ---
 
-## 4. Layer 3: Quiet Network
+## 4. Layer 3: Secure Communications
 
-### 4.1 Progressive Trust Protocol
+### 4.1 Signal Protocol Integration
+
+**Purpose**: Enable private communication between trusted peers
+
+#### Message Types
+```python
+class MessageType(Enum):
+    DIRECT = "direct"          # 1-to-1 encrypted
+    GROUP = "group"            # Group encrypted with sender keys
+    BROADCAST = "broadcast"    # Public, signed but not encrypted
+    MEMORY_SHARE = "memory"    # Encrypted memory fragment
+```
+
+#### Basic Implementation
+```python
+class SecureChannel:
+    """Signal Protocol wrapper for Mnemosyne communications"""
+    
+    async def send_message(self, recipient_id: str, content: str):
+        """Send encrypted message to peer"""
+        ciphertext = await self.signal_protocol.encrypt(recipient_id, content)
+        await self.transport.send(recipient_id, ciphertext)
+    
+    async def share_memory(self, recipient_id: str, memory: Memory, contract: SharingContract):
+        """Share memory fragment with encryption and contract"""
+        if not contract.is_valid():
+            raise InvalidContractError()
+        
+        fragment = self.create_memory_fragment(memory, contract)
+        encrypted = await self.signal_protocol.encrypt(recipient_id, fragment)
+        await self.transport.send(recipient_id, encrypted, metadata={"type": "memory_share"})
+```
+
+### 4.2 Trust Verification
+
+```python
+class TrustVerification:
+    """Verify peer identities before establishing secure channels"""
+    
+    async def verify_peer(self, peer_id: str, method: str = "safety_number"):
+        if method == "safety_number":
+            # Signal's standard safety number verification
+            return await self.verify_safety_number(peer_id)
+        elif method == "cognitive_signature":
+            # Verify through matching cognitive signatures
+            return await self.verify_cognitive_match(peer_id)
+```
+
+## 5. Layer 4: Quiet Network
+
+### 5.1 Progressive Trust Protocol
 
 ```python
 class TrustProtocol:
@@ -367,7 +427,7 @@ class TrustProtocol:
         return True
 ```
 
-### 4.2 Network Discovery (Deferred)
+### 5.2 Network Discovery (Deferred)
 
 Future implementation using libp2p DHT:
 - Peer discovery without central registry
@@ -376,16 +436,16 @@ Future implementation using libp2p DHT:
 
 ---
 
-## 5. Layer 4: Collective Codex
+## 6. Layer 5: Collective Codex
 
-### 5.1 Architecture
+### 6.1 Architecture
 
 The Collective Codex is a specialized Mnemosyne instance with:
 - Elevated permissions for cross-user operations
 - Specialized agents for collective intelligence
 - Privacy-preserving aggregation
 
-### 5.2 Sharing Contracts
+### 6.2 Sharing Contracts
 
 ```python
 @dataclass
@@ -410,7 +470,7 @@ class SharingContract:
         return True
 ```
 
-### 5.3 Collective Agents
+### 6.3 Collective Agents
 
 ```python
 class CollectiveAgents:
@@ -424,7 +484,7 @@ class CollectiveAgents:
     }
 ```
 
-### 5.4 Privacy Implementation
+### 6.4 Privacy Implementation
 
 #### K-Anonymity Enforcement
 ```python
@@ -443,7 +503,7 @@ class KAnonymityProtector:
         return protected
 ```
 
-### 5.5 Security & Anti-Spam Measures
+### 6.5 Security & Anti-Spam Measures
 
 #### Rate Limiting and Reputation
 

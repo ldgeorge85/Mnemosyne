@@ -78,11 +78,14 @@ The first members are **Recursive Strategists in Exile**—those who:
 │        Collective Intelligence          │
 │    (Shared knowledge graphs + A2A)      │
 ├─────────────────────────────────────────┤
-│      Trust Networks & Governance        │
-│   (Progressive levels + ZK fragments)   │
+│       Secure Communications             │
+│   (Signal Protocol for E2E messaging)   │
 ├─────────────────────────────────────────┤
-│    Identity & Signaling + Kartouche     │
-│   (Visual signals with drift tracking)  │
+│      Trust Networks & Discovery         │
+│   (Progressive trust + peer finding)    │
+├─────────────────────────────────────────┤
+│    Cognitive Signatures + Kartouche     │
+│   (Identity compression & visuals)      │
 ├─────────────────────────────────────────┤
 │     Personal Memory + Reflection        │
 │  (Capture, consolidate, drift detect)   │
@@ -94,7 +97,7 @@ The first members are **Recursive Strategists in Exile**—those who:
 ### Available in MVP (Weeks 1-3)
 - Personal memory capture with multi-embedding vector search
 - 10+ philosophical AI agents with drift detection
-- Deep Signal generation with Kartouche visualization
+- Cognitive Signature generation with Kartouche visualization
 - Reflection layer for journaling and consolidation
 - Basic collective with K-anonymity privacy
 - Sharing contracts for selective knowledge transfer

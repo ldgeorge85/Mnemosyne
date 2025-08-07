@@ -12,14 +12,14 @@
 ### Week 1: Foundation & Core Infrastructure
 - [x] Repository structure and setup
 - [x] Documentation framework
-- [ ] Pydantic Settings configuration system
-- [ ] Database schema with async SQLAlchemy
-- [ ] Qdrant vector database integration (multi-embedding support)
-- [ ] Async pipeline architecture for memory processing
-- [ ] Core API endpoints with OpenAI-compatible interface
-- [ ] Redis/KeyDB for event streaming and queues
-- [ ] Reflection layer with drift detection
-- [ ] Signal lifecycle management (decay and re-evaluation)
+- [x] Pydantic Settings configuration system ✅ Sprint 1
+- [x] Database schema with async SQLAlchemy ✅ Sprint 1
+- [x] Qdrant vector database integration (multi-embedding support) ✅ Sprint 1
+- [ ] Async pipeline architecture for memory processing (Sprint 2)
+- [ ] Core API endpoints with OpenAI-compatible interface (Sprint 4)
+- [x] Redis/KeyDB for event streaming and queues ✅ Sprint 1
+- [ ] Reflection layer with drift detection (Sprint 2)
+- [ ] Signal lifecycle management (decay and re-evaluation) (Sprint 5)
 
 ### Week 2: Intelligence Layer & Agent Orchestration
 - [ ] Event-driven agent orchestration via Redis streams

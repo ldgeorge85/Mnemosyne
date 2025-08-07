@@ -65,7 +65,7 @@ open http://localhost:3000
 
 ## 🏗️ Architecture
 
-The protocol consists of four interconnected layers:
+The protocol consists of five interconnected layers:
 
 ### Layer 1: Mnemosyne Engine 🧠
 Personal memory and cognition core
@@ -73,19 +73,25 @@ Personal memory and cognition core
 - **Frontend** (`/frontend`): React + TypeScript chat interface
 - **Features**: Memory capture, retrieval, reflection, and importance scoring
 
-### Layer 2: Deep Signal Protocol 🔮
-Symbolic identity and trust system
+### Layer 2: Cognitive Signature Protocol 🔮
+Symbolic identity compression system
 - **Kartouches**: Visual identity representations
-- **Trust Scores**: Cryptographic reputation
-- **Privacy**: K-anonymity with minimum group size of 3
+- **Signatures**: Compressed cognitive patterns
+- **Drift Tracking**: Identity evolution over time
 
-### Layer 3: Quiet Network 🌐
-Peer discovery and secure communication
+### Layer 3: Secure Communications 🔐
+End-to-end encrypted messaging via Signal Protocol
+- **E2E Encryption**: All communications are secure
+- **Group Chat**: Multi-party encryption with sender keys
+- **Forward Secrecy**: Past messages stay secure
+
+### Layer 4: Quiet Network 🌐
+Peer discovery and trust establishment
 - **Discovery**: DHT-based peer finding
-- **Transport**: End-to-end encrypted channels
+- **Progressive Trust**: Relationships deepen through interaction
 - **Federation**: Decentralized network topology
 
-### Layer 4: Collective Codex 📖
+### Layer 5: Collective Codex 📖
 Community intelligence and coordination
 - **Collectives** (`/collective`): Template for community instances
 - **Sharing Contracts**: Explicit data sharing rules
@@ -110,6 +116,7 @@ Philosophical debate engine with 10+ agent archetypes:
 - **Backend**: FastAPI, SQLAlchemy, PostgreSQL, pgvector, Redis
 - **Frontend**: React, TypeScript, Vite
 - **AI/LLM**: OpenAI-compatible endpoints (vLLM, Ollama, etc.)
+- **Security**: Signal Protocol for E2E encryption, libsodium for crypto
 - **Deployment**: Docker Compose → Kubernetes
 - **Languages**: Python 3.11+, TypeScript
 
@@ -131,7 +138,8 @@ Philosophical debate engine with 10+ agent archetypes:
 
 ### In Progress
 - 🔄 Authentication system
-- 🔄 Deep Signal visual identity
+- 🔄 Cognitive Signature visual identity (Kartouche)
+- 🔄 Signal Protocol secure messaging
 - 🔄 Peer-to-peer networking
 - 🔄 Collective sharing contracts
 

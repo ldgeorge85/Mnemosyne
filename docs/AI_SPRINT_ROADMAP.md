@@ -14,12 +14,16 @@ This roadmap is optimized for AI agent coding sessions where we want to:
 - Repository structure and documentation framework
 - Docker infrastructure (PostgreSQL, Redis running)
 - Environment configuration (.env with API keys)
+- **Sprint 1: Core Data Layer** (2025-01-21)
+  - All 12 files implemented
+  - Database models, Qdrant vectors, Redis streams
+  - Ready for initialization
 
 ### In Progress 🔄
-- Backend Docker build (first build ~10 minutes)
+- Backend Docker build (needs rebuild with new code)
 
 ### Not Started ❌
-- All implementation code
+- Sprints 2-8 implementation
 - Frontend
 - Testing suites
 
@@ -163,23 +167,54 @@ Each sprint is designed for a single uninterrupted AI coding session (2-4 hours)
 
 ---
 
-## 🚀 Sprint 5: Privacy & Signal System
-**Goal**: Complete Deep Signals, Kartouche, and privacy layers  
+## 🚀 Sprint 5: Secure Communications Layer
+**Goal**: Implement Signal Protocol for E2E encrypted messaging  
 **Duration**: Single session (~3 hours)  
 **Dependencies**: Sprint 4
 
 ### Implementation Block
 ```python
 # Complete these files in sequence:
-1. backend/signals/generator.py          # Signal generation
-2. backend/signals/kartouche.py         # Kartouche visualization
-3. backend/signals/lifecycle.py         # Signal decay/re-evaluation
+1. backend/crypto/signal_protocol.py     # Signal Protocol wrapper
+2. backend/crypto/key_manager.py        # Key generation & storage
+3. backend/crypto/session_manager.py    # Session establishment
+4. backend/services/messaging.py        # Secure messaging service
+5. backend/api/v1/messages.py          # Messaging endpoints
+6. backend/workers/message_worker.py    # Message processing
+7. backend/crypto/group_messaging.py    # Group chat with sender keys
+8. backend/crypto/trust_verification.py # Safety numbers & verification
+```
+
+### Deliverable
+- Complete E2E encrypted messaging system
+- Signal Protocol fully integrated
+- Group messaging support
+
+### Maps to Original Roadmap
+- Signal Protocol for messaging ✓
+- Double Ratchet algorithm ✓
+- Forward & future secrecy ✓
+- Group chat encryption ✓
+
+---
+
+## 🚀 Sprint 6: Privacy & Cognitive Signature System
+**Goal**: Complete Cognitive Signatures, Kartouche, and privacy layers  
+**Duration**: Single session (~3 hours)  
+**Dependencies**: Sprint 4
+
+### Implementation Block
+```python
+# Complete these files in sequence:
+1. backend/signatures/generator.py      # Cognitive signature generation
+2. backend/signatures/kartouche.py      # Kartouche visualization
+3. backend/signatures/lifecycle.py      # Signature decay/re-evaluation
 4. backend/privacy/k_anonymity.py       # K-anonymity implementation
 5. backend/privacy/sharing.py           # Sharing contracts
 6. backend/privacy/trust.py             # Trust mechanics
 7. backend/privacy/initiation.py        # Initiation levels
 8. backend/interop/a2a.py              # A2A protocol compatibility
-9. backend/services/signal_service.py   # Signal management
+9. backend/services/signature_service.py # Cognitive signature management
 10. backend/api/v1/privacy.py          # Privacy endpoints
 ```
 
@@ -190,14 +225,14 @@ Each sprint is designed for a single uninterrupted AI coding session (2-4 hours)
 ### Maps to Original Roadmap
 - Week 2: K-anonymity implementation ✓
 - Week 2: A2A protocol compatibility ✓
-- Week 3: Deep Signal generation ✓
+- Week 3: Cognitive Signature generation ✓
 - Week 3: Kartouche visualization ✓
 - Week 3: Trust mechanics ✓
 - Week 3: Initiation system ✓
 
 ---
 
-## 🚀 Sprint 6: Frontend Foundation
+## 🚀 Sprint 7: Frontend Foundation
 **Goal**: Complete React frontend with core functionality  
 **Duration**: Single session (~4 hours)  
 **Dependencies**: Sprint 4 (API must exist)
@@ -227,7 +262,7 @@ Each sprint is designed for a single uninterrupted AI coding session (2-4 hours)
 
 ---
 
-## 🚀 Sprint 7: Production & Monitoring
+## 🚀 Sprint 8: Production & Monitoring
 **Goal**: Complete deployment configuration and monitoring  
 **Duration**: Single session (~2 hours)  
 **Dependencies**: Sprints 1-5
@@ -260,7 +295,7 @@ Each sprint is designed for a single uninterrupted AI coding session (2-4 hours)
 
 ---
 
-## 🚀 Sprint 8: Testing Suite
+## 🚀 Sprint 9: Testing Suite
 **Goal**: Complete test coverage  
 **Duration**: Single session (~3 hours)  
 **Dependencies**: All implementation sprints
@@ -305,14 +340,15 @@ Each sprint is designed for a single uninterrupted AI coding session (2-4 hours)
 
 | Sprint | Status | Estimated Time | Dependencies | Maps to Week |
 |--------|--------|---------------|--------------|--------------|
-| 1: Data Layer | ❌ Not Started | 3 hours | None | Week 1 |
-| 2: Memory Pipeline | ❌ Not Started | 3 hours | Sprint 1 | Week 1-2 |
-| 3: Agent System | ❌ Not Started | 4 hours | Sprint 2 | Week 2 |
-| 4: API Layer | ❌ Not Started | 3 hours | Sprint 3 | Week 1-2 |
-| 5: Privacy & Signals | ❌ Not Started | 3 hours | Sprint 4 | Week 2-3 |
-| 6: Frontend | ❌ Not Started | 4 hours | Sprint 4 | Week 3 |
-| 7: Production | ❌ Not Started | 2 hours | Sprints 1-5 | Week 3 |
-| 8: Testing | ❌ Not Started | 3 hours | All | Week 2-3 |
+| 1: Data Layer | ✅ COMPLETED | 3 hours | None | Week 1 |
+| 2: Memory Pipeline | ✅ COMPLETED | 3 hours | Sprint 1 | Week 1-2 |
+| 3: Agent System | ✅ COMPLETED | 4 hours | Sprint 2 | Week 2 |
+| 4: API Layer | 🟢 Ready to Start | 3 hours | Sprint 3 | Week 1-2 |
+| 5: Secure Comms | ❌ Not Started | 3 hours | Sprint 4 | Week 2 |
+| 6: Privacy & Signatures | ❌ Not Started | 3 hours | Sprint 5 | Week 2-3 |
+| 7: Frontend | ❌ Not Started | 4 hours | Sprint 4 | Week 3 |
+| 8: Production | ❌ Not Started | 2 hours | Sprints 1-6 | Week 3 |
+| 9: Testing | ❌ Not Started | 3 hours | All | Week 2-3 |
 
 **Total Implementation Time**: ~25 hours (can be parallelized to ~15 hours)
 
@@ -324,12 +360,31 @@ Each sprint is designed for a single uninterrupted AI coding session (2-4 hours)
 4. **Parallel Execution** - Multiple agents can work on independent sprints
 5. **Complete Subsystems** - Each sprint delivers a working component
 
+## 🎯 When Will It Be Usable?
+
+### After Sprint 4 (API Layer) - **MINIMALLY USABLE**
+- Basic chat interface via API
+- Memory storage and retrieval
+- Agent reflections
+- Authentication
+- **~13 hours total work** (Sprints 1-4)
+
+### After Sprint 6 (Frontend) - **FULLY USABLE**
+- Complete web interface
+- Chat with memory sidebar
+- Visual signal representation
+- All privacy features
+- **~20 hours total work** (Sprints 1-6)
+
 ## Next Recommended Sprint
 
-Given current status (backend building, infrastructure ready):
-- **Start with Sprint 1** (Data Layer) as soon as backend container is verified
-- This establishes the foundation for all other sprints
-- Can be completed in a single 3-hour session
+✅ **Sprint 1 COMPLETED** (2025-01-21)
+
+🟢 **Ready for Sprint 2** (Memory Pipeline System)
+- All dependencies from Sprint 1 are satisfied
+- Database layer is complete
+- Can begin immediately
+- Estimated time: 3 hours
 
 ---
 

@@ -12,13 +12,13 @@ import json
 import uuid
 import asyncio
 
-from backend.api.deps import get_db, get_current_active_user
-from backend.models.user import User
-from backend.models.memory import Memory
-from backend.services.memory_service import MemoryService
-from backend.services.agent_service import AgentService
-from backend.core.langchain_setup import get_llm
-from backend.core.config import get_settings
+from api.deps import get_db, get_current_active_user
+from models.user import User
+from models.memory import Memory
+from services.memory_service import MemoryService
+from services.agent_service import AgentService
+from core.langchain_setup import get_llm
+from core.config import get_settings
 
 router = APIRouter()
 settings = get_settings()

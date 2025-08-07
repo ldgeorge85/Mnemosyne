@@ -12,10 +12,10 @@ from langchain.tools import BaseTool, StructuredTool
 from langchain.callbacks.manager import CallbackManagerForToolRun
 from pydantic import BaseModel, Field
 
-from backend.services.memory_service import MemoryService
-from backend.services.search_service import vector_search_service
-from backend.core.vectors import vector_store
-from backend.core.redis_client import redis_manager
+from ..services.memory_service import MemoryService
+from ..services.search_service import vector_search_service
+from ..core.vectors import vector_store
+from ..core.redis_client import redis_manager
 
 logger = logging.getLogger(__name__)
 

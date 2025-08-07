@@ -14,7 +14,7 @@ import redis.asyncio as redis
 from redis.asyncio.client import Redis, PubSub
 from redis.exceptions import RedisError, ConnectionError as RedisConnectionError
 
-from backend.core.config import get_settings
+from .config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

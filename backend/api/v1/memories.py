@@ -10,12 +10,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
 import uuid
 
-from backend.api.deps import get_db, get_current_active_user
-from backend.models.user import User
-from backend.models.memory import Memory
-from backend.services.memory_service import MemoryService
-from backend.services.embedding import EmbeddingService
-from backend.core.vectors import VectorStore
+from api.deps import get_db, get_current_active_user
+from models.user import User
+from models.memory import Memory
+from services.memory_service import MemoryService
+from services.embedding import EmbeddingService
+from core.vectors import VectorStore
 
 router = APIRouter()
 

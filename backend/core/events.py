@@ -11,8 +11,8 @@ from datetime import datetime
 from enum import Enum
 import traceback
 
-from backend.core.redis_client import redis_manager
-from backend.core.config import get_settings
+from .redis_client import redis_manager
+from .config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

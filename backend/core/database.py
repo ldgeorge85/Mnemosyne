@@ -21,7 +21,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import uuid
 from datetime import datetime
 
-from backend.core.config import get_settings
+from .config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -221,12 +221,12 @@ class TimestampMixin:
     
     @declared_attr
     def created_at(cls):
-        from sqlalchemy import DateTime, func
+        from sqlalchemy import DateTime, func, Column
         return Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     
     @declared_attr
     def updated_at(cls):
-        from sqlalchemy import DateTime, func
+        from sqlalchemy import DateTime, func, Column
         return Column(
             DateTime(timezone=True),
             server_default=func.now(),
@@ -254,7 +254,7 @@ class SoftDeleteMixin:
     
     @declared_attr
     def deleted_at(cls):
-        from sqlalchemy import DateTime
+        from sqlalchemy import DateTime, Column
         return Column(DateTime(timezone=True), nullable=True)
     
     @property

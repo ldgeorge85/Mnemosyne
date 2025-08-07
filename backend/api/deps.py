@@ -10,31 +10,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
 from datetime import datetime, timezone
 
-from backend.core.database import async_session_maker
-from backend.core.config import get_settings
-from backend.models.user import User
-from backend.core.redis_client import RedisClient
+from core.database import get_db
+from core.config import get_settings
+from models.user import User
+from core.redis_client import redis_manager
 
 settings = get_settings()
 security = HTTPBearer()
 
 
-async def get_db() -> Generator[AsyncSession, None, None]:
-    """Provide database session for requests"""
-    async with async_session_maker() as session:
-        try:
-            yield session
-            await session.commit()
-        except Exception:
-            await session.rollback()
-            raise
-        finally:
-            await session.close()
-
-
-async def get_redis() -> RedisClient:
+async def get_redis():
     """Get Redis client instance"""
-    return await RedisClient.get_instance()
+    return redis_manager
 
 
 async def get_current_user(

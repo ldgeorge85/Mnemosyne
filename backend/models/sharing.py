@@ -7,11 +7,11 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta
 from enum import Enum
 
-from sqlalchemy import Column, String, Text, Float, Integer, Boolean, DateTime, JSON, ForeignKey, Index, CheckConstraint, UniqueConstraint
+from sqlalchemy import Column, String, Text, Float, Integer, Boolean, DateTime, JSON, ForeignKey, Index, CheckConstraint, UniqueConstraint, Enum as SQLEnum
 from sqlalchemy.orm import relationship, Mapped
 from sqlalchemy.dialects.postgresql import JSONB, UUID as SQLAlchemyUUID
 
-from backend.core.database import Base, TimestampMixin, UUIDMixin
+from core.database import Base, TimestampMixin, UUIDMixin
 
 
 class SharingDepth(str, Enum):
@@ -105,7 +105,7 @@ class SharingContract(Base, UUIDMixin, TimestampMixin):
     has_reciprocity: Mapped[bool] = Column(Boolean, default=False, nullable=False)
     
     # Metadata
-    metadata: Mapped[Dict[str, Any]] = Column(JSONB, default={}, nullable=False)
+    metadata_json: Mapped[Dict[str, Any]] = Column(JSONB, default={}, nullable=False)
     notes: Mapped[Optional[str]] = Column(Text, nullable=True)
     
     # Relationships
@@ -249,7 +249,7 @@ class TrustRelationship(Base, UUIDMixin, TimestampMixin):
     is_verified: Mapped[bool] = Column(Boolean, default=False, nullable=False)
     
     # Metadata
-    metadata: Mapped[Dict[str, Any]] = Column(JSONB, default={}, nullable=False)
+    metadata_json: Mapped[Dict[str, Any]] = Column(JSONB, default={}, nullable=False)
     notes: Mapped[Optional[str]] = Column(Text, nullable=True)
     
     # Relationships

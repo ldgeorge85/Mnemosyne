@@ -9,10 +9,10 @@ from datetime import datetime, timedelta
 import asyncio
 import numpy as np
 
-from backend.core.vectors import vector_store
-from backend.core.redis_client import redis_manager
-from backend.services.embedding import embedding_service, EmbeddingModel
-from backend.core.config import get_settings
+from ..core.vectors import vector_store
+from ..core.redis_client import redis_manager
+from .embedding import embedding_service, EmbeddingModel
+from ..core.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

@@ -20,9 +20,9 @@ from langchain_openai import ChatOpenAI
 from langchain_community.chat_models import ChatOllama
 from pydantic import BaseModel, Field
 
-from backend.core.config import get_settings
-from backend.core.redis_client import redis_manager
-from backend.models.memory import Memory
+from ..core.config import get_settings
+from ..core.redis_client import redis_manager
+from ..models.memory import Memory
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

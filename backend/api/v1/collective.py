@@ -10,12 +10,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 import uuid
 
-from backend.api.deps import get_db, get_current_active_user
-from backend.models.user import User
-from backend.models.sharing import SharingContract
-from backend.models.memory import Memory
-from backend.privacy.k_anonymity import KAnonymityProtector
-from backend.services.collective_service import CollectiveService
+from api.deps import get_db, get_current_active_user
+from models.user import User
+from models.sharing import SharingContract
+from models.memory import Memory
+from privacy.k_anonymity import KAnonymityProtector
+from services.collective_service import CollectiveService
 
 router = APIRouter()
 

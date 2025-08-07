@@ -11,9 +11,9 @@ from collections import defaultdict
 import numpy as np
 
 from pydantic import BaseModel, Field
-from backend.pipelines.base import Pipeline, PipelineStage
-from backend.models.memory import Memory, MemoryType, MemoryStatus
-from backend.core.config import get_settings
+from .base import Pipeline, PipelineStage
+from ..models.memory import Memory, MemoryType, MemoryStatus
+from ..core.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

@@ -10,12 +10,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import uuid
 
-from backend.api.deps import get_db, get_current_active_user
-from backend.models.user import User
-from backend.models.signal import CognitiveSignature
-from backend.services.signature_service import SignatureService
-from backend.signatures.generator import SignatureGenerator
-from backend.core.redis_client import RedisClient
+from api.deps import get_db, get_current_active_user
+from models.user import User
+from models.signal import CognitiveSignature
+from services.signature_service import SignatureService
+from signatures.generator import SignatureGenerator
+from core.redis_client import RedisClient
 
 router = APIRouter()
 
@@ -277,7 +277,7 @@ async def get_kartouche(
     
     # Generate or retrieve Kartouche SVG
     if not signal.kartouche_svg:
-        from backend.signatures.kartouche import KartoucheRenderer
+        from signatures.kartouche import KartoucheRenderer
         renderer = KartoucheRenderer()
         signal.kartouche_svg = await renderer.render_svg(signal)
         await db.commit()

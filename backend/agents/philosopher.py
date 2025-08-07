@@ -6,11 +6,11 @@ Deep reflection and meaning extraction
 import logging
 from typing import List
 
-from backend.agents.base import (
+from .base import (
     SpecializedAgent, AgentRole, AgentCapability,
     AgentContext, ReflectionFragment
 )
-from backend.agents.tools import AgentToolFactory
+from .tools import AgentToolFactory
 from langchain.tools import BaseTool
 
 logger = logging.getLogger(__name__)

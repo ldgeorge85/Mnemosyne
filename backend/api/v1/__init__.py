@@ -4,13 +4,13 @@ API v1 router configuration
 
 from fastapi import APIRouter
 
-from backend.api.v1.auth import router as auth_router
-from backend.api.v1.memories import router as memories_router
-from backend.api.v1.chat import router as chat_router
-from backend.api.v1.agents import router as agents_router
-from backend.api.v1.signals import router as signals_router
-from backend.api.v1.collective import router as collective_router
-from backend.api.v1.webhooks import router as webhooks_router
+from .auth import router as auth_router
+from .memories import router as memories_router
+from .chat import router as chat_router
+from .agents import router as agents_router
+from .signals import router as signals_router
+from .collective import router as collective_router
+from .webhooks import router as webhooks_router
 
 api_router = APIRouter()
 

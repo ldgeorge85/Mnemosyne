@@ -7,12 +7,12 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import Column, String, Text, Float, Integer, Boolean, DateTime, JSON, ForeignKey, Index, CheckConstraint
+from sqlalchemy import Column, String, Text, Float, Integer, Boolean, DateTime, JSON, ForeignKey, Index, CheckConstraint, Enum as SQLEnum
 from sqlalchemy.orm import relationship, Mapped
-from sqlalchemy.dialects.postgresql import VECTOR, JSONB, UUID as SQLAlchemyUUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID as SQLAlchemyUUID
 from pgvector.sqlalchemy import Vector
 
-from backend.core.database import Base, TimestampMixin, UUIDMixin, SoftDeleteMixin
+from core.database import Base, TimestampMixin, UUIDMixin, SoftDeleteMixin
 
 
 class MemoryType(str, Enum):
@@ -107,7 +107,7 @@ class Memory(Base, UUIDMixin, TimestampMixin, SoftDeleteMixin):
     )
     
     # Metadata and tags
-    metadata: Mapped[Dict[str, Any]] = Column(
+    metadata_json: Mapped[Dict[str, Any]] = Column(
         JSONB,
         default={},
         nullable=False
@@ -119,7 +119,7 @@ class Memory(Base, UUIDMixin, TimestampMixin, SoftDeleteMixin):
     # Source tracking
     source: Mapped[Optional[str]] = Column(String(50), nullable=True)  # web, chat, api, etc
     source_url: Mapped[Optional[str]] = Column(Text, nullable=True)
-    source_metadata: Mapped[Dict[str, Any]] = Column(JSONB, default={})
+    source_metadata_json: Mapped[Dict[str, Any]] = Column(JSONB, default={})
     
     # Temporal information
     occurred_at: Mapped[Optional[datetime]] = Column(

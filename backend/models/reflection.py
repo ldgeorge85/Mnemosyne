@@ -7,12 +7,12 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import Column, String, Text, Float, Integer, Boolean, DateTime, JSON, ForeignKey, Index, CheckConstraint
+from sqlalchemy import Column, String, Text, Float, Integer, Boolean, DateTime, JSON, ForeignKey, Index, CheckConstraint, Enum as SQLEnum
 from sqlalchemy.orm import relationship, Mapped
 from sqlalchemy.dialects.postgresql import JSONB, UUID as SQLAlchemyUUID
 from pgvector.sqlalchemy import Vector
 
-from backend.core.database import Base, TimestampMixin, UUIDMixin
+from core.database import Base, TimestampMixin, UUIDMixin
 
 
 class AgentType(str, Enum):
@@ -155,7 +155,7 @@ class Reflection(Base, UUIDMixin, TimestampMixin):
     recommendations: Mapped[List[str]] = Column(JSON, default=list)
     
     # Metadata
-    metadata: Mapped[Dict[str, Any]] = Column(
+    metadata_json: Mapped[Dict[str, Any]] = Column(
         JSONB,
         default={},
         nullable=False

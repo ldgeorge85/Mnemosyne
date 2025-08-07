@@ -11,15 +11,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import uuid
 
-from backend.api.deps import get_db
-from backend.api.auth import (
+from api.deps import get_db
+from api.auth import (
     authenticate_user,
     create_tokens,
     get_password_hash,
     verify_refresh_token
 )
-from backend.models.user import User, InitiationLevel
-from backend.core.config import get_settings
+from models.user import User, InitiationLevel
+from core.config import get_settings
 
 router = APIRouter()
 settings = get_settings()

@@ -153,7 +153,103 @@ class MLSGroupSecurity:
             await group.update_epoch()
 ```
 
-### 8. Agent Security
+### 8. Trust Models & Reputation
+
+#### EigenTrust Implementation
+The protocol uses EigenTrust algorithm for distributed reputation management:
+
+```python
+class EigenTrustSystem:
+    """Mathematical trust scoring based on peer interactions"""
+    
+    async def calculate_global_trust(self) -> Dict[str, float]:
+        """Calculate global trust scores using power iteration"""
+        # Initialize with pre-trusted peers
+        trust_vector = self.get_pretrusted_vector()
+        
+        # Iterate until convergence
+        for _ in range(self.MAX_ITERATIONS):
+            # C is the normalized trust matrix
+            # p is the pre-trust vector
+            # α is the dampening factor (typically 0.85)
+            trust_vector = (1 - self.ALPHA) * self.trust_matrix @ trust_vector + \
+                          self.ALPHA * self.pretrusted
+            
+            if self.has_converged(trust_vector):
+                break
+        
+        return trust_vector
+```
+
+#### Multi-Dimensional Trust Metrics
+```python
+class TrustDimensions:
+    """Composite trust calculation from multiple factors"""
+    
+    async def calculate_trust_score(self, peer_id: str) -> TrustScore:
+        return TrustScore(
+            mathematical=await self.get_eigentrust_score(peer_id),  # 0.0-1.0
+            echo_resonance=self.calculate_echo_resonance(peer_id),   # Signal alignment
+            fractal_coherence=self.check_pattern_stability(peer_id), # Behavioral consistency
+            drift_stability=self.measure_drift_rate(peer_id),        # Change over time
+            ceremony_bonus=self.get_ceremony_multiplier(peer_id)     # Ritual participation
+        )
+```
+
+#### Trust Ceremonies
+Cryptographically verifiable trust establishment rituals:
+
+```python
+class TrustCeremony:
+    """Symbolic trust establishment with cryptographic proofs"""
+    
+    CEREMONY_TYPES = {
+        "progressive": ["glyph_exchange", "mirror_prompt", "fragment_weaving", "covenant"],
+        "dissonance": ["conflict_declaration", "dialectic_dance", "synthesis", "respect"],
+        "echo_drift": ["chaos_invocation", "drift_navigation", "signal_recovery", "bond"],
+        "proof_of_work": ["quest_assignment", "effort_demo", "witness_verify", "initiation"]
+    }
+    
+    async def execute_ceremony(self, type: str, participants: List[str]):
+        stages = self.CEREMONY_TYPES[type]
+        proofs = []
+        
+        for stage in stages:
+            proof = await self.execute_stage(stage, participants)
+            proofs.append(proof)
+            
+            # Verify cryptographic proof before proceeding
+            if not await self.verify_stage_proof(proof):
+                raise CeremonyFailed(f"Stage {stage} verification failed")
+        
+        # Generate final trust bond
+        return self.create_trust_bond(participants, proofs)
+```
+
+#### Trust-Based Security Policies
+```python
+class TrustBasedSecurity:
+    """Security decisions based on trust scores"""
+    
+    def get_allowed_operations(self, user_trust: float) -> List[str]:
+        if user_trust < 0.2:
+            return ["read_public", "basic_signal"]
+        elif user_trust < 0.5:
+            return ["read_public", "write_own", "share_k3"]
+        elif user_trust < 0.8:
+            return ["full_read", "full_write", "spawn_agents"]
+        else:
+            return ["all_operations", "governance_vote"]
+    
+    async def validate_operation(self, user_id: str, operation: str):
+        trust_score = await self.get_trust_score(user_id)
+        allowed = self.get_allowed_operations(trust_score)
+        
+        if operation not in allowed:
+            raise InsufficientTrust(f"Trust {trust_score:.2f} too low for {operation}")
+```
+
+### 9. Agent Security
 
 #### Agent Isolation
 - Each agent runs in isolated context

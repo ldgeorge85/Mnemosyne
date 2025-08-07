@@ -8,12 +8,12 @@ from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
 import logging
 
-from backend.api.v1 import api_router
-from backend.core.config import get_settings
-from backend.core.database import init_db
-from backend.middleware.security import setup_middleware
-from backend.core.redis_client import RedisClient
-from backend.core.vectors import VectorStore
+from api.v1 import api_router
+from core.config import get_settings
+from core.database import init_db
+from middleware.security import setup_middleware
+from core.redis_client import RedisClient
+from core.vectors import VectorStore
 
 # Configure logging
 logging.basicConfig(
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     import uvicorn
     
     uvicorn.run(
-        "backend.main:app",
+        "main:app",
         host=settings.HOST,
         port=settings.PORT,
         reload=settings.DEBUG,

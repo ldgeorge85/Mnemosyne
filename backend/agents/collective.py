@@ -6,11 +6,11 @@ Collective intelligence and shared wisdom
 import logging
 from typing import List
 
-from backend.agents.base import (
+from .base import (
     CollaborativeAgent, AgentRole, AgentCapability,
     AgentContext, ReflectionFragment
 )
-from backend.agents.tools import AgentToolFactory
+from .tools import AgentToolFactory
 from langchain.tools import BaseTool
 
 logger = logging.getLogger(__name__)

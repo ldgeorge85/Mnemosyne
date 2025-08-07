@@ -12,14 +12,14 @@ from sqlalchemy import select, update, delete, and_, or_, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from backend.models.memory import Memory, MemoryType, MemoryStatus
-from backend.models.user import User
-from backend.core.database import db_manager
-from backend.core.vectors import vector_store
-from backend.core.redis_client import redis_manager, publish_memory_event
-from backend.pipelines.memory_capture import RawMemoryInput, MemoryCapturePipeline
-from backend.pipelines.memory_process import MemoryProcessingPipeline
-from backend.services.embedding import embedding_service
+from ..models.memory import Memory, MemoryType, MemoryStatus
+from ..models.user import User
+from ..core.database import db_manager
+from ..core.vectors import vector_store
+from ..core.redis_client import redis_manager, publish_memory_event
+from ..pipelines.memory_capture import RawMemoryInput, MemoryCapturePipeline
+from ..pipelines.memory_process import MemoryProcessingPipeline
+from .embedding import embedding_service
 
 logger = logging.getLogger(__name__)
 

@@ -7,12 +7,12 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta
 from enum import Enum
 
-from sqlalchemy import Column, String, Text, Float, Integer, Boolean, DateTime, JSON, ForeignKey, Index, CheckConstraint
+from sqlalchemy import Column, String, Text, Float, Integer, Boolean, DateTime, JSON, ForeignKey, Index, CheckConstraint, Enum as SQLEnum
 from sqlalchemy.orm import relationship, Mapped
 from sqlalchemy.dialects.postgresql import JSONB, UUID as SQLAlchemyUUID
 from pgvector.sqlalchemy import Vector
 
-from backend.core.database import Base, TimestampMixin, UUIDMixin
+from core.database import Base, TimestampMixin, UUIDMixin
 
 
 class SignalVisibility(str, Enum):
@@ -139,7 +139,7 @@ class DeepSignal(Base, UUIDMixin, TimestampMixin):
     public_key: Mapped[Optional[str]] = Column(Text, nullable=True)
     
     # Metadata
-    metadata: Mapped[Dict[str, Any]] = Column(JSONB, default={}, nullable=False)
+    metadata_json: Mapped[Dict[str, Any]] = Column(JSONB, default={}, nullable=False)
     
     # Relationships
     user = relationship("User", back_populates="signals")

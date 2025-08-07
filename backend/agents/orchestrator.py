@@ -10,14 +10,14 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import random
 
-from backend.agents.base import (
+from .base import (
     BaseAgent, AgentRole, AgentCapability, AgentContext,
     ReflectionFragment, AgentFactory
 )
-from backend.core.redis_client import redis_manager
-from backend.core.events import event_bus, EventType, Event
-from backend.services.memory_service import MemoryService
-from backend.services.search_service import vector_search_service
+from ..core.redis_client import redis_manager
+from ..core.events import event_bus, EventType, Event
+from ..services.memory_service import MemoryService
+from ..services.search_service import vector_search_service
 
 logger = logging.getLogger(__name__)
 

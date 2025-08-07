@@ -10,11 +10,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import uuid
 
-from backend.api.deps import get_db, get_current_active_user
-from backend.models.user import User
-from backend.models.reflection import Reflection, AgentType
-from backend.services.agent_service import AgentService
-from backend.agents.orchestrator import AgentOrchestrator
+from api.deps import get_db, get_current_active_user
+from models.user import User
+from models.reflection import Reflection, AgentType
+from services.agent_service import AgentService
+from agents.orchestrator import AgentOrchestrator
 
 router = APIRouter()
 

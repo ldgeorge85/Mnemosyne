@@ -10,10 +10,10 @@ import hmac
 import hashlib
 import json
 
-from backend.api.deps import get_db
-from backend.core.config import get_settings
-from backend.core.redis_client import RedisClient
-from backend.services.memory_service import MemoryService
+from api.deps import get_db
+from core.config import get_settings
+from core.redis_client import RedisClient
+from services.memory_service import MemoryService
 
 router = APIRouter()
 settings = get_settings()
@@ -258,7 +258,7 @@ async def create_webhook_memory(
         # Get system user or first user (for MVP)
         # In production, webhooks would be associated with specific users
         from sqlalchemy import select
-        from backend.models.user import User
+        from models.user import User
         
         result = await db.execute(select(User).limit(1))
         user = result.scalar_one_or_none()

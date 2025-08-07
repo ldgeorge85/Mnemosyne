@@ -33,7 +33,7 @@ from qdrant_client.models import (
 )
 from qdrant_client.async_qdrant_client import AsyncQdrantClient
 
-from backend.core.config import get_settings
+from .config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

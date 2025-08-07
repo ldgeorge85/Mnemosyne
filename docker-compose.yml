@@ -42,10 +42,13 @@ services:
       - DATABASE_URL=postgresql://mnemosyne:${POSTGRES_PASSWORD:-mnemosyne_pass}@postgres:5432/mnemosyne
       - REDIS_URL=redis://redis:6379
       - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-jwt-secret-key-change-this}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-your-encryption-key-32-bytes-long!}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
     volumes:
       - ./backend:/app
+      - backend_venv:/app/.venv
       - ./data/memories:/data/memories
     ports:
       - "8000:8000"
@@ -54,7 +57,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    command: ["/app/startup.sh"]
 
   # Shadow Orchestration Service
   shadow:
@@ -158,6 +161,7 @@ volumes:
   postgres_data:
   redis_data:
   ipfs_data:
+  backend_venv:
 
 networks:
   default:

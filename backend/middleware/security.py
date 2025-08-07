@@ -12,7 +12,7 @@ import time
 import uuid
 import logging
 
-from backend.core.config import get_settings
+from ..core.config import get_settings
 
 settings = get_settings()
 logger = logging.getLogger(__name__)

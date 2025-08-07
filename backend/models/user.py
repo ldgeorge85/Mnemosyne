@@ -12,7 +12,7 @@ from sqlalchemy import Column, String, Boolean, Integer, Float, DateTime, JSON, 
 from sqlalchemy.orm import relationship, Mapped
 from sqlalchemy.dialects.postgresql import JSONB
 
-from backend.core.database import Base, TimestampMixin, UUIDMixin
+from core.database import Base, TimestampMixin, UUIDMixin
 
 
 class InitiationLevel(str, Enum):

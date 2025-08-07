@@ -14,8 +14,8 @@ import openai
 from openai import AsyncOpenAI
 import aiohttp
 
-from backend.core.config import get_settings
-from backend.core.redis_client import redis_manager
+from ..core.config import get_settings
+from ..core.redis_client import redis_manager
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

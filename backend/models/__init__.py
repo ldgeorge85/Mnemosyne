@@ -5,12 +5,13 @@ Central model registry and base classes
 
 from sqlalchemy import Column, DateTime, String, Float, Integer, Boolean, Text, JSON, ForeignKey, Index, UUID as SQLAlchemyUUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy.dialects.postgresql import VECTOR, JSONB
+from sqlalchemy.dialects.postgresql import JSONB
+from pgvector.sqlalchemy import Vector
 from typing import Optional, List, Dict, Any
 import uuid
 from datetime import datetime
 
-from backend.core.database import Base, TimestampMixin, UUIDMixin, SoftDeleteMixin
+from core.database import Base, TimestampMixin, UUIDMixin, SoftDeleteMixin
 
 # Base model with common functionality
 class BaseModel(Base, UUIDMixin, TimestampMixin):
@@ -40,11 +41,11 @@ class BaseModel(Base, UUIDMixin, TimestampMixin):
 
 # Import all models to ensure they're registered with SQLAlchemy
 # These will be created in subsequent steps
-from backend.models.user import User
-from backend.models.memory import Memory
-from backend.models.reflection import Reflection
-from backend.models.signal import DeepSignal
-from backend.models.sharing import SharingContract, TrustRelationship
+from .user import User
+from .memory import Memory
+from .reflection import Reflection
+from .signal import DeepSignal
+from .sharing import SharingContract, TrustRelationship
 
 # Export all models
 __all__ = [

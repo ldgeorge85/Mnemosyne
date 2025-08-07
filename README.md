@@ -1,6 +1,9 @@
-# 🏛️ The Mnemosyne Protocol
-
 <div align="center">
+<img src="https://github.com/ldgeorge85/Mnemosyne/blob/75c4a7e251995b1f3ffa7d6a848846cabcf5c687/artwork/logo.png"
+     alt="Mnemosyne Logo"
+     height="420px">
+
+# 🏛️ The Mnemosyne Protocol
 
 **Individual Sovereignty → Collective Intelligence → Emergent Order**
 

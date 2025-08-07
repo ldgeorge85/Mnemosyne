@@ -9,7 +9,7 @@
 
 ```
 Layer 5: Collective Codex - Community intelligence & coordination
-Layer 4: Secure Communications - E2E encrypted messaging via Signal Protocol
+Layer 4: Secure Communications - E2E encrypted messaging via MLS Protocol
 Layer 3: Quiet Network - Peer discovery & trust establishment  
 Layer 2: Cognitive Signature Protocol - Identity compression & symbolic representation
 Layer 1: Mnemosyne Engine - Personal memory & agent orchestra
@@ -43,10 +43,10 @@ Layer 1: Mnemosyne Engine - Personal memory & agent orchestra
 - **Local Models**: Ollama for privacy-first inference
 
 #### Security & Cryptography
-- **Messaging Protocol**: Signal Protocol for E2E encryption
-- **Key Management**: Double Ratchet algorithm (forward & future secrecy)
+- **Messaging Protocol**: MLS (RFC 9420) for E2E group encryption
+- **Key Management**: Tree-based key agreement with PCS (post-compromise security)
 - **General Crypto**: libsodium/NaCl for encryption primitives
-- **Group Chat**: Signal's sender keys for secure group messaging
+- **Group Chat**: Native MLS group operations (logarithmic scaling)
 - **Trust Proofs**: zk-SNARKs for verification (future phase)
 
 #### Deployment
@@ -349,52 +349,111 @@ class SignalManager:
 
 ## 4. Layer 3: Secure Communications
 
-### 4.1 Signal Protocol Integration
+### 4.1 MLS Protocol Integration (RFC 9420)
 
-**Purpose**: Enable private communication between trusted peers
+**Purpose**: Enable scalable E2E encrypted group communications
+
+#### Why MLS over Signal Protocol
+- **Built for groups**: Efficient operations for 2 to 50,000+ members
+- **Asynchronous by design**: Add/remove members while offline
+- **Logarithmic scaling**: O(log n) vs O(n) for group operations
+- **Multi-device native**: Seamless cross-device synchronization
+- **IETF standard**: Industry-wide interoperability
 
 #### Message Types
 ```python
 class MessageType(Enum):
-    DIRECT = "direct"          # 1-to-1 encrypted
-    GROUP = "group"            # Group encrypted with sender keys
-    BROADCAST = "broadcast"    # Public, signed but not encrypted
-    MEMORY_SHARE = "memory"    # Encrypted memory fragment
+    APPLICATION = "application"  # Regular encrypted group message
+    PROPOSAL = "proposal"        # Group membership change proposal
+    COMMIT = "commit"           # Finalize group state change
+    WELCOME = "welcome"         # Onboard new member
+    MEMORY_SHARE = "memory"     # Encrypted memory fragment
 ```
 
 #### Basic Implementation
 ```python
-class SecureChannel:
-    """Signal Protocol wrapper for Mnemosyne communications"""
+class MLSChannel:
+    """MLS Protocol wrapper for Mnemosyne communications"""
     
-    async def send_message(self, recipient_id: str, content: str):
-        """Send encrypted message to peer"""
-        ciphertext = await self.signal_protocol.encrypt(recipient_id, content)
-        await self.transport.send(recipient_id, ciphertext)
-    
-    async def share_memory(self, recipient_id: str, memory: Memory, contract: SharingContract):
-        """Share memory fragment with encryption and contract"""
-        if not contract.is_valid():
-            raise InvalidContractError()
+    async def create_group(self, group_name: str, initial_members: List[str]):
+        """Create new MLS group for collective"""
+        group = await self.mls.create_group()
         
-        fragment = self.create_memory_fragment(memory, contract)
-        encrypted = await self.signal_protocol.encrypt(recipient_id, fragment)
-        await self.transport.send(recipient_id, encrypted, metadata={"type": "memory_share"})
+        # Add initial members asynchronously
+        for member_id in initial_members:
+            key_package = await self.fetch_key_package(member_id)
+            await group.add_member(key_package)
+        
+        # Commit changes to establish group keys
+        await group.commit()
+        return group
+    
+    async def send_to_group(self, group_id: str, content: str):
+        """Send encrypted message to entire group"""
+        group = self.get_group(group_id)
+        ciphertext = await group.encrypt_application_message(content)
+        
+        # MLS handles efficient distribution to all members
+        await self.transport.broadcast(group_id, ciphertext)
+    
+    async def add_member(self, group_id: str, new_member_id: str):
+        """Add member to group (works even if they're offline)"""
+        group = self.get_group(group_id)
+        key_package = await self.fetch_key_package(new_member_id)
+        
+        # Create proposal to add member
+        proposal = await group.propose_add(key_package)
+        
+        # Commit the change (updates group keys)
+        commit = await group.commit()
+        
+        # Send welcome message to new member
+        welcome = await group.create_welcome()
+        await self.transport.send(new_member_id, welcome)
 ```
 
-### 4.2 Trust Verification
+### 4.2 Key Package Management
+
+```python
+class KeyPackageManager:
+    """Manage pre-published key packages for async operations"""
+    
+    async def publish_key_packages(self, count: int = 100):
+        """Pre-generate key packages for future group additions"""
+        packages = []
+        for _ in range(count):
+            package = await self.mls.create_key_package()
+            packages.append(package)
+        
+        # Upload to server for others to use
+        await self.server.upload_key_packages(packages)
+    
+    async def fetch_key_package(self, user_id: str):
+        """Fetch a key package to add user to group"""
+        return await self.server.get_key_package(user_id)
+```
+
+### 4.3 Trust Verification
 
 ```python
 class TrustVerification:
-    """Verify peer identities before establishing secure channels"""
+    """Verify peer identities in MLS groups"""
     
-    async def verify_peer(self, peer_id: str, method: str = "safety_number"):
-        if method == "safety_number":
-            # Signal's standard safety number verification
-            return await self.verify_safety_number(peer_id)
-        elif method == "cognitive_signature":
-            # Verify through matching cognitive signatures
-            return await self.verify_cognitive_match(peer_id)
+    async def verify_member(self, group_id: str, member_id: str):
+        group = self.get_group(group_id)
+        
+        # Get member's credential from MLS tree
+        credential = await group.get_member_credential(member_id)
+        
+        # Verify identity binding
+        if not await self.verify_credential(credential):
+            return False
+        
+        # Optional: Verify through cognitive signature
+        if self.require_cognitive_verification:
+            return await self.verify_cognitive_match(member_id)
+        
+        return True
 ```
 
 ## 5. Layer 4: Quiet Network

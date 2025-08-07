@@ -12,28 +12,31 @@ The Mnemosyne Protocol implements multiple layers of security to ensure data sov
 - No automatic cloud backups or syncing
 - Full data export capability at any time
 
-### 2. End-to-End Encryption (Signal Protocol)
+### 2. End-to-End Encryption (MLS Protocol - RFC 9420)
 
 #### Implementation
-We use the Signal Protocol for all peer-to-peer communications:
-- **Double Ratchet Algorithm**: Provides forward secrecy and future secrecy
-- **X3DH Key Agreement**: Asynchronous key exchange
-- **Sender Keys**: Efficient group messaging
+We use the Messaging Layer Security (MLS) Protocol for all secure group communications:
+- **Tree-Based Key Agreement**: Logarithmic scaling for groups up to 50,000+
+- **Asynchronous Operations**: Add/remove members while they're offline
+- **Post-Compromise Security**: Automatic healing after key compromise
+- **Forward Secrecy**: Past messages secure even if current keys compromised
 
 #### Message Types
 ```python
-class SecureMessageType(Enum):
-    DIRECT = "direct"          # 1-to-1 encrypted
-    GROUP = "group"            # Group chat with sender keys
-    BROADCAST = "broadcast"    # Public, signed but not encrypted
-    MEMORY_SHARE = "memory"    # Encrypted memory fragment with contract
+class MLSMessageType(Enum):
+    APPLICATION = "application"  # Regular encrypted group message
+    PROPOSAL = "proposal"        # Group membership change proposal  
+    COMMIT = "commit"           # Finalize group state change
+    WELCOME = "welcome"         # Onboard new member with group state
+    MEMORY_SHARE = "memory"     # Encrypted memory fragment with contract
 ```
 
-#### Security Properties
+#### Security Properties (MLS Guarantees)
 - **Forward Secrecy**: Compromised keys can't decrypt past messages
-- **Future Secrecy**: Compromised keys are automatically replaced
-- **Deniability**: Messages are authenticated but repudiable
-- **Post-Compromise Security**: Security recovers after key compromise
+- **Post-Compromise Security**: Automatic key rotation heals compromise
+- **Asynchronous Operations**: Security maintained during offline operations
+- **Scalability**: Efficient operations for groups from 2 to 50,000+ members
+- **Membership Authentication**: Cryptographic proof of group membership
 
 ### 3. Trust Establishment
 
@@ -47,9 +50,9 @@ class TrustLevel(Enum):
 ```
 
 #### Verification Methods
-- **Safety Numbers**: Signal Protocol's fingerprint verification
+- **Credential Verification**: MLS credential binding to identity
 - **Cognitive Signature Matching**: Verify through symbolic patterns
-- **QR Codes**: In-person verification
+- **Key Transparency**: Optional integration with key transparency logs
 - **Ritual Verification**: Shared symbolic actions
 
 ### 4. Privacy Mechanisms
@@ -77,24 +80,33 @@ class SharingContract:
 ### 5. Cryptographic Primitives
 
 #### Libraries Used
-- **Signal Protocol**: Core messaging encryption
+- **OpenMLS**: MIT-licensed Rust implementation of MLS (RFC 9420)
 - **libsodium/NaCl**: General cryptographic operations
 - **Ed25519**: Digital signatures
-- **X25519**: Key exchange
+- **X25519**: Key exchange (used by MLS)
 - **AES-256-GCM**: Symmetric encryption
 - **HMAC-SHA256**: Message authentication
 
 #### Key Management
 ```python
-class KeyManager:
-    identity_keypair: Ed25519KeyPair      # Long-term identity
-    signed_prekey: X25519KeyPair         # Medium-term (rotated)
-    one_time_prekeys: List[X25519Key]    # Ephemeral keys
+class MLSKeyManager:
+    credential: MLSCredential              # Long-term identity credential
+    signature_keypair: Ed25519KeyPair     # For signing
+    init_keys: List[MLSKeyPackage]        # Pre-published for async adds
     
-    async def rotate_keys(self):
-        """Periodic key rotation for forward secrecy"""
-        # Rotate signed prekey every 48 hours
-        # Generate new one-time prekeys as needed
+    async def publish_key_packages(self, count: int = 100):
+        """Pre-publish key packages for group additions"""
+        packages = []
+        for _ in range(count):
+            package = await self.mls.create_key_package(self.credential)
+            packages.append(package)
+        await self.server.upload_key_packages(packages)
+    
+    async def update_leaf(self, group_id: str):
+        """Update leaf key for post-compromise security"""
+        group = self.get_group(group_id)
+        await group.update_leaf_key()
+        await group.commit()
 ```
 
 ### 6. Network Security
@@ -109,7 +121,39 @@ class KeyManager:
 - No communication pattern analysis
 - Peer discovery through DHT (no central directory)
 
-### 7. Agent Security
+### 7. Group Security (MLS-Specific)
+
+#### Group Management
+```python
+class MLSGroupSecurity:
+    """Security for MLS group operations"""
+    
+    async def validate_proposal(self, proposal: MLSProposal):
+        """Validate group change proposals"""
+        # Check proposer has permission
+        if not self.has_permission(proposal.sender, proposal.type):
+            raise PermissionDenied()
+        
+        # Validate cryptographic proof
+        if not await self.verify_proposal_signature(proposal):
+            raise InvalidSignature()
+        
+        return True
+    
+    async def enforce_group_policy(self, group_id: str):
+        """Enforce group security policies"""
+        group = self.get_group(group_id)
+        
+        # Maximum group size
+        if group.member_count > 50000:
+            raise GroupTooLarge()
+        
+        # Require periodic key updates
+        if group.last_update > datetime.now() - timedelta(days=7):
+            await group.update_epoch()
+```
+
+### 8. Agent Security
 
 #### Agent Isolation
 - Each agent runs in isolated context
@@ -152,7 +196,7 @@ class KeyManager:
 |-----------------|--------|--------|
 | Local Data Sovereignty | ✅ Implemented | 1 |
 | Basic Encryption (AES) | ✅ Implemented | 1 |
-| Signal Protocol | ⏳ Planned | 5 |
+| MLS Protocol (RFC 9420) | ⏳ Planned | 5 |
 | Trust Verification | ⏳ Planned | 5 |
 | K-Anonymity | ⏳ Planned | 6 |
 | Sharing Contracts | ⏳ Planned | 6 |
@@ -166,9 +210,9 @@ class KeyManager:
 - Database encryption
 
 ### Phase 2: Communication Security (Sprint 5)
-- Signal Protocol integration
-- E2E encrypted messaging
-- Group chat encryption
+- MLS Protocol integration via OpenMLS
+- E2E encrypted group messaging
+- Asynchronous member management
 
 ### Phase 3: Privacy Layer (Sprint 6)
 - K-anonymity implementation
@@ -203,7 +247,8 @@ The protocol will undergo security audits at these milestones:
 
 ## Additional Resources
 
-- [Signal Protocol Specifications](https://signal.org/docs/)
+- [MLS Protocol RFC 9420](https://datatracker.ietf.org/doc/rfc9420/)
+- [OpenMLS Documentation](https://openmls.tech/)
 - [libsodium Documentation](https://doc.libsodium.org/)
 - [OWASP Security Guidelines](https://owasp.org/)
 

@@ -168,33 +168,40 @@ Each sprint is designed for a single uninterrupted AI coding session (2-4 hours)
 ---
 
 ## 🚀 Sprint 5: Secure Communications Layer
-**Goal**: Implement Signal Protocol for E2E encrypted messaging  
+**Goal**: Implement MLS Protocol (RFC 9420) for scalable E2E encrypted group messaging  
 **Duration**: Single session (~3 hours)  
 **Dependencies**: Sprint 4
 
 ### Implementation Block
 ```python
 # Complete these files in sequence:
-1. backend/crypto/signal_protocol.py     # Signal Protocol wrapper
-2. backend/crypto/key_manager.py        # Key generation & storage
-3. backend/crypto/session_manager.py    # Session establishment
+1. backend/crypto/mls_wrapper.py        # OpenMLS Rust FFI wrapper
+2. backend/crypto/key_packages.py       # Key package management
+3. backend/crypto/group_manager.py      # MLS group operations
 4. backend/services/messaging.py        # Secure messaging service
-5. backend/api/v1/messages.py          # Messaging endpoints
-6. backend/workers/message_worker.py    # Message processing
-7. backend/crypto/group_messaging.py    # Group chat with sender keys
-8. backend/crypto/trust_verification.py # Safety numbers & verification
+5. backend/api/v1/groups.py            # Group management endpoints
+6. backend/api/v1/messages.py          # Messaging endpoints
+7. backend/workers/mls_worker.py        # Async MLS operations
+8. backend/crypto/credential_manager.py # Identity credentials
 ```
 
+### Key Features
+- **Asynchronous group operations** - Add/remove members while offline
+- **Logarithmic scaling** - Efficient for groups up to 50,000+
+- **Multi-device support** - Seamless cross-device sync
+- **Tree-based architecture** - O(log n) complexity
+
 ### Deliverable
-- Complete E2E encrypted messaging system
-- Signal Protocol fully integrated
-- Group messaging support
+- Complete MLS-based group messaging system
+- OpenMLS library integrated via Rust FFI
+- Asynchronous member management
+- Scalable group operations
 
 ### Maps to Original Roadmap
-- Signal Protocol for messaging ✓
-- Double Ratchet algorithm ✓
-- Forward & future secrecy ✓
-- Group chat encryption ✓
+- E2E encrypted group messaging ✓
+- Forward secrecy & PCS ✓
+- Collective communications ✓
+- Industry-standard protocol (RFC 9420) ✓
 
 ---
 
@@ -233,32 +240,55 @@ Each sprint is designed for a single uninterrupted AI coding session (2-4 hours)
 ---
 
 ## 🚀 Sprint 7: Frontend Foundation
-**Goal**: Complete React frontend with core functionality  
+**Goal**: Complete React frontend using component library approach  
 **Duration**: Single session (~4 hours)  
 **Dependencies**: Sprint 4 (API must exist)
+
+### UI Architecture Decision
+- **Component Library**: shadcn/ui (copy-paste components)
+- **Base Components**: Radix UI (unstyled, accessible)
+- **Styling**: Tailwind CSS (utility-first)
+- **Approach**: Build from proven patterns, not reinvent the wheel
+- **Inspiration**: ChatGPT/Claude UI patterns (sidebar + chat)
 
 ### Implementation Block
 ```javascript
 // Complete these files in sequence:
-1. frontend/src/config/api.ts           // API configuration
-2. frontend/src/stores/auth.ts          // Auth state management
-3. frontend/src/stores/memory.ts        // Memory state
-4. frontend/src/stores/chat.ts          // Chat state
-5. frontend/src/components/Auth.tsx     // Login/Register
-6. frontend/src/components/Chat.tsx     // Chat interface
-7. frontend/src/components/MemoryList.tsx // Memory sidebar
-8. frontend/src/components/Kartouche.tsx  // Signal visualization
-9. frontend/src/pages/Dashboard.tsx     // Main dashboard
-10. frontend/src/App.tsx               // App assembly
-11. frontend/src/styles/              // All styling
+1. frontend/package.json                // Dependencies (Radix, Tailwind)
+2. frontend/tailwind.config.js         // Tailwind configuration
+3. frontend/src/lib/utils.ts           // shadcn/ui utilities
+4. frontend/src/config/api.ts          // API configuration
+5. frontend/src/stores/auth.ts         // Auth state management
+6. frontend/src/stores/memory.ts       // Memory state
+7. frontend/src/stores/chat.ts         // Chat state
+8. frontend/src/components/ui/         // shadcn/ui base components
+9. frontend/src/components/Auth.tsx    // Login/Register with shadcn/ui
+10. frontend/src/components/Chat.tsx   // Chat interface (GPT-style)
+11. frontend/src/components/Sidebar.tsx // Memory/conversation sidebar
+12. frontend/src/components/Kartouche.tsx // Signal visualization
+13. frontend/src/pages/Dashboard.tsx   // Main dashboard layout
+14. frontend/src/App.tsx              // App assembly with routing
+```
+
+### Component Library Setup
+```bash
+# shadcn/ui components to include:
+- Button, Input, Label, Card
+- Dialog, Sheet, Tabs
+- ScrollArea, Separator
+- Avatar, Badge, Toast
+- Form components (react-hook-form)
 ```
 
 ### Deliverable
-- Complete functional frontend
-- Chat interface with memory sidebar
+- Complete functional frontend with modern UI
+- GPT-style chat interface with memory sidebar
+- Responsive design with Tailwind CSS
+- Accessible components via Radix UI
 
 ### Maps to Original Roadmap
 - Week 3: Basic web UI (partial) ✓
+- Modern component-based architecture ✓
 
 ---
 

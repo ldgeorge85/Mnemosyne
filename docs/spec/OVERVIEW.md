@@ -79,7 +79,7 @@ The first members are **Recursive Strategists in Exile**—those who:
 │    (Shared knowledge graphs + A2A)      │
 ├─────────────────────────────────────────┤
 │       Secure Communications             │
-│   (Signal Protocol for E2E messaging)   │
+│   (MLS Protocol RFC 9420 for groups)    │
 ├─────────────────────────────────────────┤
 │      Trust Networks & Discovery         │
 │   (Progressive trust + peer finding)    │

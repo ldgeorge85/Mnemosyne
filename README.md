@@ -80,10 +80,11 @@ Symbolic identity compression system
 - **Drift Tracking**: Identity evolution over time
 
 ### Layer 3: Secure Communications 🔐
-End-to-end encrypted messaging via Signal Protocol
-- **E2E Encryption**: All communications are secure
-- **Group Chat**: Multi-party encryption with sender keys
-- **Forward Secrecy**: Past messages stay secure
+End-to-end encrypted messaging via MLS Protocol (RFC 9420)
+- **Scalable E2E Encryption**: Groups from 2 to 50,000+ members
+- **Asynchronous Operations**: Add/remove members while offline
+- **Logarithmic Efficiency**: O(log n) operations via tree structure
+- **Forward Secrecy & PCS**: Automatic security healing
 
 ### Layer 4: Quiet Network 🌐
 Peer discovery and trust establishment
@@ -115,8 +116,11 @@ Philosophical debate engine with 10+ agent archetypes:
 
 - **Backend**: FastAPI, SQLAlchemy, PostgreSQL, pgvector, Redis
 - **Frontend**: React, TypeScript, Vite
+  - **UI Components**: shadcn/ui, Radix UI primitives
+  - **Styling**: Tailwind CSS
+  - **State Management**: Zustand
 - **AI/LLM**: OpenAI-compatible endpoints (vLLM, Ollama, etc.)
-- **Security**: Signal Protocol for E2E encryption, libsodium for crypto
+- **Security**: MLS Protocol (RFC 9420) via OpenMLS, libsodium for crypto
 - **Deployment**: Docker Compose → Kubernetes
 - **Languages**: Python 3.11+, TypeScript
 
@@ -139,7 +143,7 @@ Philosophical debate engine with 10+ agent archetypes:
 ### In Progress
 - 🔄 Authentication system
 - 🔄 Cognitive Signature visual identity (Kartouche)
-- 🔄 Signal Protocol secure messaging
+- 🔄 MLS Protocol secure group messaging
 - 🔄 Peer-to-peer networking
 - 🔄 Collective sharing contracts
 

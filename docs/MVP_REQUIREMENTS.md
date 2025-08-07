@@ -85,13 +85,18 @@ cp -r /home/lewis/dev/personal/mnemosyne/backend /home/lewis/dev/personal/protoc
 ### Step 2: Create Minimal Frontend (4 hours)
 ```bash
 # Set up React with Vite
-cd /home/lewis/dev/personal/protocol/frontend
+cd /home/lewis/dev/personal/mnemosyne/frontend
 npm create vite@latest . -- --template react-ts
 
-# Install dependencies
-npm install axios @chakra-ui/react zustand
+# Install core dependencies
+npm install axios zustand react-router-dom
 
-# Create basic chat components
+# Install UI libraries (component-based approach)
+npm install tailwindcss @radix-ui/react-dialog @radix-ui/react-scroll-area
+npm install clsx tailwind-merge react-hook-form
+
+# Copy shadcn/ui components as needed
+# Create GPT-style chat interface
 ```
 
 ### Step 3: Connect & Test (2 hours)

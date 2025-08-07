@@ -34,7 +34,7 @@ The Mnemosyne Protocol gives you both: A personal AI system that actually works 
 ### Why Now?
 - LLMs finally make personal AI agents practical
 - Vector databases enable semantic memory at scale
-- Privacy tech (ZK proofs, homomorphic encryption) is maturing
+- Privacy tech (MLS protocol, ZK proofs) is production-ready
 - People are waking up to surveillance capitalism
 - The loneliness epidemic demands new connection models
 
@@ -127,7 +127,7 @@ The Mnemosyne Protocol is different. It's built by someone like you, for people 
 "Imagine if the smartest people you know could share knowledge without exposing themselves. That's what we're enabling."
 
 ### The Technical Angle
-"We've combined pgvector, LangChain, and zero-knowledge proofs to create something genuinely new: trustless collective intelligence."
+"We've combined pgvector, LangChain, MLS group encryption (RFC 9420), and zero-knowledge proofs to create something genuinely new: trustless collective intelligence at scale."
 
 ---
 
@@ -143,9 +143,10 @@ The Mnemosyne Protocol is different. It's built by someone like you, for people 
 ### For the Collective
 1. **Shared Intelligence** - Learn from the group without exposure
 2. **Pattern Recognition** - See trends across the network
-3. **Trust Without Surveillance** - Verify without violating
-4. **Emergent Wisdom** - The collective becomes smarter
-5. **Cultural Evolution** - New forms of coordination
+3. **Scalable Privacy** - MLS encryption for groups up to 50,000+
+4. **Trust Without Surveillance** - Verify without violating
+5. **Emergent Wisdom** - The collective becomes smarter
+6. **Cultural Evolution** - New forms of coordination
 
 ---
 

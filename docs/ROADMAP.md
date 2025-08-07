@@ -15,23 +15,23 @@
 - [x] Pydantic Settings configuration system ✅ Sprint 1
 - [x] Database schema with async SQLAlchemy ✅ Sprint 1
 - [x] Qdrant vector database integration (multi-embedding support) ✅ Sprint 1
-- [ ] Async pipeline architecture for memory processing (Sprint 2)
-- [ ] Core API endpoints with OpenAI-compatible interface (Sprint 4)
+- [x] Async pipeline architecture for memory processing ✅ Sprint 2
+- [x] Core API endpoints with OpenAI-compatible interface ✅ Sprint 4
 - [x] Redis/KeyDB for event streaming and queues ✅ Sprint 1
-- [ ] Reflection layer with drift detection (Sprint 2)
-- [ ] Signal lifecycle management (decay and re-evaluation) (Sprint 5)
+- [x] Reflection layer with drift detection ✅ Sprint 2
+- [ ] Signal lifecycle management (decay and re-evaluation) (Sprint 6)
 
 ### Week 2: Intelligence Layer & Agent Orchestration
-- [ ] Event-driven agent orchestration via Redis streams
-- [ ] LangChain integration for structured agent interactions
-- [ ] Pipeline-based memory processing workflows
-- [ ] Port 3 core agents with async reflection patterns
-- [ ] Memory consolidation with concurrent processing
-- [ ] Webhook system for external event capture
+- [x] Event-driven agent orchestration via Redis streams ✅ Sprint 3
+- [x] LangChain integration for structured agent interactions ✅ Sprint 3
+- [x] Pipeline-based memory processing workflows ✅ Sprint 2
+- [x] Port 3 core agents with async reflection patterns ✅ Sprint 3
+- [x] Memory consolidation with concurrent processing ✅ Sprint 2
+- [x] Webhook system for external event capture ✅ Sprint 4
 - [ ] Real integration testing framework (no mocks)
-- [ ] K-anonymity implementation with privacy pipelines
+- [ ] K-anonymity implementation with privacy pipelines (Sprint 6)
 - [ ] A2A protocol compatibility layer
-- [ ] Security layer with rate limiting and reputation
+- [x] Security layer with rate limiting and reputation ✅ Sprint 4
 
 ### Week 3: Production Deployment & Interface
 - [ ] Deep Signal generation with vector embeddings
@@ -50,11 +50,35 @@
 
 ---
 
+## Research-Informed Enhancements (NEW)
+
+### Symbolic Systems Integration
+- [ ] Map 22 Major Arcana to agent archetypes
+- [ ] Implement 5 symbolic operators (SEEK, REVOKE, AMPLIFY, STABILIZE, DRIFT)
+- [ ] Unicode Alchemical symbols (U+1F700-1F77F) for glyphs
+- [ ] Agent lifecycle state machine (INIT→ORIENT→ACT→ECHO→CONSOLIDATE→REST)
+- [ ] Kartouche SVG rendering with fracture visualization
+
+### Trust & Reputation Systems
+- [ ] EigenTrust algorithm implementation
+- [ ] Multi-dimensional trust metrics (Echo, Fractal, Drift)
+- [ ] Trust ceremony protocols with cryptographic proofs
+- [ ] Flow-based group capacity limits
+- [ ] Sybil attack resistance mechanisms
+
+### Memory Dynamics
+- [ ] Ebbinghaus forgetting curve with multi-factor decay
+- [ ] REM-like consolidation cycles
+- [ ] Spaced repetition with Fibonacci intervals
+- [ ] Collective memory pressure effects
+- [ ] Memory pinning for critical memories
+
 ## Phase 2: Early Adopters (Weeks 4-8)
 
 ### Week 4-5: Privacy & Security
 - [ ] Zero-knowledge proofs (real implementation)
 - [ ] Differential privacy (ε=1.0)
+- [ ] MLS Protocol integration via OpenMLS (Sprint 5)
 - [ ] Advanced encryption layers
 - [ ] Revocation system
 - [ ] Security audit

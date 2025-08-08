@@ -1,8 +1,8 @@
-# Implementation Guide
+# Implementation Guide - Dual-Track Architecture
 
 ## Building the Mnemosyne Protocol
 
-This guide walks through implementing the protocol from scratch, focusing on the critical path to a working system.
+This guide walks through implementing the dual-track protocol, separating proven Track 1 features from experimental Track 2 research.
 
 ---
 
@@ -10,34 +10,65 @@ This guide walks through implementing the protocol from scratch, focusing on the
 
 **Build Real or Defer** - No mocking, no fake implementations. Every feature either works completely or is explicitly deferred.
 
+**Dual-Track Separation**:
+- **Track 1**: W3C DIDs, OAuth 2.0, MLS Protocol, proven AI techniques
+- **Track 2**: Identity compression, behavioral tracking, symbolic resonance (with hypothesis docs)
+
 ---
 
 ## Critical Path
 
-The minimum viable path to a working protocol:
-
+### Track 1 (Production) Path:
 ```
-1. Memory Model → 2. Agent System → 3. Sharing Contracts → 4. Collective Instance
+1. W3C DID System → 2. OAuth/WebAuthn → 3. MLS Sharing → 4. Standard Agents
+```
+
+### Track 2 (Research) Path:
+```
+1. Hypothesis Docs → 2. Consent System → 3. Metrics Collection → 4. Validation
 ```
 
 ---
 
 ## Phase 1: Personal Memory System (Days 1-3)
 
-### Step 1: Configuration Setup
+### Step 1: Dual-Track Configuration
 
 ```python
 # core/config.py
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+from enum import Enum
+
+class TrackMode(str, Enum):
+    PRODUCTION = "production"
+    RESEARCH = "research"
 
 class Settings(BaseSettings):
+    # Track Configuration
+    track: TrackMode = TrackMode.PRODUCTION
+    experimental_features: bool = False
+    consent_required: bool = False
+    
+    # Core Infrastructure
     database_url: str
     redis_url: str = "redis://redis:6379/0"
     qdrant_host: str = "qdrant"
     qdrant_port: int = 6333
+    
+    # Authentication (Track 1)
+    oauth_client_id: str = ""
+    oauth_client_secret: str = ""
+    w3c_did_enabled: bool = True
+    w3c_did_method: str = "mnem"
+    
+    # AI Providers
     openai_api_key: str = ""
+    anthropic_api_key: str = ""
+    
+    # Security & Compliance
     encryption_key: str
+    eu_ai_act_compliance: bool = True
     
     class Config:
         env_file = ".env"
@@ -76,16 +107,18 @@ class Memory(Base):
         return memory
 ```
 
-### Step 3: Vector Storage with Qdrant
+### Step 3: Vector Storage with Track Separation
 
 ```python
 # core/vectors.py
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
+from core.features import FeatureFlags
 
 class VectorStore:
     def __init__(self):
         settings = get_settings()
+        self.settings = settings
         self.client = QdrantClient(
             host=settings.qdrant_host,
             port=settings.qdrant_port
@@ -93,11 +126,18 @@ class VectorStore:
         self.collection_name = "memories"
         
     async def init_collection(self):
+        vectors_config = {
+            "content": VectorParams(size=1536, distance=Distance.COSINE),  # Track 1
+        }
+        
+        # Track 2: Additional experimental embeddings
+        if self.settings.track == TrackMode.RESEARCH and FeatureFlags.is_enabled("experimental.multi_embedding"):
+            vectors_config["semantic"] = VectorParams(size=768, distance=Distance.COSINE)
+            vectors_config["behavioral"] = VectorParams(size=384, distance=Distance.COSINE)
+        
         await self.client.create_collection(
             collection_name=self.collection_name,
-            vectors_config={
-                "content": VectorParams(size=1536, distance=Distance.COSINE),
-                "semantic": VectorParams(size=768, distance=Distance.COSINE)
+            vectors_config=vectors_config
             }
         )
     
@@ -122,15 +162,23 @@ import asyncio
 from typing import Dict, Any, List
 
 class MemoryPipeline(ABC):
-    """Base pipeline for async memory processing"""
+    """Base pipeline for async memory processing with track awareness"""
     
     def __init__(self):
         self.settings = get_settings()
         self.vector_store = VectorStore()
+        self.track = self.settings.track
         
     @abstractmethod
     async def process(self, memory: Dict[str, Any]) -> Dict[str, Any]:
         pass
+    
+    def require_consent(self, feature: str) -> bool:
+        """Check if experimental feature requires consent"""
+        return (
+            self.track == TrackMode.RESEARCH and 
+            FeatureFlags.is_experimental(feature)
+        )
     
     async def run(self, memories: List[Dict]):
         """Process multiple memories concurrently"""

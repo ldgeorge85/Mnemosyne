@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Mnemosyne frontend provides a chat-first AI assistant interface with perfect memory. Built using modern React patterns and proven component libraries, it delivers a familiar GPT-style experience while maintaining complete data sovereignty.
+The Mnemosyne frontend provides a dual-track interface separating production features (Track 1) from experimental research (Track 2). Built using modern React patterns and proven component libraries, it delivers a familiar GPT-style experience while maintaining complete data sovereignty and clear experimental boundaries.
 
 ## Design Philosophy
 
@@ -92,10 +92,14 @@ frontend/
 │   │   │   ├── LoginForm.tsx
 │   │   │   ├── RegisterForm.tsx
 │   │   │   └── AuthGuard.tsx
-│   │   └── layout/
-│   │       ├── Header.tsx
-│   │       ├── Sidebar.tsx
-│   │       └── Layout.tsx
+│   │   ├── layout/
+│   │   │   ├── Header.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   └── Layout.tsx
+│   │   └── experimental/    # Track 2 components
+│   │       ├── ConsentBanner.tsx
+│   │       ├── ResearchMetrics.tsx
+│   │       └── ExperimentalBadge.tsx
 │   ├── pages/
 │   │   ├── Dashboard.tsx    # Main chat interface
 │   │   ├── Login.tsx
@@ -105,6 +109,8 @@ frontend/
 │   │   ├── auth.ts          # Authentication state
 │   │   ├── chat.ts          # Chat messages & state
 │   │   ├── memory.ts        # Memory management
+│   │   ├── features.ts      # Feature flags & track mode
+│   │   ├── consent.ts       # Research consent management
 │   │   └── ui.ts            # UI preferences
 │   ├── lib/
 │   │   ├── api.ts           # API client
@@ -138,22 +144,77 @@ frontend/
 - Quick memory actions
 ```
 
-### 3. Authentication Flow
+### 3. Authentication Flow (Track 1)
 ```typescript
-// Secure user management:
-- JWT-based authentication
-- Register with email/password
-- Persistent sessions
-- Secure token refresh
+// Standards-based authentication:
+- OAuth 2.0 + OpenID Connect
+- WebAuthn/FIDO2 for passwordless
+- W3C DID integration
+- MLS key packages for E2E encryption
+- JWT tokens with refresh
 ```
 
 ### 4. Kartouche Visualization
 ```typescript
-// Unique visual identity:
+// Track 1: Standard avatars
+- User-uploaded images
+- Gravatar integration
+- Default geometric patterns
+
+// Track 2: Experimental symbolic (requires consent)
 - SVG-based symbolic representation
 - Dynamic generation from cognitive signature
 - Interactive hover states
 - Export capabilities
+```
+
+## Dual-Track UI Features
+
+### Track Mode Indicator
+```typescript
+// Visual indication of active track
+interface TrackIndicator {
+  mode: 'production' | 'research';
+  features: string[];  // Active experimental features
+  consentStatus: boolean;
+}
+
+// Top bar component shows:
+- Green badge for Track 1 (Production)
+- Yellow badge for Track 2 (Research)
+- List of active experimental features
+```
+
+### Consent Management
+```typescript
+// Track 2 features require explicit consent
+interface ConsentDialog {
+  feature: string;
+  hypothesis: string;  // Link to hypothesis doc
+  dataCollected: string[];
+  risks: string[];
+  benefits: string[];
+}
+
+// Consent flow:
+1. User attempts to access Track 2 feature
+2. Consent dialog explains research
+3. User accepts/declines participation
+4. Decision logged with timestamp
+```
+
+### Feature Flags UI
+```typescript
+// Settings page shows available features
+interface FeatureToggle {
+  id: string;
+  name: string;
+  track: 'production' | 'experimental';
+  enabled: boolean;
+  requiresConsent: boolean;
+  description: string;
+  hypothesisUrl?: string;
+}
 ```
 
 ## UI/UX Patterns

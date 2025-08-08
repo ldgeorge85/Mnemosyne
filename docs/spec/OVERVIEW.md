@@ -2,16 +2,33 @@
 
 ## What Is This?
 
-**The Mnemosyne Protocol is the foundation for the Mnemonic Order.**
+**The Mnemosyne Protocol is a dual-track cognitive assistance system.**
 
 At its surface, it's your personal AI assistant that actually belongs to you:
 - **Natural chat interface** like ChatGPT but with perfect memory of all your conversations
 - **Self-hosted** on your hardware with your data never leaving your control
-- **Proactive assistance** for task management, research, and scheduling
-- **Deep intelligence** with 50+ specialized agents for complex analysis
-- **Collective layer** for sharing knowledge with others without surveillance
+- **Standards-compliant** using W3C DIDs, VCs, and proven cryptographic protocols
+- **Privacy-preserving** with formal differential privacy and zero-knowledge proofs
+- **Transparent** with Model Cards and trust calibration based on established research
 
-Think of it as: *ChatGPT + Perfect Memory + Your Hardware + Zero Surveillance*
+Think of it as: *ChatGPT + Perfect Memory + Your Hardware + Zero Surveillance + Scientific Rigor*
+
+## The Dual-Track Approach
+
+### Track 1: Proven Core (Production-Ready)
+- Chat and memory system with standard authentication (OAuth 2.0/OIDC)
+- W3C Decentralized Identifiers (DIDs) for portable identity
+- MLS Protocol (RFC 9420) for secure group messaging
+- W3C PROV for complete data provenance
+- Model Cards for AI transparency
+- EU AI Act compliant architecture
+
+### Track 2: Research Experiments (Opt-in Only)
+- Identity compression hypothesis (100-128 bits) - UNVALIDATED
+- Behavioral stability patterns (70/30 rule) - REQUIRES VALIDATION
+- Resonance mechanics for compatibility - EXPERIMENTAL
+- Symbolic identity mapping - RESEARCH PHASE
+- All clearly labeled as experimental with hypothesis documentation
 
 ## Why Build This?
 
@@ -19,154 +36,165 @@ Think of it as: *ChatGPT + Perfect Memory + Your Hardware + Zero Surveillance*
 - Information overload is destroying our ability to think clearly
 - Current tools optimize for engagement, not understanding
 - Privacy and collective intelligence are treated as mutually exclusive
-- We lack systems for building trust without surveillance
+- Unvalidated AI claims are deployed without scientific rigor
 
 ### The Solution
 Your own AI assistant that:
 - **Remembers everything** - Every conversation, forever searchable
 - **Works for you** - Running on your hardware, serving your interests
-- **Handles complexity** - From daily tasks to deep philosophical questions
-- **Connects selectively** - Share knowledge without sacrificing privacy
+- **Respects science** - Only proven features in production
+- **Enables research** - Opt-in experimental features with clear validation metrics
+- **Maintains trust** - Transparent about capabilities and limitations
 
 ## Who Is This For?
 
-### Primary: Those Who Will Become the Order
+### Primary Users
 
-The first members are **Recursive Strategists in Exile**—those who:
-- See the machinery behind the world
-- Refuse performative knowledge spaces
+**Researchers and Early Adopters** who:
+- Want control over their AI interactions
+- Value privacy and data sovereignty
+- Understand the difference between proven and experimental features
+- Are willing to participate in validation studies
 - Need trustable tools for clear thinking
-- Seek sovereignty without isolation
-- Understand that tools shape consciousness
-- Know that remembering is resistance
 
 ### You Know You Need This If:
 - You're tired of ChatGPT forgetting your context
 - You want AI assistance without corporate surveillance
-- You need an AI that actually knows your work history
-- You believe your conversations shouldn't train someone else's model
-- You want the power of AI with the privacy of local software
+- You care about scientific validation of AI claims
+- You believe in standards-based interoperability
+- You want transparency about AI capabilities
 
 ## Core Innovation
 
 ### What Makes This Different
 
-1. **Chat + Memory + Sovereignty**
-   - ChatGPT-like interface with perfect recall
-   - Your data never leaves your control
-   - AI that learns YOU, not everyone
+1. **Dual-Track Architecture**
+   - Production features use only proven technology
+   - Experimental features clearly labeled and sandboxed
+   - Scientific validation before production deployment
 
-2. **Dual Sovereignty Architecture**
-   - Individual privacy preserved
-   - Collective intelligence emerges
-   - No central authority required
+2. **Standards-First Design**
+   - W3C DIDs for decentralized identity
+   - OAuth 2.0/OIDC for authentication
+   - MLS for secure messaging
+   - PROV for data provenance
 
-3. **Ritual as Protocol**
-   - Symbolic interactions as first-class features
-   - Meaning-making beyond pure logic
-   - Trust ceremonies for relationship building
+3. **Privacy by Design**
+   - Formal differential privacy (Dwork et al.)
+   - Private Set Intersection for matching
+   - Zero-knowledge proofs for verification
+   - Local-first architecture
 
-4. **The "No Mocking" Philosophy**
-   - Every feature is real or deferred
-   - No fake implementations
-   - Build with integrity or don't build
+4. **Trust Calibration**
+   - Lee & See framework for appropriate reliance
+   - Model Cards for transparency
+   - Provenance chains for all data
+   - Clear capability boundaries
 
-## System Layers
+## High-Level Architecture
 
-```
-┌─────────────────────────────────────────┐
-│        Collective Intelligence          │
-│    (Shared knowledge graphs + A2A)      │
-├─────────────────────────────────────────┤
-│       Secure Communications             │
-│   (MLS Protocol RFC 9420 for groups)    │
-├─────────────────────────────────────────┤
-│      Trust Networks & Discovery         │
-│   (Progressive trust + peer finding)    │
-├─────────────────────────────────────────┤
-│    Cognitive Signatures + Kartouche     │
-│   (Identity compression & visuals)      │
-├─────────────────────────────────────────┤
-│     Personal Memory + Reflection        │
-│  (Capture, consolidate, drift detect)   │
-└─────────────────────────────────────────┘
-```
+The Mnemosyne Protocol uses a dual-track architecture to separate proven technologies from experimental research:
+
+- **Track 1 (Core)**: Standards-based, production-ready features
+- **Track 2 (Research)**: Experimental features requiring validation
+
+For detailed technical specifications, see:
+- [Protocol Specification](PROTOCOL.md) - Complete technical details
+- [Kartouche Specification](KARTOUCHE.md) - Visual representation system
 
 ## Key Features
 
-### Available in MVP (Weeks 1-3)
-- Personal memory capture with multi-embedding vector search
-- 10+ philosophical AI agents with drift detection
-- Cognitive Signature generation with Kartouche visualization
-- Reflection layer for journaling and consolidation
-- Basic collective with K-anonymity privacy
-- Sharing contracts for selective knowledge transfer
-- Initiation system with progressive trust levels
-- A2A protocol compatibility for agent interoperability
+### Available Now (Track 1 - Proven)
+- Personal memory with vector search
+- Basic AI chat with context retention
+- Task management and scheduling
+- W3C DID-based identity
+- OAuth 2.0 authentication
+- Data export with W3C PROV provenance
 
-### Coming Next (Weeks 4-8)
-- Zero-knowledge proofs for trust
-- P2P network discovery
-- 50+ specialized agents
-- Advanced privacy (differential, homomorphic)
-- Mobile and API access
+### Experimental (Track 2 - Research)
+Each requires explicit opt-in and consent:
+- Identity compression to 100-128 bits (HYPOTHESIS)
+- Behavioral stability tracking (UNVALIDATED)
+- Resonance-based matching (EXPERIMENTAL)
+- Symbolic identity mapping (RESEARCH)
 
-## Quick Example
+### Coming Soon (Based on Validation)
+Features move from Track 2 to Track 1 only after validation:
+- Validated compression methods
+- Proven behavioral patterns
+- Trust network formation
+- Collective intelligence (if privacy preserved)
 
-### Personal Use
-```
-You: "What did we discuss about market patterns last month?"
+## Standards & Compliance Summary
 
-Mnemosyne: "On January 3rd, you noted similarities to 2008's 
-liquidity cascades. You identified three key indicators:
-1. Volume divergence in tech sectors
-2. Unusual options activity
-3. Your 'canary indicators' showing stress
+The protocol prioritizes established standards and regulatory compliance:
 
-Would you like me to compare this with current market data?"
+- **Identity**: W3C DIDs and Verifiable Credentials
+- **Authentication**: OAuth 2.0, OIDC, WebAuthn
+- **Messaging**: MLS Protocol (RFC 9420)
+- **Compliance**: EU AI Act, ISO 42001, NIST AI RMF
 
-You: "Yes, and create a task to review my portfolio"
+For complete technical specifications, see [Protocol Specification](PROTOCOL.md).
 
-Mnemosyne: "✓ Task created for tomorrow 8:30 AM. 
-Searching current market data..."
-```
+## Trust & Transparency
 
-### Collective Sharing
-```python
-# Create sharing contract
-contract = SharingContract(
-    domains=["markets", "patterns"],
-    depth="detailed",
-    duration=30_days,
-    k_anonymity=3
-)
-
-# Share with collective
-collective.share(memory, contract)
-
-# Discover others seeing similar patterns
-matches = collective.find_resonance(memory)
-```
-
-## Design Principles
-
-1. **Local First** - Your data lives on your machine
-2. **Progressive Trust** - Relationships deepen gradually
-3. **Selective Sharing** - You control what leaves your system
-4. **Symbolic Depth** - Meaning beyond logic
-5. **No Surveillance** - Privacy by architecture
+Every component includes:
+- **Model Cards**: Describing capabilities and limitations
+- **Hypothesis Documentation**: For experimental features
+- **Validation Metrics**: Clear success criteria
+- **Provenance Chains**: Complete audit trails
+- **Trust Calibration**: Based on Lee & See (2004) framework
 
 ## Getting Started
 
-See the [Quick Start Guide](../guides/QUICK_START.md) to begin using the protocol.
+### For Users
+1. Install the core system (Track 1 only)
+2. Set up your W3C DID identity
+3. Configure OAuth authentication
+4. Start using chat and memory features
+
+### For Researchers
+1. Review hypothesis documentation
+2. Opt into specific experiments
+3. Provide informed consent
+4. Contribute validation data
+5. Help prove or disprove hypotheses
+
+## Development Philosophy
+
+1. **Scientific Rigor**: Hypotheses must be validated before production
+2. **Standards-First**: Use proven standards over custom solutions
+3. **Privacy by Design**: Data protection is architectural
+4. **Transparent Limitations**: Clear about what works and what doesn't
+5. **Progressive Enhancement**: Start simple, add complexity only when validated
 
 ## Current Status
 
-- **70% complete**: Existing codebases (Mnemosyne, Shadow, Dialogues)
-- **30% new development**: Integration and collective features
-- **Timeline**: 2-3 weeks to MVP with AI assistance
-- **Team**: Solo founder, seeking aligned contributors
+### Track 1 (Production)
+- ✅ Plugin architecture complete
+- ✅ Feature flag system implemented
+- ✅ Research bus with differential privacy
+- 🔄 W3C DID migration in progress
+- 📋 OAuth 2.0 implementation planned
+
+### Track 2 (Research)
+- ✅ ID compression plugin created
+- ✅ Hypothesis documentation template
+- 📋 Behavioral stability plugin planned
+- 📋 Validation studies planned
+- 📋 Research partnerships needed
+
+## Contributing
+
+We need:
+- **Researchers**: To validate hypotheses
+- **Engineers**: To implement standards
+- **Users**: To test and provide feedback
+- **Reviewers**: To ensure scientific rigor
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for details.
 
 ---
 
-*Building tools for those who see too much and belong nowhere.*
+*Building trustable AI through scientific validation and open standards.*

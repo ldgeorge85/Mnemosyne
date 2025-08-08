@@ -26,19 +26,19 @@ Based on extensive research into symbolic systems, trust models, and memory dyna
 
 ## Implementation Priorities
 
-### Immediate (Sprint 5-6)
-1. **Implement five symbolic operators** as cross-cutting concerns
-2. **Map first 10 Tarot cards** to existing agents
-3. **Add basic EigenTrust** with pre-trusted seeds
-4. **Implement Ebbinghaus decay** with importance weighting
+### Track 2: Experimental (Requires Validation)
+1. **Symbolic operators** - Requires hypothesis validation
+2. **Tarot mapping** - Cultural universality needs testing
+3. **Advanced trust ceremonies** - Experimental social mechanics
+4. **REM consolidation** - Needs neuroscience validation
 
-### Next Phase (Sprint 7-8)
-1. **Full 22 Arcana** agent system
-2. **Trust ceremonies** with cryptographic proofs
-3. **REM consolidation cycles**
-4. **Unicode glyph selection UI**
+### Track 1: Proven Approaches
+1. **EigenTrust algorithm** - Well-established PageRank variant
+2. **Ebbinghaus forgetting curve** - Validated memory model
+3. **Standard trust metrics** - Based on established frameworks
+4. **Unicode symbols** - W3C standard character set
 
-### Future (Post-MVP)
+### Future Research
 1. **Custom SVG Kartouche** rendering
 2. **Advanced trust metrics** (ITRM)
 3. **Predictive memory models**

@@ -1,431 +1,320 @@
-# AI Agent Coding Sprint Roadmap
+# AI Agent Coding Sprint Roadmap - Dual-Track Edition
+
+*This is the sprint-optimized version of the [main roadmap](ROADMAP.md) for AI coding sessions*
 
 ## Design Philosophy
 
-This roadmap is optimized for AI agent coding sessions where we want to:
-1. **Maximize uninterrupted coding time** - Complete entire subsystems without stopping
-2. **Batch related components** - Group items that share dependencies/context
-3. **Defer testing/feedback** - Complete full implementation before validation
-4. **Enable parallel work** - Structure allows multiple agents or sessions
+This roadmap is optimized for AI agent coding sessions with dual-track separation:
+1. **Track 1 Sprints**: Proven, standards-based features only
+2. **Track 2 Sprints**: Experimental features with clear hypothesis docs
+3. **Maximize uninterrupted coding** - Complete subsystems without stopping
+4. **Enable parallel work** - Clear separation allows concurrent development
 
-## Current Status Mapping
+## Current Status
 
 ### Completed ✅
-- Repository structure and documentation framework
-- Docker infrastructure (PostgreSQL, Redis running)
-- Environment configuration (.env with API keys)
-- **Sprint 1: Core Data Layer** (2025-01-21)
-  - All 12 files implemented
-  - Database models, Qdrant vectors, Redis streams
-  - Ready for initialization
+- Plugin architecture with experimental separation
+- Feature flag system with audit logging
+- Research Bus with differential privacy
+- Basic backend infrastructure (now being refactored for dual-track)
 
 ### In Progress 🔄
-- Backend Docker build (needs rebuild with new code)
+- W3C DID migration
+- OAuth 2.0/OIDC implementation
+- Model Cards system
 
 ### Not Started ❌
-- Sprints 2-8 implementation
-- Frontend
-- Testing suites
+- Track 2 experimental plugins
+- Consent management
+- EU AI Act compliance docs
 
 ---
 
-## Sprint Structure
+## TRACK 1: PROVEN CORE SPRINTS
 
-Each sprint is designed for a single uninterrupted AI coding session (2-4 hours).
-
-## 🚀 Sprint 1: Core Data Layer
-**Goal**: Complete all database, storage, and configuration infrastructure  
-**Duration**: Single session (~3 hours)  
+## 🚀 Sprint 1A: Standards Foundation
+**Goal**: Implement W3C standards and authentication  
+**Duration**: Single session (~4 hours)  
 **Dependencies**: None
 
 ### Implementation Block
 ```python
-# Complete these files in sequence without testing:
-1. backend/core/config.py                 # Pydantic Settings
-2. backend/core/database.py              # Async SQLAlchemy setup
-3. backend/models/__init__.py            # Base model classes
-4. backend/models/user.py                # User model
-5. backend/models/memory.py              # Memory model with embeddings
-6. backend/models/reflection.py          # Reflection model
-7. backend/models/signal.py              # Deep Signal model
-8. backend/models/sharing.py             # Sharing contracts
-9. backend/core/vectors.py               # Qdrant vector store
-10. backend/core/redis_client.py         # Redis streams setup
-11. backend/db/migrations/001_initial.py # All table creation
-12. backend/scripts/init_db.py           # Database initialization
+# Complete these files in sequence:
+1. backend/core/identity/did.py         # W3C DID implementation
+2. backend/core/identity/vc.py          # Verifiable Credentials
+3. backend/core/auth/oauth.py           # OAuth 2.0 provider
+4. backend/core/auth/oidc.py            # OpenID Connect
+5. backend/core/auth/webauthn.py        # WebAuthn/FIDO2
+6. backend/core/provenance/prov.py      # W3C PROV integration
+7. backend/api/v1/identity.py           # Identity endpoints
+8. backend/api/v1/credentials.py        # VC issuance endpoints
+9. backend/services/did_resolver.py     # DID resolution service
+10. backend/migrations/002_did.py       # Migrate to DIDs
 ```
 
 ### Deliverable
-- Complete data layer with all models and storage configured
-- No testing required during sprint
-
-### Maps to Original Roadmap
-- Week 1: Database schema with async SQLAlchemy ✓
-- Week 1: Qdrant vector database integration ✓
-- Week 1: Pydantic Settings configuration ✓
-- Week 1: Redis/KeyDB for event streaming ✓
+- Standards-compliant identity system
+- OAuth 2.0/OIDC authentication
+- W3C PROV data lineage
 
 ---
 
-## 🚀 Sprint 2: Memory Pipeline System
-**Goal**: Complete memory capture, processing, and retrieval pipeline  
+## 🚀 Sprint 1B: Trust & Transparency
+**Goal**: Implement Model Cards and trust calibration  
 **Duration**: Single session (~3 hours)  
-**Dependencies**: Sprint 1
+**Dependencies**: Sprint 1A
 
 ### Implementation Block
 ```python
 # Complete these files in sequence:
-1. backend/pipelines/base.py             # Base pipeline classes
-2. backend/pipelines/memory_capture.py   # Capture pipeline
-3. backend/pipelines/memory_process.py   # Processing stages
-4. backend/pipelines/consolidation.py    # Memory consolidation
-5. backend/pipelines/reflection.py       # Reflection layer
-6. backend/services/embedding.py         # Embedding service
-7. backend/services/memory_service.py    # Memory CRUD operations
-8. backend/services/search_service.py    # Vector search
-9. backend/core/events.py                # Event streaming
-10. backend/workers/memory_worker.py     # Async workers
+1. backend/core/transparency/model_card.py  # Model Card generator
+2. backend/core/transparency/data_sheet.py  # Data Sheet generator
+3. backend/core/trust/calibration.py        # Lee & See framework
+4. backend/core/trust/abi_model.py          # Ability/Benevolence/Integrity
+5. backend/api/v1/transparency.py           # Transparency endpoints
+6. backend/services/trust_service.py        # Trust scoring
+7. frontend/src/components/ModelCard.tsx    # Model Card UI
+8. frontend/src/components/TrustGauge.tsx   # Trust calibration UI
 ```
 
 ### Deliverable
-- Complete memory processing system with pipelines
-- All async patterns implemented
-
-### Maps to Original Roadmap
-- Week 1: Async pipeline architecture ✓
-- Week 1: Reflection layer with drift detection ✓
-- Week 1: Signal lifecycle management ✓
-- Week 2: Pipeline-based memory workflows ✓
-- Week 2: Memory consolidation ✓
+- Model Cards for all AI components
+- Trust calibration in UI
+- Transparency artifacts
 
 ---
 
-## 🚀 Sprint 3: Agent Orchestration System
-**Goal**: Complete agent system with LangChain integration  
+## 🚀 Sprint 2A: Secure Communications (MLS)
+**Goal**: Implement MLS Protocol for E2E encrypted groups  
 **Duration**: Single session (~4 hours)  
-**Dependencies**: Sprint 2
+**Dependencies**: Sprint 1A
 
 ### Implementation Block
 ```python
 # Complete these files in sequence:
-1. backend/agents/base.py                # Base agent classes
-2. backend/agents/orchestrator.py        # Agent orchestrator
-3. backend/agents/tools.py               # LangChain tools
-4. backend/agents/engineer.py            # Engineer agent
-5. backend/agents/librarian.py           # Librarian agent
-6. backend/agents/philosopher.py         # Philosopher agent
-7. backend/agents/mystic.py              # Mystic agent
-8. backend/agents/guardian.py            # Guardian agent
-9. backend/agents/collective.py          # Collective agents
-10. backend/services/agent_service.py    # Agent management
-11. backend/workers/agent_worker.py      # Agent processing
-12. backend/core/langchain_setup.py      # LangChain config
+1. backend/crypto/mls/wrapper.py        # OpenMLS wrapper
+2. backend/crypto/mls/groups.py         # Group management
+3. backend/crypto/mls/messages.py       # Message handling
+4. backend/crypto/mls/key_packages.py   # Key package store
+5. backend/services/mls_service.py      # MLS service layer
+6. backend/api/v1/groups.py             # Group endpoints
+7. backend/api/v1/messages.py           # Messaging endpoints
+8. backend/workers/mls_worker.py        # Async MLS operations
 ```
 
 ### Deliverable
-- Complete agent orchestration with 5+ agents
-- Event-driven coordination via Redis
-
-### Maps to Original Roadmap
-- Week 2: Event-driven agent orchestration ✓
-- Week 2: LangChain integration ✓
-- Week 2: Port core agents ✓
+- MLS-based secure group messaging
+- Scalable to 50k+ members
+- Forward secrecy + PCS
 
 ---
 
-## 🚀 Sprint 4: API Layer & Authentication
-**Goal**: Complete REST API with all endpoints  
+## 🚀 Sprint 3A: Privacy Primitives
+**Goal**: Implement proven privacy technologies  
 **Duration**: Single session (~3 hours)  
-**Dependencies**: Sprint 3
+**Dependencies**: Sprint 1A
 
 ### Implementation Block
 ```python
 # Complete these files in sequence:
-1. backend/api/deps.py                   # Dependencies
-2. backend/api/auth.py                   # JWT authentication
-3. backend/api/v1/__init__.py           # API router setup
-4. backend/api/v1/auth.py               # Auth endpoints
-5. backend/api/v1/memories.py           # Memory endpoints
-6. backend/api/v1/chat.py               # Chat endpoints (OpenAI-compatible)
-7. backend/api/v1/agents.py             # Agent endpoints
-8. backend/api/v1/signals.py            # Signal endpoints
-9. backend/api/v1/collective.py         # Collective endpoints
-10. backend/api/v1/webhooks.py          # Webhook handlers
-11. backend/middleware/security.py       # Security middleware
-12. backend/main.py                     # FastAPI app assembly
+1. backend/privacy/psi.py               # Private Set Intersection
+2. backend/privacy/bloom_filter.py      # Bloom filter implementation
+3. backend/privacy/differential.py      # Formal DP implementation
+4. backend/privacy/eigentrust.py        # EigenTrust reputation
+5. backend/privacy/pagerank.py          # PageRank trust propagation
+6. backend/services/privacy_service.py  # Privacy service layer
+7. backend/api/v1/privacy.py           # Privacy endpoints
 ```
 
 ### Deliverable
-- Complete API with OpenAI-compatible chat endpoint
-- All authentication and security in place
-
-### Maps to Original Roadmap
-- Week 1: Core API endpoints ✓
-- Week 1: OpenAI-compatible interface ✓
-- Week 2: Webhook system ✓
-- Week 2: Security layer ✓
+- PSI for private matching
+- Formal differential privacy
+- Reputation systems
 
 ---
 
-## 🚀 Sprint 5: Secure Communications Layer
-**Goal**: Implement MLS Protocol (RFC 9420) for scalable E2E encrypted group messaging  
+## 🚀 Sprint 4A: Compliance & Governance
+**Goal**: EU AI Act and regulatory compliance  
 **Duration**: Single session (~3 hours)  
-**Dependencies**: Sprint 4
+**Dependencies**: Sprint 1B
 
 ### Implementation Block
 ```python
 # Complete these files in sequence:
-1. backend/crypto/mls_wrapper.py        # OpenMLS Rust FFI wrapper
-2. backend/crypto/key_packages.py       # Key package management
-3. backend/crypto/group_manager.py      # MLS group operations
-4. backend/services/messaging.py        # Secure messaging service
-5. backend/api/v1/groups.py            # Group management endpoints
-6. backend/api/v1/messages.py          # Messaging endpoints
-7. backend/workers/mls_worker.py        # Async MLS operations
-8. backend/crypto/credential_manager.py # Identity credentials
+1. backend/compliance/eu_ai_act.py      # EU AI Act checker
+2. backend/compliance/iso_42001.py      # ISO 42001 compliance
+3. backend/compliance/nist_ai_rmf.py    # NIST AI RMF
+4. backend/compliance/c2pa.py           # C2PA content signing
+5. backend/compliance/audit.py          # Audit trail generator
+6. backend/api/v1/compliance.py         # Compliance endpoints
+7. docs/compliance/EU_AI_ACT.md         # Compliance documentation
+8. docs/compliance/ISO_42001.md         # ISO documentation
 ```
 
-### Key Features
-- **Asynchronous group operations** - Add/remove members while offline
-- **Logarithmic scaling** - Efficient for groups up to 50,000+
-- **Multi-device support** - Seamless cross-device sync
-- **Tree-based architecture** - O(log n) complexity
-
 ### Deliverable
-- Complete MLS-based group messaging system
-- OpenMLS library integrated via Rust FFI
-- Asynchronous member management
-- Scalable group operations
-
-### Maps to Original Roadmap
-- E2E encrypted group messaging ✓
-- Forward secrecy & PCS ✓
-- Collective communications ✓
-- Industry-standard protocol (RFC 9420) ✓
+- EU AI Act compliance tools
+- C2PA content authenticity
+- Audit trail system
 
 ---
 
-## 🚀 Sprint 6: Privacy & Cognitive Signature System
-**Goal**: Complete Cognitive Signatures, Kartouche, and privacy layers  
+## TRACK 2: EXPERIMENTAL SPRINTS
+
+## 🔬 Sprint 1E: Identity Compression Plugin
+**Goal**: Experimental 100-128 bit compression  
+**Duration**: Single session (~3 hours)  
+**Dependencies**: Track 1 Sprint 1A
+**Status**: HYPOTHESIS - REQUIRES VALIDATION
+
+### Implementation Block
+```python
+# Complete these files in sequence:
+1. backend/plugins/experimental/id_compression/compressor.py
+2. backend/plugins/experimental/id_compression/decompressor.py
+3. backend/plugins/experimental/id_compression/metrics.py
+4. backend/plugins/experimental/id_compression/validation.py
+5. docs/hypotheses/id_compression_detailed.md
+6. backend/research/studies/compression_study.py
+7. backend/api/v1/experimental/compression.py
+```
+
+### Validation Requirements
+- MI retention > 80%
+- F1 score > 0.75
+- Human interpretability > 4/5
+
+---
+
+## 🔬 Sprint 2E: Behavioral Stability Tracker
+**Goal**: Test 70/30 stability hypothesis  
+**Duration**: Single session (~3 hours)  
+**Dependencies**: Track 1 Sprint 1A
+**Status**: HYPOTHESIS - REQUIRES VALIDATION
+
+### Implementation Block
+```python
+# Complete these files in sequence:
+1. backend/plugins/experimental/behavioral/tracker.py
+2. backend/plugins/experimental/behavioral/metrics.py
+3. backend/plugins/experimental/behavioral/longitudinal.py
+4. backend/plugins/experimental/behavioral/validation.py
+5. docs/hypotheses/behavioral_stability_detailed.md
+6. backend/research/studies/stability_study.py
+7. backend/api/v1/experimental/behavioral.py
+```
+
+### Validation Requirements
+- ICC > 0.7 over 6 months
+- PSI < 0.2
+- Predictive accuracy > 70%
+
+---
+
+## 🔬 Sprint 3E: Research Infrastructure
+**Goal**: Build validation and consent systems  
 **Duration**: Single session (~4 hours)  
-**Dependencies**: Sprint 4
+**Dependencies**: Track 1 Sprint 1A
 
 ### Implementation Block
 ```python
 # Complete these files in sequence:
-1. backend/signatures/generator.py      # Cognitive signature generation
-2. backend/signatures/symbolic.py       # 5 operators + Tarot mapping
-3. backend/signatures/kartouche.py      # Kartouche SVG visualization
-4. backend/signatures/lifecycle.py      # Signature decay/re-evaluation
-5. backend/privacy/eigentrust.py        # EigenTrust implementation
-6. backend/privacy/trust_ceremonies.py  # Ritual trust protocols
-7. backend/privacy/k_anonymity.py       # K-anonymity implementation
-8. backend/privacy/sharing.py           # Sharing contracts
-9. backend/privacy/initiation.py        # Tarot-based progression
-10. backend/memory/decay.py             # Ebbinghaus + multi-factor
-11. backend/memory/consolidation.py     # REM cycles
-12. backend/services/signature_service.py # Cognitive signature management
-```
-
-### New Features from Research
-- **22 Tarot Archetypes**: Map agents to Major Arcana
-- **5 Symbolic Operators**: SEEK, REVOKE, AMPLIFY, STABILIZE, DRIFT
-- **Unicode Glyphs**: Alchemical symbols (U+1F700-1F77F)
-- **EigenTrust**: Mathematical trust scoring
-- **Trust Ceremonies**: Progressive, Dissonance, Echo Drift paths
-- **Memory Dynamics**: Ebbinghaus curve with collective pressure
-
-### Deliverable
-- Complete privacy and signal system
-- Kartouche visualization ready
-
-### Maps to Original Roadmap
-- Week 2: K-anonymity implementation ✓
-- Week 2: A2A protocol compatibility ✓
-- Week 3: Cognitive Signature generation ✓
-- Week 3: Kartouche visualization ✓
-- Week 3: Trust mechanics ✓
-- Week 3: Initiation system ✓
-
----
-
-## 🚀 Sprint 7: Frontend Foundation
-**Goal**: Complete React frontend using component library approach  
-**Duration**: Single session (~4 hours)  
-**Dependencies**: Sprint 4 (API must exist)
-
-### UI Architecture Decision
-- **Component Library**: shadcn/ui (copy-paste components)
-- **Base Components**: Radix UI (unstyled, accessible)
-- **Styling**: Tailwind CSS (utility-first)
-- **Approach**: Build from proven patterns, not reinvent the wheel
-- **Inspiration**: ChatGPT/Claude UI patterns (sidebar + chat)
-
-### Implementation Block
-```javascript
-// Complete these files in sequence:
-1. frontend/package.json                // Dependencies (Radix, Tailwind)
-2. frontend/tailwind.config.js         // Tailwind configuration
-3. frontend/src/lib/utils.ts           // shadcn/ui utilities
-4. frontend/src/config/api.ts          // API configuration
-5. frontend/src/stores/auth.ts         // Auth state management
-6. frontend/src/stores/memory.ts       // Memory state
-7. frontend/src/stores/chat.ts         // Chat state
-8. frontend/src/components/ui/         // shadcn/ui base components
-9. frontend/src/components/Auth.tsx    // Login/Register with shadcn/ui
-10. frontend/src/components/Chat.tsx   // Chat interface (GPT-style)
-11. frontend/src/components/Sidebar.tsx // Memory/conversation sidebar
-12. frontend/src/components/Kartouche.tsx // Signal visualization
-13. frontend/src/pages/Dashboard.tsx   // Main dashboard layout
-14. frontend/src/App.tsx              // App assembly with routing
-```
-
-### Component Library Setup
-```bash
-# shadcn/ui components to include:
-- Button, Input, Label, Card
-- Dialog, Sheet, Tabs
-- ScrollArea, Separator
-- Avatar, Badge, Toast
-- Form components (react-hook-form)
+1. backend/research/consent/manager.py   # Consent management
+2. backend/research/consent/irb.py       # IRB compliance
+3. backend/research/studies/orchestrator.py  # Study orchestration
+4. backend/research/metrics/collector.py # Metrics collection
+5. backend/research/metrics/dashboard.py # Dashboard generation
+6. backend/research/datasets/export.py   # Dataset export
+7. backend/api/v1/research/consent.py   # Consent endpoints
+8. backend/api/v1/research/studies.py   # Study endpoints
+9. frontend/src/pages/Research.tsx      # Research dashboard
 ```
 
 ### Deliverable
-- Complete functional frontend with modern UI
-- GPT-style chat interface with memory sidebar
-- Responsive design with Tailwind CSS
-- Accessible components via Radix UI
-
-### Maps to Original Roadmap
-- Week 3: Basic web UI (partial) ✓
-- Modern component-based architecture ✓
-
----
-
-## 🚀 Sprint 8: Production & Monitoring
-**Goal**: Complete deployment configuration and monitoring  
-**Duration**: Single session (~2 hours)  
-**Dependencies**: Sprints 1-5
-
-### Implementation Block
-```yaml
-# Complete these files in sequence:
-1. docker-compose.prod.yml              # Production compose
-2. .github/workflows/deploy.yml         # CI/CD pipeline
-3. backend/monitoring/metrics.py        # Prometheus metrics
-4. backend/monitoring/logging.py        # Structured logging
-5. backend/monitoring/health.py         # Health checks
-6. nginx.conf                          # Reverse proxy
-7. scripts/deploy.sh                   # Deployment script
-8. scripts/backup.sh                   # Backup script
-9. docker-swarm.yml                    # Swarm config
-10. monitoring/prometheus.yml          # Prometheus config
-11. monitoring/grafana-dashboard.json  # Grafana dashboard
-```
-
-### Deliverable
-- Complete production deployment setup
-- Monitoring and logging configured
-
-### Maps to Original Roadmap
-- Week 3: Docker Swarm orchestration ✓
-- Week 3: Service mesh with health checks ✓
-- Week 3: Prometheus metrics ✓
-- Week 3: Production secrets management ✓
-
----
-
-## 🚀 Sprint 9: Testing Suite
-**Goal**: Complete test coverage  
-**Duration**: Single session (~3 hours)  
-**Dependencies**: All implementation sprints
-
-### Implementation Block
-```python
-# Complete these files in sequence:
-1. tests/conftest.py                    # Test configuration
-2. tests/integration/test_memory.py     # Memory pipeline tests
-3. tests/integration/test_agents.py     # Agent orchestration tests
-4. tests/integration/test_api.py        # API endpoint tests
-5. tests/integration/test_signals.py    # Signal system tests
-6. tests/integration/test_privacy.py    # Privacy layer tests
-7. tests/performance/test_load.py       # Load testing
-8. tests/security/test_auth.py          # Security tests
-9. scripts/test.sh                      # Test runner
-```
-
-### Deliverable
-- Complete test suite with real integration tests
-- No mocks, actual service testing
-
-### Maps to Original Roadmap
-- Week 2: Real integration testing framework ✓
+- IRB-compliant consent system
+- Longitudinal study support
+- Metrics dashboards
 
 ---
 
 ## Sprint Execution Strategy
 
-### For AI Agents:
-1. **Start a sprint** - Begin with Sprint 1 and implement all files
-2. **No interruptions** - Complete entire sprint before any testing
-3. **Context preservation** - Each sprint is self-contained
-4. **Parallel option** - Sprints 6 (Frontend) can run parallel to backend sprints
+### For Track 1 (Core):
+1. **Prioritize standards** - W3C DIDs before custom identity
+2. **Complete compliance early** - EU AI Act is already in force
+3. **Test with real services** - No mocks, actual integration
 
-### For Human Developers:
-1. **Validate after sprint** - Test only after full sprint completion
-2. **Fix forward** - Don't fix bugs during sprint, note them for later
-3. **Batch feedback** - Collect all issues before next sprint
+### For Track 2 (Experimental):
+1. **Require consent** - Every experimental feature needs opt-in
+2. **Document hypotheses** - Clear success/failure criteria
+3. **Collect metrics** - Automated validation tracking
+4. **Label clearly** - "EXPERIMENTAL" in all outputs
+
+## Parallel Execution Options
+
+These sprint pairs can run simultaneously:
+- Track 1 Sprint 1A + Track 2 Sprint 3E (different layers)
+- Track 1 Sprint 2A + Track 1 Sprint 3A (independent services)
+- Track 2 Sprint 1E + Track 2 Sprint 2E (separate plugins)
 
 ## Status Tracking
 
-| Sprint | Status | Estimated Time | Dependencies | Maps to Week |
-|--------|--------|---------------|--------------|--------------|
-| 1: Data Layer | ✅ COMPLETED | 3 hours | None | Week 1 |
-| 2: Memory Pipeline | ✅ COMPLETED | 3 hours | Sprint 1 | Week 1-2 |
-| 3: Agent System | ✅ COMPLETED | 4 hours | Sprint 2 | Week 2 |
-| 4: API Layer | 🟢 Ready to Start | 3 hours | Sprint 3 | Week 1-2 |
-| 5: Secure Comms | ❌ Not Started | 3 hours | Sprint 4 | Week 2 |
-| 6: Privacy & Signatures | ❌ Not Started | 3 hours | Sprint 5 | Week 2-3 |
-| 7: Frontend | ❌ Not Started | 4 hours | Sprint 4 | Week 3 |
-| 8: Production | ❌ Not Started | 2 hours | Sprints 1-6 | Week 3 |
-| 9: Testing | ❌ Not Started | 3 hours | All | Week 2-3 |
+### Track 1 (Core) Sprints
+| Sprint | Status | Time | Priority |
+|--------|--------|------|----------|
+| 1A: Standards Foundation | 🔄 In Progress | 4h | URGENT |
+| 1B: Trust & Transparency | 📋 Ready | 3h | HIGH |
+| 2A: MLS Communications | 📋 Ready | 4h | HIGH |
+| 3A: Privacy Primitives | 📋 Ready | 3h | MEDIUM |
+| 4A: Compliance | 📋 Ready | 3h | URGENT |
 
-**Total Implementation Time**: ~25 hours (can be parallelized to ~15 hours)
+### Track 2 (Experimental) Sprints
+| Sprint | Status | Time | Hypothesis |
+|--------|--------|------|------------|
+| 1E: ID Compression | ✅ Started | 3h | UNVALIDATED |
+| 2E: Behavioral Stability | 📋 Planned | 3h | UNVALIDATED |
+| 3E: Research Infrastructure | 📋 Planned | 4h | N/A |
 
-## Advantages of This Approach
+## Migration Path
 
-1. **Uninterrupted Flow** - AI agents can code for hours without context switching
-2. **Batch Validation** - Test everything at once after implementation
-3. **Clear Dependencies** - Know exactly what must be done first
-4. **Parallel Execution** - Multiple agents can work on independent sprints
-5. **Complete Subsystems** - Each sprint delivers a working component
+### From Original Sprints to Dual-Track:
+1. **Sprint 1 (Data Layer)** → Keep as-is, add DID migration
+2. **Sprint 2 (Memory)** → Keep in Track 1
+3. **Sprint 3 (Agents)** → Keep in Track 1, add Model Cards
+4. **Sprint 4 (API)** → Refactor to use OAuth/OIDC
+5. **Sprint 5 (MLS)** → Move to Track 1 Sprint 2A
+6. **Sprint 6 (Signatures)** → Split: proven parts to Track 1, experimental to Track 2
 
 ## 🎯 When Will It Be Usable?
 
-### After Sprint 4 (API Layer) - **MINIMALLY USABLE**
-- Basic chat interface via API
-- Memory storage and retrieval
-- Agent reflections
-- Authentication
-- **~13 hours total work** (Sprints 1-4)
+### After Track 1 Sprint 1A+1B - **COMPLIANT CORE**
+- Standards-based identity
+- Proper authentication
+- Trust calibration
+- **~7 hours total work**
 
-### After Sprint 6 (Frontend) - **FULLY USABLE**
-- Complete web interface
-- Chat with memory sidebar
-- Visual signal representation
-- All privacy features
-- **~20 hours total work** (Sprints 1-6)
+### After Track 1 Sprint 2A+3A - **SECURE & PRIVATE**
+- E2E encrypted messaging
+- Privacy-preserving matching
+- Reputation systems
+- **~14 hours total work**
 
-## Next Recommended Sprint
+### After Track 2 Validation - **ENHANCED FEATURES**
+- IF hypotheses validated
+- Graduated to Track 1
+- **3-6 months validation**
 
-✅ **Sprint 1 COMPLETED** (2025-01-21)
+## Next Recommended Action
 
-🟢 **Ready for Sprint 2** (Memory Pipeline System)
-- All dependencies from Sprint 1 are satisfied
-- Database layer is complete
-- Can begin immediately
-- Estimated time: 3 hours
+🔴 **URGENT: Complete Track 1 Sprint 1A**
+- W3C DID implementation critical
+- OAuth/OIDC needed for security
+- EU AI Act compliance urgent
+
+Then proceed with:
+1. Track 1 Sprint 4A (Compliance) - EU AI Act already in force!
+2. Track 1 Sprint 1B (Trust) - Model Cards required
+3. Track 2 Sprint 3E (Research) - Enable validation studies
 
 ---
 
-*"Optimize for flow state, not checkpoints."*
+*"Build on standards, validate through science."*

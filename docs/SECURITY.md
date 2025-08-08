@@ -1,353 +1,379 @@
-# Security Architecture
+# Security Architecture - Dual-Track System
 
 ## Overview
 
-The Mnemosyne Protocol implements multiple layers of security to ensure data sovereignty, communication privacy, and collective intelligence without surveillance.
+Security in Mnemosyne follows a dual-track approach:
+- **Track 1**: Production security using proven standards (OAuth 2.0, MLS, W3C DIDs)
+- **Track 2**: Experimental security with additional consent and isolation layers
 
-## Security Layers
+## Track 1: Production Security
 
-### 1. Local Data Sovereignty
-- **All personal data stays local** by default
-- User explicitly controls what gets shared
-- No automatic cloud backups or syncing
-- Full data export capability at any time
+### Authentication & Authorization
 
-### 2. End-to-End Encryption (MLS Protocol - RFC 9420)
-
-#### Implementation
-We use the Messaging Layer Security (MLS) Protocol for all secure group communications:
-- **Tree-Based Key Agreement**: Logarithmic scaling for groups up to 50,000+
-- **Asynchronous Operations**: Add/remove members while they're offline
-- **Post-Compromise Security**: Automatic healing after key compromise
-- **Forward Secrecy**: Past messages secure even if current keys compromised
-
-#### Message Types
-```python
-class MLSMessageType(Enum):
-    APPLICATION = "application"  # Regular encrypted group message
-    PROPOSAL = "proposal"        # Group membership change proposal  
-    COMMIT = "commit"           # Finalize group state change
-    WELCOME = "welcome"         # Onboard new member with group state
-    MEMORY_SHARE = "memory"     # Encrypted memory fragment with contract
+#### Primary: OAuth 2.0 + OpenID Connect
+```yaml
+Provider: Any OIDC-compliant provider
+Flow: Authorization Code with PKCE
+Tokens: JWT with RS256 signing
+Refresh: Rotating refresh tokens
 ```
 
-#### Security Properties (MLS Guarantees)
-- **Forward Secrecy**: Compromised keys can't decrypt past messages
-- **Post-Compromise Security**: Automatic key rotation heals compromise
-- **Asynchronous Operations**: Security maintained during offline operations
-- **Scalability**: Efficient operations for groups from 2 to 50,000+ members
-- **Membership Authentication**: Cryptographic proof of group membership
-
-### 3. Trust Establishment
-
-#### Progressive Trust Levels
-```python
-class TrustLevel(Enum):
-    NONE = 0        # No trust established
-    VERIFIED = 1    # Identity verified (safety numbers)
-    TRUSTED = 2     # Ongoing positive interactions
-    INNER = 3       # Inner circle, full sharing
+#### Secondary: WebAuthn/FIDO2
+```yaml
+Authenticator: Platform or roaming
+Attestation: Direct or none
+User Verification: Required
+Resident Keys: Supported
 ```
 
-#### Verification Methods
-- **Credential Verification**: MLS credential binding to identity
-- **Cognitive Signature Matching**: Verify through symbolic patterns
-- **Key Transparency**: Optional integration with key transparency logs
-- **Ritual Verification**: Shared symbolic actions
+#### Identity: W3C DIDs
+```yaml
+Method: did:mnem
+Key Type: Ed25519VerificationKey2020
+Resolution: Local resolver
+Revocation: Status list 2021
+```
 
-### 4. Privacy Mechanisms
+### Encryption
+
+#### Data at Rest
+- **Database**: Transparent Data Encryption (TDE)
+- **Files**: AES-256-GCM
+- **Keys**: Hardware Security Module (HSM) or KMS
+- **Backups**: Encrypted with separate keys
+
+#### Data in Transit
+- **TLS**: Version 1.3 minimum
+- **E2E**: MLS Protocol (RFC 9420)
+- **API**: HTTPS only, HSTS enabled
+- **WebSockets**: WSS with origin validation
+
+#### Group Communication (MLS)
+```yaml
+Cipher Suite: MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519
+Key Rotation: Every 7 days or member change
+Forward Secrecy: Yes
+Post-Compromise Security: Yes
+```
+
+### Privacy Protection
+
+#### Differential Privacy
+```python
+# Track 1: Conservative epsilon
+EPSILON_PRODUCTION = 1.0  # Strong privacy
+DELTA = 1e-5
+
+# Applied to all aggregate queries
+def add_noise(value: float, sensitivity: float) -> float:
+    return value + laplace.rvs(scale=sensitivity/EPSILON_PRODUCTION)
+```
 
 #### K-Anonymity
-- Minimum group size of 3 for all shared data
-- Automatic aggregation before collective sharing
-- No individual attribution without explicit consent
-
-#### Selective Sharing
 ```python
-class SharingContract:
-    domains: List[str]      # What topics to share
-    depth: str             # "summary" | "detailed" | "full"
-    duration: int          # Days until auto-revoke
-    k_anonymity: int       # Minimum group size (≥3)
-    revocable: bool        # Can user revoke access
+# Minimum group size for any data release
+K_ANONYMITY_THRESHOLD = 5
+
+# Enforce in queries
+def validate_query_result(results: List) -> bool:
+    return len(results) >= K_ANONYMITY_THRESHOLD
 ```
 
-#### Cognitive Signatures (Not PII)
-- Identity compressed to symbolic representation
-- No personally identifiable information
-- Plausible deniability of signature ownership
-
-### 5. Cryptographic Primitives
-
-#### Libraries Used
-- **OpenMLS**: MIT-licensed Rust implementation of MLS (RFC 9420)
-- **libsodium/NaCl**: General cryptographic operations
-- **Ed25519**: Digital signatures
-- **X25519**: Key exchange (used by MLS)
-- **AES-256-GCM**: Symmetric encryption
-- **HMAC-SHA256**: Message authentication
-
-#### Key Management
+#### Private Set Intersection (PSI)
 ```python
-class MLSKeyManager:
-    credential: MLSCredential              # Long-term identity credential
-    signature_keypair: Ed25519KeyPair     # For signing
-    init_keys: List[MLSKeyPackage]        # Pre-published for async adds
+# For collective operations without revealing members
+class PSIProtocol:
+    def __init__(self):
+        self.hash_functions = 3
+        self.false_positive_rate = 0.01
     
-    async def publish_key_packages(self, count: int = 100):
-        """Pre-publish key packages for group additions"""
-        packages = []
-        for _ in range(count):
-            package = await self.mls.create_key_package(self.credential)
-            packages.append(package)
-        await self.server.upload_key_packages(packages)
-    
-    async def update_leaf(self, group_id: str):
-        """Update leaf key for post-compromise security"""
-        group = self.get_group(group_id)
-        await group.update_leaf_key()
-        await group.commit()
+    def compute_intersection(self, set_a: Set, set_b: Set) -> int:
+        # Returns size without revealing elements
+        bloom_a = self.create_bloom_filter(set_a)
+        bloom_b = self.create_bloom_filter(set_b)
+        return self.estimate_intersection_size(bloom_a, bloom_b)
 ```
 
-### 6. Network Security
+### Access Control
 
-#### Transport Security
-- All network communication uses TLS 1.3+
-- Certificate pinning for known peers
-- Encrypted at rest and in transit
+#### Role-Based Access Control (RBAC)
+```yaml
+Roles:
+  - user: Own data only
+  - contributor: Share to collectives
+  - researcher: Track 2 access (with consent)
+  - admin: System management
 
-#### Metadata Protection
-- Minimal metadata collection
-- No communication pattern analysis
-- Peer discovery through DHT (no central directory)
+Permissions:
+  - memories:read:own
+  - memories:write:own
+  - collective:join
+  - research:participate
+```
 
-### 7. Group Security (MLS-Specific)
-
-#### Group Management
+#### Attribute-Based Access Control (ABAC)
 ```python
-class MLSGroupSecurity:
-    """Security for MLS group operations"""
+# Fine-grained control
+@require_attributes({
+    "track": "production",
+    "consent": True,
+    "age": ">= 18",
+    "region": "allowed_regions"
+})
+def access_sensitive_feature():
+    pass
+```
+
+## Track 2: Research Security
+
+### Additional Isolation
+
+#### Container Isolation
+```yaml
+Research Containers:
+  - Separate network namespace
+  - Resource limits enforced
+  - No production data access
+  - Audit logging enabled
+```
+
+#### Data Segregation
+```python
+# Separate databases
+PRODUCTION_DB = "postgresql://prod_host/mnemosyne"
+RESEARCH_DB = "postgresql://research_host/mnemosyne_research"
+
+# Never cross-connect
+assert not can_connect(PRODUCTION_DB, RESEARCH_DB)
+```
+
+### Consent Management
+
+#### Granular Consent
+```python
+class ConsentManager:
+    def request_consent(self, user_id: str, experiment: str) -> bool:
+        consent = {
+            "user_id": user_id,
+            "experiment": experiment,
+            "timestamp": datetime.utcnow(),
+            "ip_address": hash(request.ip),  # Hashed for privacy
+            "details": self.get_experiment_details(experiment),
+            "risks": self.get_risks(experiment),
+            "benefits": self.get_benefits(experiment),
+            "data_usage": self.get_data_usage(experiment),
+            "duration": "6 months",
+            "revocable": True
+        }
+        return self.store_consent(consent)
+```
+
+#### Consent Verification
+```python
+@require_consent("behavioral_tracking")
+@require_track("research")
+def track_experimental_behavior(user_id: str, action: Dict):
+    # Only executes with valid consent
+    pass
+```
+
+### Research Data Protection
+
+#### Additional Anonymization
+```python
+# Track 2: Stronger anonymization
+def anonymize_research_data(data: Dict) -> Dict:
+    # Remove direct identifiers
+    data.pop('user_id', None)
+    data.pop('email', None)
     
-    async def validate_proposal(self, proposal: MLSProposal):
-        """Validate group change proposals"""
-        # Check proposer has permission
-        if not self.has_permission(proposal.sender, proposal.type):
-            raise PermissionDenied()
+    # Generalize quasi-identifiers
+    data['age'] = generalize_age(data.get('age'))
+    data['location'] = generalize_location(data.get('location'))
+    
+    # Add noise to sensitive attributes
+    data['score'] = add_laplace_noise(data.get('score'), epsilon=0.5)
+    
+    return data
+```
+
+## Security Monitoring
+
+### Audit Logging
+
+#### Comprehensive Logging
+```python
+@audit_log
+def sensitive_operation(user_id: str, action: str):
+    # Automatically logged:
+    # - Timestamp
+    # - User ID (hashed)
+    # - Action
+    # - Result
+    # - IP address (hashed)
+    # - Track mode
+    pass
+```
+
+#### Log Retention
+```yaml
+Production Logs: 90 days
+Research Logs: 2 years (for validation)
+Security Events: 1 year
+Audit Trail: 7 years
+```
+
+### Intrusion Detection
+
+#### Anomaly Detection
+```python
+class AnomalyDetector:
+    def __init__(self):
+        self.baseline = self.load_baseline()
+        self.threshold = 3.0  # Standard deviations
+    
+    def check_request(self, request: Request) -> bool:
+        features = self.extract_features(request)
+        anomaly_score = self.calculate_anomaly_score(features)
         
-        # Validate cryptographic proof
-        if not await self.verify_proposal_signature(proposal):
-            raise InvalidSignature()
-        
+        if anomaly_score > self.threshold:
+            self.alert_security_team(request, anomaly_score)
+            return False
         return True
-    
-    async def enforce_group_policy(self, group_id: str):
-        """Enforce group security policies"""
-        group = self.get_group(group_id)
-        
-        # Maximum group size
-        if group.member_count > 50000:
-            raise GroupTooLarge()
-        
-        # Require periodic key updates
-        if group.last_update > datetime.now() - timedelta(days=7):
-            await group.update_epoch()
 ```
 
-### 8. Trust Models & Reputation
-
-#### EigenTrust Implementation
-The protocol uses EigenTrust algorithm for distributed reputation management:
-
+#### Rate Limiting
 ```python
-class EigenTrustSystem:
-    """Mathematical trust scoring based on peer interactions"""
-    
-    async def calculate_global_trust(self) -> Dict[str, float]:
-        """Calculate global trust scores using power iteration"""
-        # Initialize with pre-trusted peers
-        trust_vector = self.get_pretrusted_vector()
-        
-        # Iterate until convergence
-        for _ in range(self.MAX_ITERATIONS):
-            # C is the normalized trust matrix
-            # p is the pre-trust vector
-            # α is the dampening factor (typically 0.85)
-            trust_vector = (1 - self.ALPHA) * self.trust_matrix @ trust_vector + \
-                          self.ALPHA * self.pretrusted
-            
-            if self.has_converged(trust_vector):
-                break
-        
-        return trust_vector
+RATE_LIMITS = {
+    "api": "100/minute",
+    "auth": "5/minute",
+    "research": "10/minute",
+    "export": "1/hour"
+}
 ```
 
-#### Multi-Dimensional Trust Metrics
-```python
-class TrustDimensions:
-    """Composite trust calculation from multiple factors"""
-    
-    async def calculate_trust_score(self, peer_id: str) -> TrustScore:
-        return TrustScore(
-            mathematical=await self.get_eigentrust_score(peer_id),  # 0.0-1.0
-            echo_resonance=self.calculate_echo_resonance(peer_id),   # Signal alignment
-            fractal_coherence=self.check_pattern_stability(peer_id), # Behavioral consistency
-            drift_stability=self.measure_drift_rate(peer_id),        # Change over time
-            ceremony_bonus=self.get_ceremony_multiplier(peer_id)     # Ritual participation
-        )
+## Incident Response
+
+### Response Plan
+
+1. **Detection**: Automated alerts or user reports
+2. **Triage**: Assess severity and scope
+3. **Containment**: Isolate affected systems
+4. **Investigation**: Determine root cause
+5. **Remediation**: Fix vulnerability
+6. **Recovery**: Restore normal operations
+7. **Lessons Learned**: Update procedures
+
+### Breach Notification
+
+#### Timeline
+- Internal notification: Within 1 hour
+- User notification: Within 72 hours (GDPR)
+- Authority notification: As required by law
+
+#### Transparency
+- Public incident report
+- Affected user notifications
+- Remediation steps published
+- Regular status updates
+
+## Compliance
+
+### Regulatory Compliance
+
+#### EU AI Act
+- Risk assessment documented
+- Transparency requirements met
+- Human oversight implemented
+- Model cards available
+
+#### GDPR
+- Privacy by design
+- Data minimization
+- Right to erasure
+- Data portability
+
+#### CCPA/CPRA
+- Opt-out mechanisms
+- Data inventory maintained
+- Consumer rights honored
+
+### Security Standards
+
+#### OWASP Top 10
+- SQL injection prevention
+- XSS protection
+- CSRF tokens
+- Security headers
+
+#### NIST Cybersecurity Framework
+- Identify assets
+- Protect systems
+- Detect incidents
+- Respond quickly
+- Recover fully
+
+## Security Testing
+
+### Continuous Testing
+
+#### Automated Scanning
+```yaml
+Daily:
+  - Dependency vulnerabilities (Dependabot)
+  - Container scanning (Trivy)
+  - SAST (Semgrep)
+
+Weekly:
+  - DAST (OWASP ZAP)
+  - Infrastructure scanning
+  - Compliance checks
 ```
 
-#### Trust Ceremonies
-Cryptographically verifiable trust establishment rituals:
+#### Manual Testing
+```yaml
+Monthly:
+  - Code review for security
+  - Access control audit
+  - Encryption verification
 
-```python
-class TrustCeremony:
-    """Symbolic trust establishment with cryptographic proofs"""
-    
-    CEREMONY_TYPES = {
-        "progressive": ["glyph_exchange", "mirror_prompt", "fragment_weaving", "covenant"],
-        "dissonance": ["conflict_declaration", "dialectic_dance", "synthesis", "respect"],
-        "echo_drift": ["chaos_invocation", "drift_navigation", "signal_recovery", "bond"],
-        "proof_of_work": ["quest_assignment", "effort_demo", "witness_verify", "initiation"]
-    }
-    
-    async def execute_ceremony(self, type: str, participants: List[str]):
-        stages = self.CEREMONY_TYPES[type]
-        proofs = []
-        
-        for stage in stages:
-            proof = await self.execute_stage(stage, participants)
-            proofs.append(proof)
-            
-            # Verify cryptographic proof before proceeding
-            if not await self.verify_stage_proof(proof):
-                raise CeremonyFailed(f"Stage {stage} verification failed")
-        
-        # Generate final trust bond
-        return self.create_trust_bond(participants, proofs)
+Quarterly:
+  - Penetration testing
+  - Social engineering assessment
+  - Disaster recovery drill
 ```
 
-#### Trust-Based Security Policies
-```python
-class TrustBasedSecurity:
-    """Security decisions based on trust scores"""
-    
-    def get_allowed_operations(self, user_trust: float) -> List[str]:
-        if user_trust < 0.2:
-            return ["read_public", "basic_signal"]
-        elif user_trust < 0.5:
-            return ["read_public", "write_own", "share_k3"]
-        elif user_trust < 0.8:
-            return ["full_read", "full_write", "spawn_agents"]
-        else:
-            return ["all_operations", "governance_vote"]
-    
-    async def validate_operation(self, user_id: str, operation: str):
-        trust_score = await self.get_trust_score(user_id)
-        allowed = self.get_allowed_operations(trust_score)
-        
-        if operation not in allowed:
-            raise InsufficientTrust(f"Trust {trust_score:.2f} too low for {operation}")
-```
+## Security Checklist
 
-### 9. Agent Security
+### Before Deployment
+- [ ] All dependencies updated
+- [ ] Security headers configured
+- [ ] TLS 1.3 enforced
+- [ ] Rate limiting enabled
+- [ ] Audit logging active
+- [ ] Backup encryption verified
+- [ ] Incident response team ready
 
-#### Agent Isolation
-- Each agent runs in isolated context
-- Limited resource allocation per agent
-- No agent can access another's memory
-- Audit logging of all agent actions
+### Track 2 Specific
+- [ ] Consent system operational
+- [ ] Data segregation verified
+- [ ] Additional anonymization active
+- [ ] Research firewall configured
+- [ ] Hypothesis documentation complete
+- [ ] Ethics review completed
 
-#### LLM Security
-- Local models preferred (Ollama)
-- No training on user data
-- Prompts sanitized before sending
-- Response validation and filtering
+## Contact
 
-## Security Principles
+### Security Team
+- Email: security@mnemosyne.org
+- PGP Key: [Published on website]
 
-1. **Defense in Depth**: Multiple layers of security
-2. **Least Privilege**: Components only get necessary access
-3. **Zero Trust**: Verify everything, trust nothing by default
-4. **Fail Secure**: System fails to a secure state
-5. **Transparency**: Security measures are auditable
-
-## Threat Model
-
-### What We Protect Against
-- **Mass Surveillance**: E2E encryption prevents bulk collection
-- **Targeted Attacks**: Forward secrecy limits damage
-- **Data Breaches**: Local-first means no central honeypot
-- **Behavior Manipulation**: User controls their AI, not vice versa
-- **Identity Theft**: Cognitive signatures aren't PII
-
-### What We Don't Protect Against
-- **Endpoint Compromise**: If device is compromised, data is accessible
-- **User Mistakes**: Can't prevent voluntary oversharing
-- **Legal Compulsion**: May need to comply with lawful requests
-- **Quantum Computing**: Not yet quantum-resistant (planned)
-
-## Implementation Status
-
-| Security Feature | Status | Sprint |
-|-----------------|--------|--------|
-| Local Data Sovereignty | ✅ Implemented | 1 |
-| Basic Encryption (AES) | ✅ Implemented | 1 |
-| MLS Protocol (RFC 9420) | ⏳ Planned | 5 |
-| Trust Verification | ⏳ Planned | 5 |
-| K-Anonymity | ⏳ Planned | 6 |
-| Sharing Contracts | ⏳ Planned | 6 |
-| Network Security | ⏳ Planned | 7 |
-
-## Security Roadmap
-
-### Phase 1: Foundation (Current)
-- Local data storage
-- Basic access controls
-- Database encryption
-
-### Phase 2: Communication Security (Sprint 5)
-- MLS Protocol integration via OpenMLS
-- E2E encrypted group messaging
-- Asynchronous member management
-
-### Phase 3: Privacy Layer (Sprint 6)
-- K-anonymity implementation
-- Sharing contracts
-- Cognitive signatures
-
-### Phase 4: Advanced Security (Future)
-- Zero-knowledge proofs
-- Homomorphic encryption
-- Quantum resistance
-
-## Reporting Security Issues
-
-If you discover a security vulnerability:
-
-1. **DO NOT** open a public issue
-2. Email security concerns to [security contact]
-3. Include:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Suggested fix (if any)
-
-We will respond within 48 hours and work with you to understand and address the issue.
-
-## Security Audits
-
-The protocol will undergo security audits at these milestones:
-- Before public beta launch
-- After major architecture changes
-- Annually thereafter
-
-## Additional Resources
-
-- [MLS Protocol RFC 9420](https://datatracker.ietf.org/doc/rfc9420/)
-- [OpenMLS Documentation](https://openmls.tech/)
-- [libsodium Documentation](https://doc.libsodium.org/)
-- [OWASP Security Guidelines](https://owasp.org/)
+### Bug Bounty
+- Program: Active
+- Scope: Production systems only
+- Rewards: $100 - $10,000
+- Safe harbor: Yes
 
 ---
 
-*Security is not a feature, it's a fundamental requirement for cognitive sovereignty.*
+*Security is not a feature, it's a foundation. Build on solid ground.*

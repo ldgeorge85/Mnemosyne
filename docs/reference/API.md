@@ -1,15 +1,27 @@
-# API Reference
+# API Reference - Dual-Track System
 
 ## Base URL
 ```
 http://localhost:8000/api
 ```
 
+## Track Configuration
+
+The API operates in two modes:
+- **Track 1 (Production)**: Standards-based, proven features
+- **Track 2 (Research)**: Experimental features with consent requirements
+
+### Track Headers
+```http
+X-Track-Mode: production | research
+X-Research-Consent: true  # Required for Track 2 features
+```
+
 ## Authentication
 
-All endpoints except `/auth/register` and `/auth/login` require authentication.
+Track 1 uses OAuth 2.0 and WebAuthn. Track 2 may use experimental methods.
 
-### Headers
+### Standard Headers
 ```http
 Authorization: Bearer <token>
 Content-Type: application/json
@@ -19,7 +31,41 @@ Content-Type: application/json
 
 ## Authentication Endpoints
 
-### Register
+### OAuth 2.0 Authorization (Track 1)
+```http
+GET /auth/oauth/authorize?client_id=<id>&redirect_uri=<uri>&response_type=code
+```
+
+### OAuth Token Exchange (Track 1)
+```http
+POST /auth/oauth/token
+```
+
+**Request:**
+```json
+{
+  "grant_type": "authorization_code",
+  "code": "string",
+  "client_id": "string",
+  "client_secret": "string"
+}
+```
+
+### WebAuthn Registration (Track 1)
+```http
+POST /auth/webauthn/register
+```
+
+**Request:**
+```json
+{
+  "username": "string",
+  "challenge": "base64_string",
+  "credential": "webauthn_credential_object"
+}
+```
+
+### Legacy Password Register (Deprecated)
 ```http
 POST /auth/register
 ```
@@ -43,7 +89,20 @@ POST /auth/register
 }
 ```
 
-### Login
+### WebAuthn Login (Track 1)
+```http
+POST /auth/webauthn/login
+```
+
+**Request:**
+```json
+{
+  "username": "string",
+  "assertion": "webauthn_assertion_object"
+}
+```
+
+### Legacy Password Login (Deprecated)
 ```http
 POST /auth/login
 ```
@@ -351,11 +410,169 @@ GET /agents/:agent_id/status
 
 ---
 
-## Signal Endpoints
+## Identity Endpoints (Track 1 - W3C DID)
 
-### Generate Signal
+### Generate DID
 ```http
-POST /signals/generate
+POST /identity/did/generate
+```
+
+**Request:**
+```json
+{
+  "method": "mnem",
+  "key_type": "Ed25519VerificationKey2020"
+}
+```
+
+**Response:**
+```json
+{
+  "did": "did:mnem:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH",
+  "document": {
+    "@context": ["https://www.w3.org/ns/did/v1"],
+    "id": "did:mnem:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH",
+    "verificationMethod": [{}],
+    "authentication": ["did:mnem:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH#key-1"]
+  },
+  "private_key": "encrypted_private_key"
+}
+```
+
+### Resolve DID
+```http
+GET /identity/did/resolve/:did
+```
+
+**Response:**
+```json
+{
+  "didDocument": {},
+  "didDocumentMetadata": {
+    "created": "2024-01-20T10:00:00Z",
+    "updated": "2024-01-20T10:00:00Z"
+  }
+}
+```
+
+### Issue Verifiable Credential
+```http
+POST /identity/vc/issue
+```
+
+**Request:**
+```json
+{
+  "credentialSubject": {
+    "id": "did:mnem:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH",
+    "achievement": "trust_level_3"
+  },
+  "type": ["VerifiableCredential", "TrustCredential"],
+  "expirationDate": "2025-01-20T10:00:00Z"
+}
+```
+
+**Response:**
+```json
+{
+  "@context": ["https://www.w3.org/2018/credentials/v1"],
+  "type": ["VerifiableCredential", "TrustCredential"],
+  "issuer": "did:mnem:issuer",
+  "issuanceDate": "2024-01-20T10:00:00Z",
+  "expirationDate": "2025-01-20T10:00:00Z",
+  "credentialSubject": {},
+  "proof": {}
+}
+```
+
+---
+
+## MLS Protocol Endpoints (Track 1 - E2E Encryption)
+
+### Initialize MLS Group
+```http
+POST /mls/groups/create
+```
+
+**Request:**
+```json
+{
+  "group_name": "collective-research",
+  "cipher_suite": "MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519"
+}
+```
+
+**Response:**
+```json
+{
+  "group_id": "base64_group_id",
+  "epoch": 0,
+  "key_package": "base64_key_package",
+  "welcome_message": "base64_welcome"
+}
+```
+
+### Join MLS Group
+```http
+POST /mls/groups/join
+```
+
+**Request:**
+```json
+{
+  "welcome_message": "base64_welcome",
+  "key_package": "base64_key_package"
+}
+```
+
+**Response:**
+```json
+{
+  "group_id": "base64_group_id",
+  "epoch": 1,
+  "members": ["did:mnem:user1", "did:mnem:user2"]
+}
+```
+
+### Send Encrypted Message
+```http
+POST /mls/messages/send
+```
+
+**Request:**
+```json
+{
+  "group_id": "base64_group_id",
+  "message": "plaintext_message",
+  "message_type": "application"
+}
+```
+
+**Response:**
+```json
+{
+  "message_id": "uuid",
+  "ciphertext": "base64_encrypted",
+  "epoch": 1,
+  "timestamp": "2024-01-20T10:00:00Z"
+}
+```
+
+---
+
+## Signal Endpoints (Track 2 - Experimental)
+
+⚠️ **Note**: Deep Signal features are experimental Track 2 features requiring consent.
+
+### Generate Signal (Track 2)
+```http
+POST /experimental/signals/generate
+```
+
+**Headers:**
+```http
+X-Track-Mode: research
+X-Research-Consent: true
 ```
 
 **Request:**
@@ -363,7 +580,8 @@ POST /signals/generate
 {
   "regenerate": false,
   "include_domains": ["string"],
-  "visibility": 0.3
+  "visibility": 0.3,
+  "compression_level": "standard|deep"
 }
 ```
 
@@ -371,7 +589,7 @@ POST /signals/generate
 ```json
 {
   "signal": {
-    "version": "2.1",
+    "version": "2.1-experimental",
     "sigil": "⊕",
     "domains": ["systems", "philosophy"],
     "personality": {},
@@ -379,7 +597,8 @@ POST /signals/generate
     "glyphs": ["∴", "⊙"],
     "flags": {},
     "visibility": 0.3,
-    "signature": "string"
+    "signature": "string",
+    "hypothesis_ref": "docs/hypotheses/id_compression.md"
   }
 }
 ```
@@ -751,6 +970,144 @@ POST /trust/verify
 
 ---
 
+## Research Endpoints (Track 2 Only)
+
+### Get Experiment Status
+```http
+GET /research/experiments
+```
+
+**Headers:**
+```http
+X-Track-Mode: research
+X-Research-Consent: true
+```
+
+**Response:**
+```json
+{
+  "experiments": [
+    {
+      "id": "id_compression",
+      "name": "Identity Compression to 100-128 bits",
+      "hypothesis": "docs/hypotheses/id_compression.md",
+      "status": "active",
+      "participants": 42,
+      "metrics": {
+        "compression_ratio": 0.78,
+        "identity_preservation": 0.82,
+        "p_value": 0.08
+      }
+    }
+  ]
+}
+```
+
+### Submit Research Metrics
+```http
+POST /research/metrics
+```
+
+**Request:**
+```json
+{
+  "experiment_id": "id_compression",
+  "metrics": {
+    "compression_achieved": 112,
+    "identity_match": 0.79,
+    "user_satisfaction": 4.2
+  },
+  "anonymous": true
+}
+```
+
+**Response:**
+```json
+{
+  "accepted": true,
+  "contribution_id": "uuid",
+  "anonymized": true
+}
+```
+
+### Get Hypothesis Validation
+```http
+GET /research/validation/:hypothesis_id
+```
+
+**Response:**
+```json
+{
+  "hypothesis_id": "id_compression",
+  "current_status": "testing",
+  "participants": 42,
+  "validation_criteria": {
+    "min_participants": 1000,
+    "p_value_threshold": 0.05,
+    "min_effect_size": 0.3
+  },
+  "current_metrics": {
+    "p_value": 0.08,
+    "effect_size": 0.25,
+    "confidence_interval": [0.72, 0.88]
+  },
+  "graduation_eligible": false
+}
+```
+
+---
+
+## Compliance Endpoints (Track 1)
+
+### Get Compliance Status
+```http
+GET /compliance/status
+```
+
+**Response:**
+```json
+{
+  "eu_ai_act": {
+    "compliant": true,
+    "risk_category": "limited",
+    "transparency_requirements_met": true,
+    "model_cards_available": true
+  },
+  "gdpr": {
+    "compliant": true,
+    "data_protection_officer": "dpo@mnemosyne.org",
+    "privacy_policy_url": "/privacy"
+  },
+  "iso_42001": {
+    "certified": false,
+    "in_progress": true
+  }
+}
+```
+
+### Get Model Card
+```http
+GET /compliance/model-card/:component
+```
+
+**Response:**
+```json
+{
+  "component": "memory_embedder",
+  "model": "text-embedding-ada-002",
+  "purpose": "Convert text memories to vector representations",
+  "training_data": "Not applicable - pretrained model",
+  "limitations": ["English language bias", "512 token limit"],
+  "ethical_considerations": ["Privacy preservation", "No PII in embeddings"],
+  "performance_metrics": {
+    "latency_p95": "120ms",
+    "accuracy": 0.92
+  }
+}
+```
+
+---
+
 ## Error Responses
 
 All endpoints may return error responses:
@@ -847,4 +1204,6 @@ Real-time events via WebSocket:
 
 ---
 
-*API Version: 1.0.0*
+*API Version: 2.0.0 (Dual-Track)*
+*Track 1: Production-ready standards-based features*
+*Track 2: Experimental research features (consent required)*

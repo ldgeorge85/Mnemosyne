@@ -147,6 +147,9 @@ Philosophical debate engine with 10+ agent archetypes:
 - 🔄 Peer-to-peer networking
 - 🔄 Collective sharing contracts
 
+## Research Review
+A comprehensive critical review of the Mnemosyne Protocol's research documentation has been conducted to assess the validity and depth of our research foundation. The full report, detailing findings on potential gaps, validation needs, and recommendations for risk mitigation across initial and extended document reviews, is available at [Critical Review Report](docs/ai2_critical_review.md).
+
 ## 🎯 For Different Audiences
 
 ### If You're a Developer

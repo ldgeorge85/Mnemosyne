@@ -1,10 +1,10 @@
-# Quick Start Guide
+# Quick Start Guide - Dual-Track System
 
-Get the Mnemosyne Protocol running in 15 minutes.
+Get the Mnemosyne Protocol running in 15 minutes with Track 1 (production) features.
 
 ## Prerequisites
 
-- Docker & Docker Compose
+- Docker & Docker Compose (use `docker compose`, not `docker-compose`)
 - Python 3.9+
 - Node.js 16+
 - 4GB RAM minimum
@@ -35,6 +35,10 @@ nano .env
 
 Required environment variables:
 ```bash
+# Track Configuration
+TRACK=production  # Use 'research' for Track 2
+EXPERIMENTAL_FEATURES=false
+
 # LLM Provider (choose one)
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
@@ -42,20 +46,33 @@ ANTHROPIC_API_KEY=sk-ant-...
 # Database
 DATABASE_URL=postgresql://user:pass@localhost/mnemosyne
 REDIS_URL=redis://localhost:6379
+QDRANT_HOST=qdrant
 
-# Security
+# Security & Compliance
 SECRET_KEY=generate-a-long-random-string
 ENCRYPTION_KEY=another-long-random-string
+EU_AI_ACT_COMPLIANCE=true
+
+# W3C Standards
+W3C_DID_ENABLED=true
+W3C_DID_METHOD=mnem
+
+# OAuth 2.0 (optional but recommended)
+OAUTH_CLIENT_ID=your_oauth_id
+OAUTH_CLIENT_SECRET=your_oauth_secret
 ```
 
 ### 3. Start Services
 
 ```bash
-# Start all services
-docker-compose up
+# Start Track 1 (Production) services
+docker compose up
 
 # Or run in background
-docker-compose up -d
+docker compose up -d
+
+# For Track 2 (Research) - requires consent
+docker compose -f docker-compose.research.yml up
 ```
 
 Services will be available at:
@@ -65,13 +82,16 @@ Services will be available at:
 
 ## First Use
 
-### 1. Create Your Account
+### 1. Create Your Account (Track 1 - OAuth/WebAuthn)
 
 ```bash
-# Via CLI
-curl -X POST http://localhost:8000/api/auth/register \
+# OAuth 2.0 login (recommended)
+curl -X GET http://localhost:8000/api/auth/oauth/authorize
+
+# Or WebAuthn registration
+curl -X POST http://localhost:8000/api/auth/webauthn/register \
   -H "Content-Type: application/json" \
-  -d '{"username": "your-name", "password": "secure-password"}'
+  -d '{"username": "your-name"}'
 
 # Or visit http://localhost:3000/register
 ```
@@ -126,28 +146,35 @@ philosopher = requests.post(
 print(f"Sage says: {philosopher.json()['reflection']}")
 ```
 
-### 4. Generate Your Deep Signal
+### 4. Generate Your W3C DID (Track 1)
 
 ```python
-# Generate identity signal from your memories
-signal = requests.post(
-    'http://localhost:8000/api/signals/generate',
+# Generate W3C Decentralized Identifier
+did = requests.post(
+    'http://localhost:8000/api/identity/did/generate',
     headers={'Authorization': f'Bearer {token}'}
 )
 
-print(f"Your signal: {signal.json()}")
+print(f"Your DID: {did.json()['did']}")
+
+# For Track 2 (Experimental Deep Signal) - requires consent
+# signal = requests.post(
+#     'http://localhost:8000/api/experimental/signals/generate',
+#     headers={'Authorization': f'Bearer {token}', 'X-Research-Consent': 'true'}
+# )
 ```
 
-### 5. Join a Collective (Optional)
+### 5. Join a Collective with MLS Protocol (Track 1)
 
 ```python
-# Create sharing contract
+# Create MLS-secured sharing contract
 contract = {
     "collective_id": "test-collective",
     "domains": ["technical"],
     "depth": "summary",
     "duration_days": 30,
-    "k_anonymity": 3
+    "k_anonymity": 3,
+    "mls_key_package": "base64_key_package"  # Generated via MLS
 }
 
 response = requests.post(
@@ -167,6 +194,29 @@ print(f"Joined collective: {response.json()}")
 4. View agent reflections in the insights panel
 5. Generate and customize your signal
 6. Explore collective features (if enabled)
+
+## Track 2 (Research) Features
+
+To enable experimental features:
+
+```bash
+# Set environment
+export TRACK=research
+export EXPERIMENTAL_FEATURES=true
+export CONSENT_REQUIRED=true
+
+# Restart services
+docker compose down
+docker compose -f docker-compose.research.yml up
+```
+
+### Available Experimental Features
+- Identity compression (100-128 bit)
+- Behavioral stability tracking (70/30 hypothesis)
+- Symbolic resonance visualization
+- Advanced collective intelligence
+
+**Note**: All Track 2 features require explicit consent and contribute anonymized metrics for research validation.
 
 ## Common Operations
 
@@ -220,21 +270,33 @@ npm run dev
 
 ### Services won't start
 ```bash
-# Check logs
-docker-compose logs -f
+# Check logs (use docker compose, not docker-compose)
+docker compose logs -f
 
 # Reset everything
-docker-compose down -v
-docker-compose up --build
+docker compose down -v
+docker compose up --build
 ```
 
 ### Database connection issues
 ```bash
 # Verify postgres is running
-docker-compose ps
+docker compose ps
 
 # Test connection
-docker-compose exec postgres psql -U postgres -d mnemosyne
+docker compose exec postgres psql -U postgres -d mnemosyne
+```
+
+### Track 1/Track 2 Issues
+```bash
+# Verify track configuration
+curl http://localhost:8000/api/system/track
+
+# Check feature flags
+curl http://localhost:8000/api/features
+
+# View compliance status
+curl http://localhost:8000/api/compliance/status
 ```
 
 ### Agent errors
@@ -253,8 +315,9 @@ docker-compose exec postgres psql -U postgres -d mnemosyne
 
 - Check [Documentation](../README.md)
 - Review [API Reference](../reference/API.md)
-- See [Troubleshooting Guide](TROUBLESHOOTING.md)
+- See [Dual-Track Implementation](../DUAL_TRACK_IMPLEMENTATION.md)
+- Review [Protocol Spec](../spec/PROTOCOL.md)
 
 ---
 
-*Welcome to cognitive sovereignty.*
+*Welcome to cognitive sovereignty - built on proven foundations, exploring new frontiers.*

@@ -12,8 +12,8 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, validator
 from .base import Pipeline, PipelineStage, TransformStage
-from ..models.memory import MemoryType, MemoryStatus
-from ..core.config import get_settings
+from models.memory import MemoryType, MemoryStatus
+from core.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

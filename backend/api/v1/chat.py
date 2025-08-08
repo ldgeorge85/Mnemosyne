@@ -17,7 +17,7 @@ from models.user import User
 from models.memory import Memory
 from services.memory_service import MemoryService
 from services.agent_service import AgentService
-from core.langchain_setup import get_llm
+# LangChain deferred to Sprint 5
 from core.config import get_settings
 
 router = APIRouter()
@@ -101,21 +101,13 @@ async def generate_chat_response(
     # Build messages for LLM
     llm_messages = context_messages + request.messages
     
-    # Get LLM response
-    llm = get_llm(
-        temperature=request.temperature,
-        max_tokens=request.max_tokens or settings.MAX_TOKENS
+    # Simplified response for Sprint 1-4 (LangChain deferred to Sprint 5)
+    # For now, return a placeholder response
+    user_message = next(
+        (msg.content for msg in reversed(request.messages) if msg.role == "user"),
+        "Hello"
     )
-    
-    # Format messages for LLM
-    formatted_messages = [
-        {"role": msg.role, "content": msg.content}
-        for msg in llm_messages
-    ]
-    
-    # Generate response
-    response = await llm.ainvoke(formatted_messages)
-    assistant_message = response.content
+    assistant_message = f"I received your message: '{user_message[:100]}'. Full LLM integration coming in Sprint 5."
     
     # Create memory from conversation if requested
     if request.create_memory:

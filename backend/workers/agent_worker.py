@@ -9,9 +9,9 @@ import traceback
 from typing import Dict, Any, List
 from datetime import datetime
 
-from ..core.redis_client import redis_manager
-from ..core.events import event_bus, EventType, Event
-from ..services.agent_service import agent_service
+from core.redis_client import redis_manager
+from core.events import event_bus, EventType, Event
+from services.agent_service import agent_service
 from .memory_worker import BaseWorker
 
 logger = logging.getLogger(__name__)

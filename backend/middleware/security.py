@@ -12,7 +12,7 @@ import time
 import uuid
 import logging
 
-from ..core.config import get_settings
+from core.config import get_settings
 
 settings = get_settings()
 logger = logging.getLogger(__name__)
@@ -46,7 +46,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["Content-Security-Policy"] = csp
         
         # Remove server header
-        response.headers.pop("server", None)
+        if "server" in response.headers:
+            del response.headers["server"]
         
         return response
 
@@ -166,17 +167,17 @@ def setup_middleware(app):
     # CORS middleware
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.BACKEND_CORS_ORIGINS,
+        allow_origins=settings.cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
     
     # Trusted host middleware
-    if settings.ALLOWED_HOSTS:
+    if settings.allowed_hosts:
         app.add_middleware(
             TrustedHostMiddleware,
-            allowed_hosts=settings.ALLOWED_HOSTS
+            allowed_hosts=settings.allowed_hosts
         )
     
     # Security headers
@@ -188,8 +189,8 @@ def setup_middleware(app):
     # Rate limiting
     app.add_middleware(
         RateLimitMiddleware,
-        calls=settings.RATE_LIMIT_CALLS,
-        period=settings.RATE_LIMIT_PERIOD
+        calls=settings.rate_limit_requests_per_minute,
+        period=60  # 1 minute
     )
     
     # Logging

@@ -39,7 +39,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - MODE=personal
-      - DATABASE_URL=postgresql://mnemosyne:${POSTGRES_PASSWORD:-mnemosyne_pass}@postgres:5432/mnemosyne
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/mnemosyne
       - REDIS_URL=redis://redis:6379
       - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-jwt-secret-key-change-this}
@@ -105,7 +105,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - MODE=collective
-      - DATABASE_URL=postgresql://mnemosyne:${POSTGRES_PASSWORD:-mnemosyne_pass}@postgres:5432/mnemosyne_collective
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/mnemosyne_collective
       - REDIS_URL=redis://redis:6379
       - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
       - OPENAI_API_KEY=${OPENAI_API_KEY}

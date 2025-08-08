@@ -3,7 +3,7 @@ Authentication endpoints for Mnemosyne Protocol
 """
 
 from datetime import timedelta
-from typing import Any
+from typing import Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer
 from pydantic import BaseModel, EmailStr, Field

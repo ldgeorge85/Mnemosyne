@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     
     # API Configuration
     api_prefix: str = "/api/v1"
+    docs_enabled: bool = Field(default=True, env="DOCS_ENABLED")
     cors_origins: List[str] = Field(
         default=["http://localhost:3000", "http://localhost:5173"],
         env="CORS_ORIGINS"

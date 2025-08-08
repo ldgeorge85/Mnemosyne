@@ -11,7 +11,7 @@ from collections import defaultdict
 import json
 
 from .base import BaseAgent, AgentContext, ReflectionFragment
-from ..core.redis_client import redis_manager
+from core.redis_client import redis_manager
 
 logger = logging.getLogger(__name__)
 

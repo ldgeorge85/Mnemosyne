@@ -188,8 +188,9 @@ class DatabaseManager:
         def set_postgresql_search_path(dbapi_conn, connection_record):
             """Set search path for PostgreSQL"""
             if "postgresql" in settings.database_url:
-                with dbapi_conn.cursor() as cursor:
-                    cursor.execute("SET search_path TO public")
+                cursor = dbapi_conn.cursor()
+                cursor.execute("SET search_path TO public")
+                cursor.close()
 
 
 # Global database manager instance

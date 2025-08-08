@@ -11,8 +11,8 @@ import numpy as np
 
 from .base import Pipeline, PipelineStage
 from .memory_capture import ProcessedMemory
-from ..models.memory import Memory, MemoryStatus
-from ..core.config import get_settings
+from models.memory import Memory, MemoryStatus
+from core.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

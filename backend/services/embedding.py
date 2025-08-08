@@ -5,7 +5,7 @@ Multi-model embedding generation with fallbacks
 
 import logging
 import asyncio
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional, Union, Tuple
 from enum import Enum
 import hashlib
 import numpy as np
@@ -14,8 +14,8 @@ import openai
 from openai import AsyncOpenAI
 import aiohttp
 
-from ..core.config import get_settings
-from ..core.redis_client import redis_manager
+from core.config import get_settings
+from core.redis_client import redis_manager
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

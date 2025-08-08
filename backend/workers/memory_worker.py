@@ -10,13 +10,13 @@ from datetime import datetime, timedelta
 import traceback
 import signal
 
-from ..core.redis_client import redis_manager
-from ..core.events import event_bus, EventType, Event
-from ..core.config import get_settings
-from ..services.memory_service import MemoryService
-from ..services.search_service import vector_search_service
-from ..pipelines.consolidation import MemoryConsolidationPipeline, REMConsolidationScheduler
-from ..pipelines.reflection import ReflectionPipeline, ReflectionLayerManager
+from core.redis_client import redis_manager
+from core.events import event_bus, EventType, Event
+from core.config import get_settings
+from services.memory_service import MemoryService
+from services.search_service import vector_search_service
+from pipelines.consolidation import MemoryConsolidationPipeline, REMConsolidationScheduler
+from pipelines.reflection import ReflectionPipeline, ReflectionLayerManager
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

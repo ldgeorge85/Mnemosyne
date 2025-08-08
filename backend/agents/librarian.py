@@ -7,19 +7,17 @@ import logging
 from typing import List
 
 from .base import (
-    SpecializedAgent, AgentRole, AgentCapability,
+    BaseAgent, AgentRole, AgentCapability,
     AgentContext, ReflectionFragment
 )
-from .tools import AgentToolFactory
-from langchain.tools import BaseTool
 
 logger = logging.getLogger(__name__)
 
 
-class LibrarianAgent(SpecializedAgent):
+class LibrarianAgent(BaseAgent):
     """Memory organization and categorization agent"""
     
-    def __init__(self, agent_id: str, **kwargs):
+    def __init__(self, **kwargs):
         domain_knowledge = {
             "expertise": ["knowledge_organization", "taxonomy", "information_retrieval"],
             "organization_methods": ["hierarchical", "faceted", "chronological", "thematic"],
@@ -27,17 +25,16 @@ class LibrarianAgent(SpecializedAgent):
         }
         
         super().__init__(
-            agent_id=agent_id,
             role=AgentRole.LIBRARIAN,
             capabilities=[
                 AgentCapability.MEMORY_ANALYSIS,
                 AgentCapability.SEMANTIC_SEARCH,
                 AgentCapability.PATTERN_RECOGNITION
             ],
-            domain_knowledge=domain_knowledge,
-            temperature=0.5,  # Balanced for organization and creativity
             **kwargs
         )
+        self.domain_knowledge = domain_knowledge
+        self.temperature = 0.5  # Balanced for organization and creativity
     
     def get_system_prompt(self) -> str:
         """Get librarian-specific system prompt"""
@@ -67,11 +64,13 @@ Format your insights as:
 
 Be systematic, thorough, and focused on knowledge coherence.
         """
-        return self.enhance_with_domain_knowledge(base_prompt)
+        # Domain knowledge enhancement deferred to Sprint 5
+        return base_prompt
     
-    def get_tools(self) -> List[BaseTool]:
+    def get_tools(self) -> List:
         """Get librarian-specific tools"""
-        return AgentToolFactory.create_tools_for_role("librarian", self.agent_id)
+        # LangChain tools deferred to Sprint 5
+        return []
     
     async def can_handle(self, context: AgentContext) -> bool:
         """Check if librarian can handle this context"""

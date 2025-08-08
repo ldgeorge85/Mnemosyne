@@ -7,19 +7,17 @@ import logging
 from typing import List
 
 from .base import (
-    SpecializedAgent, AgentRole, AgentCapability,
+    BaseAgent, AgentRole, AgentCapability,
     AgentContext, ReflectionFragment
 )
-from .tools import AgentToolFactory
-from langchain.tools import BaseTool
 
 logger = logging.getLogger(__name__)
 
 
-class MysticAgent(SpecializedAgent):
+class MysticAgent(BaseAgent):
     """Pattern recognition and signal interpretation agent"""
     
-    def __init__(self, agent_id: str, **kwargs):
+    def __init__(self, **kwargs):
         domain_knowledge = {
             "expertise": ["pattern_recognition", "signal_interpretation", "synchronicity"],
             "perception_modes": ["symbolic", "archetypal", "energetic", "resonant"],
@@ -27,17 +25,16 @@ class MysticAgent(SpecializedAgent):
         }
         
         super().__init__(
-            agent_id=agent_id,
             role=AgentRole.MYSTIC,
             capabilities=[
                 AgentCapability.PATTERN_RECOGNITION,
                 AgentCapability.SIGNAL_INTERPRETATION,
                 AgentCapability.COLLECTIVE_INTELLIGENCE
             ],
-            domain_knowledge=domain_knowledge,
-            temperature=0.9,  # High temperature for intuitive insights
             **kwargs
         )
+        self.domain_knowledge = domain_knowledge
+        self.temperature = 0.9  # High temperature for intuitive insights
     
     def get_system_prompt(self) -> str:
         """Get mystic-specific system prompt"""
@@ -67,11 +64,13 @@ Format your insights as:
 
 Be intuitive, perceptive, and attuned to subtle patterns.
         """
-        return self.enhance_with_domain_knowledge(base_prompt)
+        # Domain knowledge enhancement deferred to Sprint 5
+        return base_prompt
     
-    def get_tools(self) -> List[BaseTool]:
+    def get_tools(self) -> List:
         """Get mystic-specific tools"""
-        return AgentToolFactory.create_tools_for_role("mystic", self.agent_id)
+        # LangChain tools deferred to Sprint 5
+        return []
     
     async def can_handle(self, context: AgentContext) -> bool:
         """Check if mystic can handle this context"""

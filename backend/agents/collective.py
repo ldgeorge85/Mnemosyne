@@ -7,32 +7,29 @@ import logging
 from typing import List
 
 from .base import (
-    CollaborativeAgent, AgentRole, AgentCapability,
+    BaseAgent, AgentRole, AgentCapability,
     AgentContext, ReflectionFragment
 )
-from .tools import AgentToolFactory
-from langchain.tools import BaseTool
 
 logger = logging.getLogger(__name__)
 
 
-class CollectiveAgent(CollaborativeAgent):
+class CollectiveAgent(BaseAgent):
     """Collective intelligence and wisdom synthesis agent"""
     
-    def __init__(self, agent_id: str, **kwargs):
+    def __init__(self, **kwargs):
         # Initialize with collaborative capabilities
         super().__init__(
-            agent_id=agent_id,
             role=AgentRole.COLLECTIVE,
             capabilities=[
                 AgentCapability.COLLECTIVE_INTELLIGENCE,
                 AgentCapability.PATTERN_RECOGNITION,
                 AgentCapability.SIGNAL_INTERPRETATION
             ],
-            collaborators=["philosopher", "mystic"],  # Natural collaborators
-            temperature=0.7,  # Balanced for collective wisdom
             **kwargs
         )
+        self.collaborators = ["philosopher", "mystic"]  # Natural collaborators
+        self.temperature = 0.7  # Balanced for collective wisdom
         
         self.domain_knowledge = {
             "expertise": ["collective_wisdom", "shared_patterns", "emergence"],
@@ -69,9 +66,10 @@ Format your insights as:
 Be inclusive, synthesizing, and attuned to collective emergence.
         """
     
-    def get_tools(self) -> List[BaseTool]:
+    def get_tools(self) -> List:
         """Get collective-specific tools"""
-        return AgentToolFactory.create_tools_for_role("collective", self.agent_id)
+        # LangChain tools deferred to Sprint 5
+        return []
     
     async def can_handle(self, context: AgentContext) -> bool:
         """Check if collective agent can handle this context"""
@@ -113,7 +111,7 @@ Be inclusive, synthesizing, and attuned to collective emergence.
                 [f.content[:50] for f in by_type['pattern'][:3]]
             )
             synthesized.append(ReflectionFragment(
-                agent_id=self.agent_id,
+                agent_id=self.name,
                 agent_role=self.role,
                 fragment_type="pattern",
                 content=pattern_summary,
@@ -126,7 +124,7 @@ Be inclusive, synthesizing, and attuned to collective emergence.
             avg_confidence = sum(f.confidence for f in by_type['insight']) / len(by_type['insight'])
             if avg_confidence > 0.7:
                 synthesized.append(ReflectionFragment(
-                    agent_id=self.agent_id,
+                    agent_id=self.name,
                     agent_role=self.role,
                     fragment_type="insight",
                     content="Collective wisdom emerges from converging perspectives",

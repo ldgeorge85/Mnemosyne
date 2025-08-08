@@ -7,19 +7,17 @@ import logging
 from typing import List
 
 from .base import (
-    SpecializedAgent, AgentRole, AgentCapability,
+    BaseAgent, AgentRole, AgentCapability,
     AgentContext, ReflectionFragment
 )
-from .tools import AgentToolFactory
-from langchain.tools import BaseTool
 
 logger = logging.getLogger(__name__)
 
 
-class GuardianAgent(SpecializedAgent):
+class GuardianAgent(BaseAgent):
     """Privacy protection and security agent"""
     
-    def __init__(self, agent_id: str, **kwargs):
+    def __init__(self, **kwargs):
         domain_knowledge = {
             "expertise": ["privacy_protection", "security_analysis", "risk_assessment"],
             "protection_methods": ["k_anonymity", "differential_privacy", "encryption"],
@@ -27,17 +25,16 @@ class GuardianAgent(SpecializedAgent):
         }
         
         super().__init__(
-            agent_id=agent_id,
             role=AgentRole.GUARDIAN,
             capabilities=[
                 AgentCapability.PRIVACY_ANALYSIS,
                 AgentCapability.PATTERN_RECOGNITION,
                 AgentCapability.MEMORY_ANALYSIS
             ],
-            domain_knowledge=domain_knowledge,
-            temperature=0.2,  # Very low temperature for security precision
             **kwargs
         )
+        self.domain_knowledge = domain_knowledge
+        self.temperature = 0.2  # Very low temperature for security precision
     
     def get_system_prompt(self) -> str:
         """Get guardian-specific system prompt"""
@@ -67,11 +64,13 @@ Format your insights as:
 
 Be vigilant, precise, and uncompromising on privacy.
         """
-        return self.enhance_with_domain_knowledge(base_prompt)
+        # Domain knowledge enhancement deferred to Sprint 5
+        return base_prompt
     
-    def get_tools(self) -> List[BaseTool]:
+    def get_tools(self) -> List:
         """Get guardian-specific tools"""
-        return AgentToolFactory.create_tools_for_role("guardian", self.agent_id)
+        # LangChain tools deferred to Sprint 5
+        return []
     
     async def can_handle(self, context: AgentContext) -> bool:
         """Check if guardian can handle this context"""
@@ -96,7 +95,7 @@ Be vigilant, precise, and uncompromising on privacy.
             for pattern in pii_patterns:
                 if pattern in context.memory_content.lower():
                     fragments.append(ReflectionFragment(
-                        agent_id=self.agent_id,
+                        agent_id=self.name,
                         agent_role=self.role,
                         fragment_type="warning",
                         content=f"Potential PII detected: {pattern}",

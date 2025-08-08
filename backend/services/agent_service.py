@@ -8,15 +8,15 @@ import asyncio
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 
-from ..agents.base import AgentRole, AgentFactory, BaseAgent
-from ..agents.orchestrator import orchestrator, resource_manager
-from ..agents.engineer import EngineerAgent
-from ..agents.librarian import LibrarianAgent
-from ..agents.philosopher import PhilosopherAgent
-from ..agents.mystic import MysticAgent
-from ..agents.guardian import GuardianAgent
-from ..agents.collective import CollectiveAgent
-from ..core.config import get_settings
+from agents.base import AgentRole, AgentFactory, BaseAgent
+from agents.orchestrator import orchestrator, resource_manager
+from agents.engineer import EngineerAgent
+from agents.librarian import LibrarianAgent
+from agents.philosopher import PhilosopherAgent
+from agents.mystic import MysticAgent
+from agents.guardian import GuardianAgent
+from agents.collective import CollectiveAgent
+from core.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

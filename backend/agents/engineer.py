@@ -7,19 +7,17 @@ import logging
 from typing import List
 
 from .base import (
-    SpecializedAgent, AgentRole, AgentCapability,
+    BaseAgent, AgentRole, AgentCapability,
     AgentContext, ReflectionFragment
 )
-from .tools import AgentToolFactory
-from langchain.tools import BaseTool
 
 logger = logging.getLogger(__name__)
 
 
-class EngineerAgent(SpecializedAgent):
+class EngineerAgent(BaseAgent):
     """Technical analysis and pattern detection agent"""
     
-    def __init__(self, agent_id: str, **kwargs):
+    def __init__(self, **kwargs):
         domain_knowledge = {
             "expertise": ["pattern_analysis", "system_architecture", "data_structures"],
             "analysis_methods": ["statistical", "structural", "temporal"],
@@ -27,7 +25,6 @@ class EngineerAgent(SpecializedAgent):
         }
         
         super().__init__(
-            agent_id=agent_id,
             role=AgentRole.ENGINEER,
             capabilities=[
                 AgentCapability.TECHNICAL_ANALYSIS,
@@ -67,11 +64,13 @@ Format your insights as:
 
 Be precise, data-driven, and technically accurate.
         """
-        return self.enhance_with_domain_knowledge(base_prompt)
+        # Domain knowledge enhancement deferred to Sprint 5
+        return base_prompt
     
-    def get_tools(self) -> List[BaseTool]:
+    def get_tools(self) -> List:
         """Get engineer-specific tools"""
-        return AgentToolFactory.create_tools_for_role("engineer", self.agent_id)
+        # LangChain tools deferred to Sprint 5
+        return []
     
     async def can_handle(self, context: AgentContext) -> bool:
         """Check if engineer can handle this context"""

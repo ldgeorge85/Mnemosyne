@@ -12,9 +12,9 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 from .base import Pipeline, PipelineStage
-from ..models.memory import Memory
-from ..models.reflection import Reflection, AgentType, ReflectionType
-from ..core.config import get_settings
+from models.memory import Memory
+from models.reflection import Reflection, AgentType, ReflectionType
+from core.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

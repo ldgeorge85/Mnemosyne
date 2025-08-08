@@ -2,7 +2,7 @@
 Webhook handlers for external integrations
 """
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Request, BackgroundTasks
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,7 +12,7 @@ import json
 
 from api.deps import get_db
 from core.config import get_settings
-from core.redis_client import RedisClient
+from core.redis_client import redis_manager
 from services.memory_service import MemoryService
 
 router = APIRouter()
@@ -190,22 +190,12 @@ async def handle_generic_webhook(
     event: WebhookEvent,
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
-    redis: RedisClient = Depends(get_redis)
+    # Redis dependency removed for Sprint 1-4
 ) -> Any:
     """
     Handle generic webhooks with custom event types
     """
-    # Rate limiting
-    rate_limit_key = f"webhook_rate:{event.event_type}"
-    count = await redis.client.incr(rate_limit_key)
-    if count == 1:
-        await redis.client.expire(rate_limit_key, 60)  # 1 minute window
-    
-    if count > 10:  # Max 10 events per minute per type
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Rate limit exceeded"
-        )
+    # Rate limiting deferred to Sprint 5
     
     # Process based on event type
     if event.event_type.startswith("memory."):

@@ -10,9 +10,9 @@ import logging
 
 from api.v1 import api_router
 from core.config import get_settings
-from core.database import init_db
+from core.database import db_manager
 from middleware.security import setup_middleware
-from core.redis_client import RedisClient
+from core.redis_client import redis_manager
 from core.vectors import VectorStore
 
 # Configure logging
@@ -33,17 +33,16 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting Mnemosyne Protocol API...")
     
-    # Initialize database
-    await init_db()
-    logger.info("Database initialized")
+    # Initialize database connection (tables created via Alembic)
+    await db_manager.initialize()
+    logger.info("Database connection initialized")
     
     # Initialize Redis
-    redis = await RedisClient.get_instance()
+    await redis_manager.initialize()
     logger.info("Redis connected")
     
-    # Initialize vector store
-    vector_store = await VectorStore.get_instance()
-    logger.info("Vector store initialized")
+    # Vector store initialization deferred to Sprint 5
+    logger.info("Vector store will be initialized in Sprint 5")
     
     # Yield control to the application
     yield
@@ -51,11 +50,9 @@ async def lifespan(app: FastAPI):
     # Shutdown
     logger.info("Shutting down Mnemosyne Protocol API...")
     
-    # Close Redis connection
-    await redis.close()
-    
-    # Close vector store
-    await vector_store.close()
+    # Close connections
+    await redis_manager.close()
+    await db_manager.close()
     
     logger.info("Cleanup complete")
 
@@ -65,9 +62,9 @@ app = FastAPI(
     title="Mnemosyne Protocol API",
     description="Cognitive-symbolic operating system for preserving human agency",
     version="1.0.0",
-    docs_url="/docs" if settings.DOCS_ENABLED else None,
-    redoc_url="/redoc" if settings.DOCS_ENABLED else None,
-    openapi_url="/openapi.json" if settings.DOCS_ENABLED else None,
+    docs_url="/docs" if settings.docs_enabled else None,
+    redoc_url="/redoc" if settings.docs_enabled else None,
+    openapi_url="/openapi.json" if settings.docs_enabled else None,
     lifespan=lifespan
 )
 

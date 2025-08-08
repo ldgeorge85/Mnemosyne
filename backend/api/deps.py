@@ -97,7 +97,7 @@ class RateLimiter:
     async def __call__(
         self, 
         user: User = Depends(get_current_user),
-        redis: RedisClient = Depends(get_redis)
+        redis = Depends(get_redis)
     ) -> bool:
         """Check if user has exceeded rate limit"""
         key = f"rate_limit:{user.id}"

@@ -9,6 +9,7 @@ import time
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 from app.api.v1.router import api_router
 from app.core.config import settings
@@ -146,6 +147,51 @@ async def version():
         dict: The current version information
     """
     return {"version": app.version}
+
+# Simple auth endpoints for development
+class DevLoginRequest(BaseModel):
+    username: str
+    password: str
+
+@app.post("/api/v1/auth/dev-login")
+async def dev_login(request: DevLoginRequest):
+    """
+    Simple development login endpoint
+    """
+    # Simple hardcoded users for development
+    if request.username == "test" and request.password == "test123":
+        return {
+            "access_token": "dev-token-test",
+            "token_type": "bearer",
+            "user": {
+                "id": "test-001",
+                "username": "test",
+                "email": "test@example.com"
+            }
+        }
+    elif request.username == "admin" and request.password == "admin123":
+        return {
+            "access_token": "dev-token-admin",
+            "token_type": "bearer",
+            "user": {
+                "id": "admin-001",
+                "username": "admin",
+                "email": "admin@example.com"
+            }
+        }
+    else:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+@app.get("/api/v1/auth/dev-me")
+async def dev_me():
+    """
+    Get current user for development
+    """
+    return {
+        "id": "test-001",
+        "username": "test",
+        "email": "test@example.com"
+    }
 
 # Exception handlers (order matters - specific to general)
 # Handle custom API exceptions

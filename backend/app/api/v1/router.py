@@ -6,7 +6,7 @@ This module defines the main API router and includes all route handlers.
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import health, conversations, conversation_context, message_handling, streaming, memories, llm, openai, prompts, parsers, functions, memory_retrieval, memory_management, memory_scoring, memory_extraction, chat_enhanced, agents, auth, tasks, task_schedules, recurring_tasks
+from app.api.v1.endpoints import health, conversations, conversation_context, message_handling, streaming, memories, llm, openai, prompts, parsers, functions, memory_retrieval, memory_management, memory_scoring, memory_extraction, chat_enhanced, agents, auth, auth_modular, auth_simple, test_auth, tasks, task_schedules, recurring_tasks
 from app.core.config import settings
 
 # Create the main API router
@@ -14,6 +14,9 @@ api_router = APIRouter(prefix=settings.API_PREFIX)
 
 # Include the health router
 api_router.include_router(health.router, prefix="/health", tags=["health"])
+
+# Test auth router (temporary for debugging)
+api_router.include_router(test_auth.router, tags=["test"])
 
 # Include the conversations router
 api_router.include_router(conversations.router, prefix="/conversations", tags=["conversations"])
@@ -72,8 +75,13 @@ api_router.include_router(task_schedules.router, prefix="/task-schedules", tags=
 # Include the Recurring Tasks router
 api_router.include_router(recurring_tasks.router, prefix="/recurring-tasks", tags=["recurring-tasks"])
 
-# Include the Authentication router
-api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
+# Include the Authentication routers
+# Simple auth for development
+api_router.include_router(auth_simple.router, tags=["auth-simple"])
+# New modular auth (preferred) - temporarily disabled until fixed
+# api_router.include_router(auth_modular.router, tags=["auth"])
+# Legacy auth (being phased out) - temporarily disabled due to routing conflict
+# api_router.include_router(auth.router, prefix="/auth-legacy", tags=["auth-legacy"])
 
 # Additional routers will be added as they are implemented
 # Examples:

@@ -13,6 +13,8 @@ from fastapi import Depends, HTTPException, APIRouter, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_async_db
 from app.api.dependencies.auth import get_current_user, get_current_user_from_token_or_api_key
+from app.api.dependencies.auth_dev import get_current_user_dev
+from app.core.config import settings
 from app.db.session import async_session_maker
 from app.db.repositories.memory import MemoryRepository, MemoryChunkRepository
 
@@ -25,7 +27,7 @@ async def reflect_memory(
     agent_id: str = Body(...), 
     memories: list = Body(...),
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ):
     """
     Trigger memory reflection/scoring for an agent.
@@ -47,7 +49,7 @@ async def reflect_memory(
 async def get_importance(
     agent_id: str,
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ):
     """
     Retrieve importance scores for memories for a given agent.
@@ -68,7 +70,7 @@ async def get_importance(
 async def get_hierarchy(
     agent_id: str,
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ):
     """
     Get hierarchical organization of memories for a given agent.
@@ -90,7 +92,7 @@ async def get_hierarchy(
 async def create_memory(
     memory_data: MemoryCreate,
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> MemoryResponse:
     """
     Create a new memory.
@@ -123,7 +125,7 @@ async def get_memory(
     memory_id: str = Path(..., description="The ID of the memory to retrieve"),
     include_chunks: bool = Query(False, description="Whether to include memory chunks"),
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> MemoryWithChunksResponse:
     """
     Get a memory by ID.
@@ -175,8 +177,7 @@ async def list_memories(
     limit: int = Query(50, description="Maximum number of memories to return"),
     offset: int = Query(0, description="Number of memories to skip for pagination"),
     include_inactive: bool = Query(False, description="Whether to include inactive memories"),
-    db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    db: AsyncSession = Depends(get_async_db)
 ) -> List[MemoryResponse]:
     """
     List memories for the current user.
@@ -191,9 +192,11 @@ async def list_memories(
     Returns:
         List of memories
     """
+    # For development, use a default user ID
+    dev_user_id = "00000000-0000-0000-0000-000000000000"
     memory_repo = MemoryRepository(db)
     memories, _ = await memory_repo.get_memories_by_user_id(
-        str(current_user.id), 
+        dev_user_id, 
         limit=limit,
         offset=offset,
         include_inactive=include_inactive
@@ -206,7 +209,7 @@ async def update_memory(
     memory_data: MemoryUpdate,
     memory_id: str = Path(..., description="The ID of the memory to update"),
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> MemoryResponse:
     """
     Update a memory.
@@ -248,7 +251,7 @@ async def delete_memory(
     memory_id: str = Path(..., description="The ID of the memory to delete"),
     permanent: bool = Query(False, description="Whether to permanently delete the memory"),
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> None:
     """
     Delete a memory.
@@ -291,7 +294,7 @@ async def get_memories_by_tag(
     offset: int = Query(0, description="Number of memories to skip for pagination"),
     include_inactive: bool = Query(False, description="Whether to include inactive memories"),
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> List[MemoryResponse]:
     """
     Get memories by tag.
@@ -322,7 +325,7 @@ async def get_memories_by_tag(
 async def search_memories(
     search_query: MemorySearchQuery,
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> MemorySearchResponse:
     """
     Search memories by text.
@@ -387,7 +390,7 @@ async def search_memories(
 @router.get("/statistics", response_model=MemoryStatistics)
 async def get_memory_statistics(
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> MemoryStatistics:
     """
     Get memory system statistics.
@@ -443,7 +446,7 @@ async def get_memory_statistics(
 async def create_memory_chunk(
     chunk_data: MemoryChunkCreate,
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> MemoryChunkResponse:
     """
     Create a new memory chunk.
@@ -484,7 +487,7 @@ async def create_memory_chunk(
 async def get_memory_chunk(
     chunk_id: str = Path(..., description="The ID of the memory chunk to retrieve"),
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> MemoryChunkResponse:
     """
     Get a memory chunk by ID.
@@ -526,7 +529,7 @@ async def get_memory_chunk(
 async def get_memory_chunks(
     memory_id: str = Path(..., description="The ID of the memory to get chunks for"),
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> List[MemoryChunkResponse]:
     """
     Get all chunks for a memory.
@@ -568,7 +571,7 @@ async def update_memory_chunk(
     chunk_data: MemoryChunkUpdate,
     chunk_id: str = Path(..., description="The ID of the memory chunk to update"),
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> MemoryChunkResponse:
     """
     Update a memory chunk.
@@ -612,7 +615,7 @@ async def update_memory_chunk(
 async def delete_memory_chunk(
     chunk_id: str = Path(..., description="The ID of the memory chunk to delete"),
     db: AsyncSession = Depends(get_async_db),
-    current_user: Dict[str, Any] = Depends(get_current_user_from_token_or_api_key)
+    current_user: Dict[str, Any] = Depends(get_current_user_dev if not settings.AUTH_REQUIRED else get_current_user_from_token_or_api_key)
 ) -> None:
     """
     Delete a memory chunk.

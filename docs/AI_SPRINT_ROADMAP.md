@@ -10,23 +10,32 @@ This roadmap is optimized for AI agent coding sessions with dual-track separatio
 3. **Maximize uninterrupted coding** - Complete subsystems without stopping
 4. **Enable parallel work** - Clear separation allows concurrent development
 
-## Current Status
+## Current Status (Updated: August 2025)
 
 ### Completed ✅
 - Plugin architecture with experimental separation
 - Feature flag system with audit logging
 - Research Bus with differential privacy
-- Basic backend infrastructure (now being refactored for dual-track)
+- Basic backend infrastructure
+- **Sprint 1A: Standards Foundation** (90% complete)
+  - W3C DID implementation (did:mnem method) ✅
+  - W3C Verifiable Credentials ✅
+  - OAuth 2.0 with PKCE ✅
+  - Modular auth system (Static/OAuth/DID/API Key) ✅
+- **Sprint 1B: Trust & Transparency** (60% complete)
+  - Model Cards (EU AI Act compliant) ✅
+  - Trust Calibration (Lee & See framework) ✅
 
 ### In Progress 🔄
-- W3C DID migration
-- OAuth 2.0/OIDC implementation
-- Model Cards system
+- Transparency API endpoints
+- W3C PROV integration
 
 ### Not Started ❌
+- WebAuthn/FIDO2
+- MLS Protocol (Sprint 2A)
+- Frontend UI components
 - Track 2 experimental plugins
 - Consent management
-- EU AI Act compliance docs
 
 ---
 
@@ -81,6 +90,35 @@ This roadmap is optimized for AI agent coding sessions with dual-track separatio
 - Model Cards for all AI components
 - Trust calibration in UI
 - Transparency artifacts
+
+---
+
+## 🚀 Sprint 1C: Frontend Foundation 🔄 IN PROGRESS
+**Goal**: Get basic UI working for local use  
+**Duration**: Single session (~4 hours)  
+**Progress**: 60% - Frontend running, auth routing issues  
+**Dependencies**: Sprint 1A (auth) + existing backend
+
+### Implementation Block
+```python
+# Core UI Setup:
+1. frontend/src/pages/Login.tsx           # Auth with static for dev
+2. frontend/src/pages/Dashboard.tsx       # Main memory interface
+3. frontend/src/components/MemoryInput.tsx # Capture memories
+4. frontend/src/components/MemoryList.tsx  # Display memories
+5. frontend/src/api/client.ts             # API client with auth
+6. frontend/src/stores/auth.ts            # Auth state management
+7. frontend/src/stores/memory.ts          # Memory state
+8. Fix CORS and proxy configuration
+9. Docker setup for frontend container
+```
+
+### Deliverable
+- Working login with static auth
+- Memory capture and display
+- Basic search functionality
+- Docker containerized frontend
+- **LOCAL MNEMOSYNE IS USABLE!** 🎉
 
 ---
 
@@ -261,8 +299,9 @@ These sprint pairs can run simultaneously:
 ### Track 1 (Core) Sprints
 | Sprint | Status | Time | Priority |
 |--------|--------|------|----------|
-| 1A: Standards Foundation | 🔄 In Progress | 4h | URGENT |
-| 1B: Trust & Transparency | 📋 Ready | 3h | HIGH |
+| 1A: Standards Foundation | ✅ 90% Complete | 4h | DONE |
+| 1B: Trust & Transparency | ✅ Complete | 3h | DONE |
+| 1C: Frontend Foundation | 🔄 60% Progress | 4h | URGENT |
 | 2A: MLS Communications | 📋 Ready | 4h | HIGH |
 | 3A: Privacy Primitives | 📋 Ready | 3h | MEDIUM |
 | 4A: Compliance | 📋 Ready | 3h | URGENT |
@@ -285,6 +324,13 @@ These sprint pairs can run simultaneously:
 6. **Sprint 6 (Signatures)** → Split: proven parts to Track 1, experimental to Track 2
 
 ## 🎯 When Will It Be Usable?
+
+### 🚨 After Sprint 1C (NEXT!) - **WORKING LOCAL UI**
+- Frontend with login page
+- Memory capture interface
+- Basic search and display
+- **~4 hours work**
+- **THIS MAKES MNEMOSYNE USABLE LOCALLY!**
 
 ### After Track 1 Sprint 1A+1B - **COMPLIANT CORE**
 - Standards-based identity

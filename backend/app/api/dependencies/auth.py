@@ -21,7 +21,11 @@ from app.db.session import get_async_db
 from app.schemas.auth import TokenPayload
 
 # OAuth2 scheme for token extraction from requests
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_PREFIX}/auth/login", auto_error=False)
+# In development mode, we don't require auth
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.API_PREFIX}/auth/login", 
+    auto_error=False  # Don't automatically raise 403
+)
 
 # Credentials exception for authentication failures
 credentials_exception = HTTPException(
@@ -294,7 +298,7 @@ async def get_current_user_from_token_or_api_key(
         HTTPException: If authentication fails
     """
     # If authentication is not required, return a development user
-    if not settings.AUTH_REQUIRED and not token:
+    if not settings.AUTH_REQUIRED:
         # For development purposes, return a mock user when no token is provided
         # In production, this should be removed
         mock_user = User(

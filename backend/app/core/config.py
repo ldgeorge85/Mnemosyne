@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.1.0"
     APP_URL: str = "http://localhost"
     API_PREFIX: str = "/api/v1"
+    DOCS_ENABLED: bool = True  # Enable/disable OpenAPI docs
     DOCS_LOGO_URL: str = "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png"  # Placeholder
     DOCS_PRIMARY_COLOR: str = "#1f4287"  # Primary brand color
     AUTH_REQUIRED: bool = False  # Whether authentication is required for API access
@@ -98,6 +99,32 @@ class Settings(BaseSettings):
     # Security Settings
     TOKEN_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    JWT_SECRET_KEY: str = Field(default="your-jwt-secret-key-change-this", env="JWT_SECRET_KEY")
+    JWT_ISSUER: str = "mnemosyne"
+    
+    # Track Configuration (Dual-Track System)
+    TRACK: str = Field(default="production", env="TRACK")  # production or research
+    ENVIRONMENT: str = Field(default="development", env="ENVIRONMENT")  # development, testing, production
+    
+    # W3C DID Settings
+    W3C_DID_ENABLED: bool = Field(default=False, env="W3C_DID_ENABLED")
+    W3C_DID_METHOD: str = Field(default="mnem", env="W3C_DID_METHOD")
+    
+    # OAuth Settings (optional)
+    OAUTH_ENABLED: bool = Field(default=False, env="OAUTH_ENABLED")
+    OAUTH_CLIENT_ID: Optional[str] = Field(default=None, env="OAUTH_CLIENT_ID")
+    OAUTH_CLIENT_SECRET: Optional[str] = Field(default=None, env="OAUTH_CLIENT_SECRET")
+    OAUTH_AUTH_URL: Optional[str] = Field(default=None, env="OAUTH_AUTH_URL")
+    OAUTH_TOKEN_URL: Optional[str] = Field(default=None, env="OAUTH_TOKEN_URL")
+    OAUTH_REDIRECT_URI: str = Field(default="http://localhost:3000/callback", env="OAUTH_REDIRECT_URI")
+    
+    # Qdrant Vector Database
+    QDRANT_HOST: str = Field(default="qdrant", env="QDRANT_HOST")
+    QDRANT_PORT: int = Field(default=6333, env="QDRANT_PORT")
+    QDRANT_API_KEY: Optional[str] = Field(default=None, env="QDRANT_API_KEY")
+    
+    # Auth Configuration (can be overridden via environment)
+    AUTH_CONFIG: dict = Field(default_factory=dict)
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
     # Logging Settings
@@ -131,5 +158,15 @@ class Settings(BaseSettings):
 # Create a global settings object
 settings = Settings()
 
+# Function to get settings (for dependency injection)
+def get_settings() -> Settings:
+    """
+    Get the settings instance.
+    
+    Returns:
+        Settings: The application settings
+    """
+    return settings
+
 # Export settings to be imported elsewhere
-__all__ = ["settings"]
+__all__ = ["settings", "get_settings"]

@@ -10,7 +10,7 @@ export default defineConfig({
     // Proxy API requests to backend during development
     proxy: {
       '/api': {
-        target: process.env.BACKEND_HOST ?? 'http://localhost:8000',
+        target: 'http://backend:8000',
         changeOrigin: true,
         secure: false,
         // Simple rewrite - just remove /api prefix since backend expects /api/v1

@@ -108,9 +108,12 @@ For detailed technical specifications, see:
 - Personal memory with vector search
 - Basic AI chat with context retention
 - Task management and scheduling
-- W3C DID-based identity
-- OAuth 2.0 authentication
-- Data export with W3C PROV provenance
+- W3C DID-based identity (did:mnem method)
+- Modular authentication (Static/OAuth/DID/API Key)
+- Model Cards for all AI components
+- Trust calibration system
+- Docker containerization
+- Qdrant vector database integration
 
 ### Experimental (Track 2 - Research)
 Each requires explicit opt-in and consent:
@@ -175,13 +178,19 @@ Every component includes:
 - ✅ Plugin architecture complete
 - ✅ Feature flag system implemented
 - ✅ Research bus with differential privacy
-- 🔄 W3C DID migration in progress
-- 📋 OAuth 2.0 implementation planned
+- ✅ W3C DID implementation (did:mnem method)
+- ✅ OAuth 2.0 with modular auth system
+- ✅ Model Cards implementation (EU AI Act compliant)
+- ✅ Trust Calibration (Lee & See framework)
+- 🔄 W3C PROV integration in progress
+- 📋 Frontend UI connection needed (Sprint 1C)
 
 ### Track 2 (Research)
 - ✅ ID compression plugin created
 - ✅ Hypothesis documentation template
+- ✅ Experimental plugin base class
 - 📋 Behavioral stability plugin planned
+- 📋 Consent management system needed
 - 📋 Validation studies planned
 - 📋 Research partnerships needed
 

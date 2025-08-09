@@ -16,7 +16,7 @@ from models.user import User
 from core.redis_client import redis_manager
 
 settings = get_settings()
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 
 
 async def get_redis():
@@ -25,12 +25,34 @@ async def get_redis():
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
     db: AsyncSession = Depends(get_db)
 ) -> User:
     """
     Validate JWT token and return current user
     """
+    # Development mode: return mock user if no auth
+    if settings.environment == "development" and not credentials:
+        from models.user import User
+        import uuid
+        mock_user = User(
+            id=str(uuid.UUID("00000000-0000-0000-0000-000000000000")),
+            email="dev@mnemosyne.local",
+            username="dev_user",
+            is_active=True,
+            is_superuser=True,
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
+        )
+        return mock_user
+    
+    if not credentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
     token = credentials.credentials
     
     credentials_exception = HTTPException(

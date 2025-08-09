@@ -12,17 +12,27 @@ import ErrorBoundary from './components/common/ErrorBoundary';
  */
 function App() {
   // Get UI state from Zustand store
-  const { colorMode: storeColorMode } = useUIStore();
+  const { colorMode: storeColorMode, toggleColorMode: storeToggle } = useUIStore();
   
   // Get Chakra UI's color mode controls
-  const { colorMode, setColorMode } = useColorMode();
+  const { colorMode, setColorMode, toggleColorMode } = useColorMode();
   
-  // Sync color mode between Zustand store and Chakra UI
+  // Sync color mode from Zustand store to Chakra UI on mount
   useEffect(() => {
-    if (storeColorMode !== colorMode) {
-      setColorMode(storeColorMode);
+    setColorMode(storeColorMode);
+  }, []);
+  
+  // Sync color mode from Chakra UI to Zustand store when it changes
+  useEffect(() => {
+    if (colorMode !== storeColorMode) {
+      // Update Zustand store when Chakra UI color mode changes
+      if (colorMode === 'dark' && storeColorMode === 'light') {
+        storeToggle();
+      } else if (colorMode === 'light' && storeColorMode === 'dark') {
+        storeToggle();
+      }
     }
-  }, [storeColorMode, colorMode, setColorMode]);
+  }, [colorMode]);
   
   // Check API health on application startup - SILENT implementation with no console output
   useEffect(() => {

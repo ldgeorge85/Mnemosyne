@@ -159,9 +159,10 @@ async def streaming_chat(
                 full_response += chunk
                 
                 # Send the chunk as a server-sent event
+                escaped_chunk = chunk.replace('"', '\\"')
                 yield f"data: {{\n"
                 yield f"data: \"event\": \"content\",\n"
-                yield f"data: \"data\": \"{chunk.replace('\"', '\\\"')}\"\n"
+                yield f"data: \"data\": \"{escaped_chunk}\"\n"
                 yield f"data: }}\n\n"
             
             # Stream completion event

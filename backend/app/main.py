@@ -150,18 +150,23 @@ async def version():
 
 # Simple auth endpoints for development
 class DevLoginRequest(BaseModel):
-    username: str
+    username: str = None
+    email: str = None
     password: str
 
 @app.post("/api/v1/auth/dev-login")
 async def dev_login(request: DevLoginRequest):
     """
-    Simple development login endpoint
+    Simple development login endpoint that works with either username or email
     """
+    # Accept either username or email
+    identifier = request.username or request.email
+    
     # Simple hardcoded users for development
-    if request.username == "test" and request.password == "test123":
+    if identifier in ["test", "test@example.com"] and request.password == "test123":
         return {
             "access_token": "dev-token-test",
+            "refresh_token": "dev-refresh-test",
             "token_type": "bearer",
             "user": {
                 "id": "test-001",
@@ -169,9 +174,10 @@ async def dev_login(request: DevLoginRequest):
                 "email": "test@example.com"
             }
         }
-    elif request.username == "admin" and request.password == "admin123":
+    elif identifier in ["admin", "admin@example.com"] and request.password == "admin123":
         return {
             "access_token": "dev-token-admin",
+            "refresh_token": "dev-refresh-admin",
             "token_type": "bearer",
             "user": {
                 "id": "admin-001",

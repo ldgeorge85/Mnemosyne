@@ -60,6 +60,31 @@ async def simple_login(request: LoginRequest):
         }
     )
 
+# Add a dev-login endpoint that's easier to use
+@router.post("/auth/dev-login")
+async def dev_login(request: LoginRequest):
+    """
+    Development login - works with username/password
+    """
+    # Check if it's one of our test users
+    if request.username == "test" and request.password == "test123":
+        return {
+            "access_token": "dev-token-test",
+            "refresh_token": "dev-refresh-test", 
+            "token_type": "bearer"
+        }
+    elif request.username == "admin" and request.password == "admin123":
+        return {
+            "access_token": "dev-token-admin",
+            "refresh_token": "dev-refresh-admin",
+            "token_type": "bearer"
+        }
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
+
 @router.get("/auth/simple/me")
 async def get_current_user_simple():
     """

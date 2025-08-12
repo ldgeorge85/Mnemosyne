@@ -32,6 +32,7 @@ import {
   MoonIcon,
   SunIcon,
 } from '@chakra-ui/icons';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface HeaderProps {
   onOpenSidebar: () => void;
@@ -46,10 +47,10 @@ const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
   const { isOpen, onToggle } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
-  const isAuthenticated = Boolean(localStorage.getItem('access_token'));
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+  const { isAuthenticated, user, logout } = useAuth();
+  
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
   
@@ -114,9 +115,14 @@ const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
             variant="ghost"
           />
           {isAuthenticated ? (
-            <Button fontSize={'sm'} fontWeight={400} variant={'link'} onClick={handleLogout}>
-              Sign Out
-            </Button>
+            <>
+              <Text fontSize={'sm'} fontWeight={500}>
+                {user?.username || 'User'}
+              </Text>
+              <Button fontSize={'sm'} fontWeight={400} variant={'link'} onClick={handleLogout}>
+                Sign Out
+              </Button>
+            </>
           ) : (
             <>
               <Button as={RouterLink} to="/login" fontSize={'sm'} fontWeight={400} variant={'link'}>

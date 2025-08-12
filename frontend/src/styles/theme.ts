@@ -8,8 +8,8 @@ import { extendTheme, ThemeConfig } from '@chakra-ui/react';
 
 // Color mode config
 const config: ThemeConfig = {
-  initialColorMode: 'light',
-  useSystemColorMode: false,
+  initialColorMode: 'system',
+  useSystemColorMode: true,
   disableTransitionOnChange: false,
 };
 

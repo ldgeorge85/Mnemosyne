@@ -98,19 +98,20 @@ This roadmap is optimized for AI agent coding sessions with dual-track separatio
 **Duration**: Single session (~4 hours)  
 **Progress**: 60% - Frontend running, auth routing issues  
 **Dependencies**: Sprint 1A (auth) + existing backend
+**NOTE**: Currently using Chakra UI (working). Will migrate to shadcn/ui in Phase 2.
 
-### Implementation Block
+### Implementation Block (UPDATED FOR CHAKRA UI)
 ```python
-# Core UI Setup:
-1. frontend/src/pages/Login.tsx           # Auth with static for dev
-2. frontend/src/pages/Dashboard.tsx       # Main memory interface
-3. frontend/src/components/MemoryInput.tsx # Capture memories
-4. frontend/src/components/MemoryList.tsx  # Display memories
-5. frontend/src/api/client.ts             # API client with auth
-6. frontend/src/stores/auth.ts            # Auth state management
+# Core UI Setup with Current Stack:
+1. frontend/src/pages/Login.tsx           # Fix Chakra auth form
+2. frontend/src/pages/Dashboard.tsx       # Main chat interface
+3. frontend/src/components/MemoryPanel.tsx # Memory sidebar
+4. frontend/src/components/ChatInput.tsx   # Fix chat endpoint
+5. frontend/src/api/auth.ts               # Connect to simple auth
+6. frontend/src/stores/auth.ts            # Auth state (exists)
 7. frontend/src/stores/memory.ts          # Memory state
-8. Fix CORS and proxy configuration
-9. Docker setup for frontend container
+8. Fix chat endpoint user object issue
+9. Wire up memory CRUD operations
 ```
 
 ### Deliverable
@@ -297,14 +298,15 @@ These sprint pairs can run simultaneously:
 ## Status Tracking
 
 ### Track 1 (Core) Sprints
-| Sprint | Status | Time | Priority |
-|--------|--------|------|----------|
-| 1A: Standards Foundation | ✅ 90% Complete | 4h | DONE |
-| 1B: Trust & Transparency | ✅ Complete | 3h | DONE |
-| 1C: Frontend Foundation | 🔄 60% Progress | 4h | URGENT |
-| 2A: MLS Communications | 📋 Ready | 4h | HIGH |
-| 3A: Privacy Primitives | 📋 Ready | 3h | MEDIUM |
-| 4A: Compliance | 📋 Ready | 3h | URGENT |
+| Sprint | Status | Time | Priority | Notes |
+|--------|--------|------|----------|-------|
+| 1A: Standards Foundation | ✅ 90% Complete | 4h | DONE | |
+| 1B: Trust & Transparency | ✅ Complete | 3h | DONE | |
+| 1C: Frontend Foundation | 🔄 60% Progress | 4h | URGENT | Using Chakra UI |
+| 1D: UI Migration | 📋 Planned | 12h | LOW | Chakra → shadcn |
+| 2A: MLS Communications | 📋 Ready | 4h | HIGH | |
+| 3A: Privacy Primitives | 📋 Ready | 3h | MEDIUM | |
+| 4A: Compliance | 📋 Ready | 3h | HIGH | |
 
 ### Track 2 (Experimental) Sprints
 | Sprint | Status | Time | Hypothesis |

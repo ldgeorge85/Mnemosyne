@@ -25,9 +25,9 @@ if [ "$APP_ENV" = "development" ]; then
     LOG_LEVEL=$(echo "${LOG_LEVEL:-info}" | tr '[:upper:]' '[:lower:]')
     echo "Using log level: $LOG_LEVEL"
     # Use watchfiles for better file watching performance
-    uvicorn main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app --log-level "$LOG_LEVEL"
+    uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app --log-level "$LOG_LEVEL"
 else
     echo "Running in PRODUCTION mode"
     LOG_LEVEL=$(echo "${LOG_LEVEL:-info}" | tr '[:upper:]' '[:lower:]')
-    uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4 --log-level "$LOG_LEVEL"
+    uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4 --log-level "$LOG_LEVEL"
 fi

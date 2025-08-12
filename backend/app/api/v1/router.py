@@ -39,8 +39,11 @@ api_router.include_router(memories.router, prefix="/memories", tags=["memories"]
 # Include the agents router
 api_router.include_router(agents.router, prefix="/agents", tags=["agents"])
 
-# Include the LLM router
-api_router.include_router(llm.router, prefix="/llm", tags=["llm"])
+# Include the LLM router - DISABLED (needs API keys)
+# api_router.include_router(llm.router, prefix="/llm", tags=["llm"])
+# Working chat that doesn't need external APIs
+from app.api.v1.endpoints import chat_working
+api_router.include_router(chat_working.router, prefix="/llm", tags=["llm"])
 
 # Include the OpenAI router
 api_router.include_router(openai.router, prefix="/openai", tags=["openai"])
@@ -76,8 +79,13 @@ api_router.include_router(task_schedules.router, prefix="/task-schedules", tags=
 api_router.include_router(recurring_tasks.router, prefix="/recurring-tasks", tags=["recurring-tasks"])
 
 # Include the Authentication routers
-# Simple auth for development
-api_router.include_router(auth_simple.router, tags=["auth-simple"])
+# Ultra simple auth that JUST WORKS
+from app.api.v1.endpoints import simple_auth
+api_router.include_router(simple_auth.router, prefix="/auth", tags=["auth"])
+# Simple auth for development - DISABLED
+# api_router.include_router(auth_simple.router, tags=["auth-simple"])
+# Main auth router - DISABLED (too complex, broken)
+# api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 # New modular auth (preferred) - temporarily disabled until fixed
 # api_router.include_router(auth_modular.router, tags=["auth"])
 # Legacy auth (being phased out) - temporarily disabled due to routing conflict

@@ -151,7 +151,7 @@ class Memory(Base, UUIDMixin, TimestampMixin, SoftDeleteMixin):
         "Memory",
         backref="parent_memory",
         remote_side="Memory.id",
-        lazy="dynamic"
+        lazy="select"
     )
     
     # Constraints

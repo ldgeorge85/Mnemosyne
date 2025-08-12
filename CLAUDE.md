@@ -31,18 +31,20 @@ mnemosyne/
 
 ## Key Commands
 
+**CRITICAL: NEVER USE docker-compose (with hyphen). ALWAYS USE docker compose (with space) or docker stack deploy**
+
 ```bash
 # Setup
 ./scripts/setup.sh
 
 # Development
-docker-compose up
-docker-compose exec backend pytest
-docker-compose logs -f
+docker compose up
+docker compose exec backend pytest
+docker compose logs -f
 
 # Database
-docker-compose exec postgres psql -U postgres -d mnemosyne
-docker-compose run --rm backend alembic upgrade head
+docker compose exec postgres psql -U postgres -d mnemosyne
+docker compose run --rm backend alembic upgrade head
 
 # Git
 git add -A && git commit -m "message"
@@ -81,13 +83,13 @@ See `docs/reference/API.md` for complete specification. Many endpoints need impl
 - Run `pytest` before committing
 - Security > Features > Performance
 
-## Current Priorities (Week 1)
+## Current Priorities (Week 2 - Sprint 5)
 
-1. Complete database schema with auth tables
-2. Implement core memory operations
-3. Basic agent orchestration
-4. Authentication system
-5. Docker deployment
+1. Fix chat endpoint user object issue
+2. Complete memory CRUD with embeddings
+3. Wire up frontend auth flow (using Chakra UI)
+4. Configure alternative embedding model
+5. Deploy first philosophical agent demo
 
 ## Architecture Notes
 
@@ -96,9 +98,12 @@ See `docs/reference/API.md` for complete specification. Many endpoints need impl
 - **Vector Store**: Qdrant (multi-embedding support)
 - **Configuration**: Pydantic Settings
 - **Frontend**: React, TypeScript, Vite
+  - **Current UI**: Chakra UI (working, will migrate later)
+  - **Target UI**: shadcn/ui + Tailwind CSS (documented plan)
+  - **State**: Zustand (already aligned)
 - **AI**: OpenAI/Anthropic/Ollama, LangChain
 - **Testing**: Pytest with real integration tests (no mocks)
-- **Deployment**: Docker Compose → Docker Swarm
+- **Deployment**: Docker (docker compose / docker stack) → Docker Swarm
 
 ### Core Architectural Patterns
 

@@ -32,13 +32,13 @@ import ProtectedRoute from '../components/auth/ProtectedRoute';
 // Page components
 import HomePage from '../pages/Home';
 import NotFoundPage from '../pages/NotFound';
-import DashboardPage from '../pages/DashboardSimple';
+import DashboardPage from '../pages/DashboardReal';
 import LoginPage from '../pages/Login';
 import RegisterPage from '../pages/Register';
 import SettingsPage from '../pages/Settings';
 import ConversationsPage from '../pages/Conversations';
 import ConversationDetailPage from '../pages/ConversationDetail';
-import ChatPage from '../pages/ChatSimple';
+import ChatPage from '../pages/ChatReal';
 import ChatEnhancedPage from '../pages/ChatEnhanced';
 import TasksPage from '../pages/TasksSimple';
 import MemoriesPage from '../pages/MemoriesSimple';

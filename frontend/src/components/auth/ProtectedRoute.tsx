@@ -13,13 +13,8 @@ import { useAuth } from '../../contexts/AuthContext';
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  // DEV MODE: Allow access without auth for development
-  const DEV_MODE = true; // Toggle this for production
-  
-  if (DEV_MODE) {
-    // In dev mode, always allow access
-    return <Outlet />;
-  }
+  // DEV MODE: Disabled - require authentication
+  const DEV_MODE = false; // Authentication is now working!
 
   // Show loading state while checking authentication
   if (isLoading) {

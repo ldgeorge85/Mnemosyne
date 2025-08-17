@@ -57,6 +57,8 @@ services:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-jwt-secret-key-change-this}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY:-your-encryption-key-32-bytes-long!}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+      - OPENAI_MODEL=${OPENAI_MODEL}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - W3C_DID_ENABLED=true
       - W3C_DID_METHOD=mnem
@@ -150,8 +152,13 @@ services:
       - VITE_SHADOW_URL=http://localhost:8001
       - VITE_COLLECTIVE_URL=http://localhost:8003
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
+      - ./frontend/tsconfig.json:/app/tsconfig.json
+      - ./frontend/tailwind.config.js:/app/tailwind.config.js
+      - ./frontend/postcss.config.js:/app/postcss.config.js
     ports:
       - "3000:3000"
     depends_on:

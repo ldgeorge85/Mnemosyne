@@ -26,27 +26,15 @@ const ensureFutureFlags = () => {
 ensureFutureFlags();
 
 // Layout components
-import MainLayout from '../components/layout/MainLayout';
-import ProtectedRoute from '../components/auth/ProtectedRoute';
+// import MainLayout from '../components/layout/MainLayout';
+import ProtectedRoute from '../components/auth/ProtectedRouteSimple';
 
 // Page components
-import HomePage from '../pages/Home';
-import NotFoundPage from '../pages/NotFound';
-import DashboardPage from '../pages/DashboardReal';
+import DashboardPage from '../pages/DashboardMinimal';
 import LoginPage from '../pages/Login';
 import RegisterPage from '../pages/Register';
-import SettingsPage from '../pages/Settings';
-import ConversationsPage from '../pages/Conversations';
-import ConversationDetailPage from '../pages/ConversationDetail';
-import ChatPage from '../pages/ChatReal';
-import ChatEnhancedPage from '../pages/ChatEnhanced';
-import TasksPage from '../pages/TasksSimple';
-import MemoriesPage from '../pages/MemoriesSimple';
-import BookmarksPage from '../pages/Bookmarks';
-import CalendarPage from '../pages/Calendar';
-import ProjectsPage from '../pages/Projects';
-import ContactsPage from '../pages/Contacts';
-import ActivityPage from '../pages/Activity';
+import ChatSimple from '../pages/ChatSimple';
+
 
 /**
  * Main router component that defines all application routes
@@ -56,31 +44,36 @@ const AppRouter: React.FC = () => {
     <BrowserRouter>
       <Routes>
         {/* Public routes */}
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          
-          {/* Protected routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="settings" element={<SettingsPage />} />
-            <Route path="conversations" element={<ConversationsPage />} />
-            <Route path="conversations/:id" element={<ConversationDetailPage />} />
-            <Route path="chat" element={<ChatPage />} />
-            <Route path="chat-enhanced" element={<ChatEnhancedPage />} />
-            <Route path="tasks" element={<TasksPage />} />
-            <Route path="memories" element={<MemoriesPage />} />
-            <Route path="bookmarks" element={<BookmarksPage />} />
-            <Route path="calendar" element={<CalendarPage />} />
-            <Route path="projects" element={<ProjectsPage />} />
-            <Route path="contacts" element={<ContactsPage />} />
-            <Route path="activity" element={<ActivityPage />} />
-          </Route>
-          
-          {/* 404 route */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        
+        {/* Protected routes */}
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        } />
+        
+        {/* Temporary redirects for other routes */}
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/chat" element={
+          <ProtectedRoute>
+            <ChatSimple />
+          </ProtectedRoute>
+        } />
+        <Route path="/memories" element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        } />
+        
+        {/* 404 route */}
+        <Route path="*" element={<LoginPage />} />
       </Routes>
     </BrowserRouter>
   );

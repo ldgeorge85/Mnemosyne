@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Login Test</title>
+</head>
+<body>
+    <h1>Direct Login Test</h1>
+    <button onclick="testLogin()">Test Login with FormData</button>
+    <button onclick="testLoginJson()">Test Login with JSON</button>
+    <div id="result"></div>
+    
+    <script>
+        async function testLogin() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing with FormData...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('username', 'test');
+                formData.append('password', 'test');
+                
+                console.log('Sending request with FormData');
+                const response = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('Response status:', response.status);
+                const text = await response.text();
+                console.log('Response text:', text);
+                
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('Failed to parse JSON:', e);
+                    data = { error: 'Failed to parse response', text: text };
+                }
+                
+                resultDiv.innerHTML = `
+                    <h3>Response Status: ${response.status}</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                if (data.access_token) {
+                    localStorage.setItem('test_token', data.access_token);
+                    localStorage.setItem('test_user', JSON.stringify(data.user));
+                    resultDiv.innerHTML += '<h3>✓ Stored in localStorage!</h3>';
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `Error: ${error.message}`;
+            }
+        }
+        
+        async function testLoginJson() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing with JSON...';
+            
+            try {
+                console.log('Sending request with JSON');
+                const response = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'test',
+                        password: 'test'
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                const text = await response.text();
+                console.log('Response text:', text);
+                
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('Failed to parse JSON:', e);
+                    data = { error: 'Failed to parse response', text: text };
+                }
+                
+                resultDiv.innerHTML = `
+                    <h3>Response Status: ${response.status}</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

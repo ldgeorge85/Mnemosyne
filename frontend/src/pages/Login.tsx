@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '../contexts/AuthContextSimple';
 
 const Login: React.FC = () => {
-  
   const navigate = useNavigate();
   const { login } = useAuth();
   const [username, setUsername] = useState('');
@@ -27,9 +30,9 @@ const Login: React.FC = () => {
     
     try {
       // Use AuthContext login method which handles token storage and user fetching
-      const success = await login(username, password);
+      const isSuccess = await login(username, password);
       
-      if (success) {
+      if (isSuccess) {
         setSuccess('Login successful! Redirecting...');
         
         // Redirect to dashboard after a short delay
@@ -48,141 +51,103 @@ const Login: React.FC = () => {
     }
   };
 
+  // Quick login for development
+  const quickLogin = (user: string, pass: string) => {
+    setUsername(user);
+    setPassword(pass);
+  };
+
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      backgroundColor: '#f7fafc'
-    }}>
-      <div style={{
-        maxWidth: '400px',
-        width: '100%',
-        padding: '2rem',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-      }}>
-        <h1 style={{ 
-          fontSize: '2rem', 
-          fontWeight: 'bold', 
-          textAlign: 'center', 
-          marginBottom: '2rem',
-          color: '#2d3748'
-        }}>
-          Sign In
-        </h1>
-        
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Sign In</CardTitle>
+          <CardDescription>Welcome back to Mnemosyne</CardDescription>
+        </CardHeader>
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: '0.5rem', 
-              fontWeight: '500',
-              color: '#4a5568'
-            }}>
-              Username
-            </label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
-              placeholder="Enter your username"
-            />
-          </div>
-          
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: '0.5rem', 
-              fontWeight: '500',
-              color: '#4a5568'
-            }}>
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #e2e8f0',
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
-              placeholder="Enter your password"
-            />
-          </div>
-          
-          {error && (
-            <div style={{
-              padding: '0.75rem',
-              marginBottom: '1rem',
-              backgroundColor: '#fed7d7',
-              color: '#c53030',
-              borderRadius: '4px',
-              fontSize: '0.875rem'
-            }}>
-              {error}
+          <CardContent className="space-y-4">
+            {error && (
+              <div className="bg-destructive/10 text-destructive px-3 py-2 rounded-md text-sm">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm">
+                {success}
+              </div>
+            )}
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
             </div>
-          )}
-          
-          {success && (
-            <div style={{
-              padding: '0.75rem',
-              marginBottom: '1rem',
-              backgroundColor: '#c6f6d5',
-              color: '#2f855a',
-              borderRadius: '4px',
-              fontSize: '0.875rem'
-            }}>
-              {success}
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
             </div>
-          )}
-          
-          <button
-            type="submit"
-            disabled={isLoading}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              backgroundColor: isLoading ? '#a0aec0' : '#4299e1',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              fontWeight: '500',
-              cursor: isLoading ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isLoading ? 'Signing In...' : 'Sign In'}
-          </button>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isLoading}
+            >
+              {isLoading ? 'Signing In...' : 'Sign In'}
+            </Button>
+            
+            {/* Dev quick login buttons */}
+            <div className="flex gap-2 w-full">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => quickLogin('test', 'test')}
+              >
+                Test User
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => quickLogin('admin', 'admin')}
+              >
+                Admin
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => quickLogin('demo', 'demo')}
+              >
+                Demo
+              </Button>
+            </div>
+            
+            <div className="text-center text-sm text-muted-foreground">
+              Don't have an account?{' '}
+              <Link to="/register" className="text-primary hover:underline">
+                Sign up
+              </Link>
+            </div>
+          </CardFooter>
         </form>
-        
-        <div style={{ 
-          marginTop: '1.5rem', 
-          textAlign: 'center',
-          fontSize: '0.875rem',
-          color: '#718096'
-        }}>
-          Don't have an account?{' '}
-          <a 
-            href="/register" 
-            style={{ color: '#4299e1', textDecoration: 'none' }}
-          >
-            Sign up
-          </a>
-        </div>
-      </div>
+      </Card>
     </div>
   );
 };

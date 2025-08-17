@@ -63,7 +63,8 @@ build/
 .temp/
 tmp/
 
-# Archive folder (keep the folder but not track changes)
+# Archive folders (for old/stale documentation)
+.archive/
 archive/*
 !archive/.gitkeep
 

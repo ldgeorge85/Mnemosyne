@@ -71,10 +71,8 @@ if (typeof window !== 'undefined') {
 // Regular imports
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { ChakraProvider, ColorModeScript } from "@chakra-ui/react"
 import App from "./App"
 import "./index.css"
-import theme from "./styles/theme"
 
 // Declare types for React Router future flags (for TypeScript)
 declare global {
@@ -90,9 +88,6 @@ declare global {
 // Render the application
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-    <ChakraProvider theme={theme}>
-      <App />
-    </ChakraProvider>
+    <App />
   </React.StrictMode>
 )

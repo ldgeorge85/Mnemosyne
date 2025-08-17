@@ -38,7 +38,7 @@ Execute a strategic reset focused on:
 ### Immediate Actions
 1. Created `.archive/` directory (gitignored) for historical docs
 2. Moved assessment/, review/, and stale docs to archive
-3. Created INTEGRATED_VISION_2025.md as strategic guide
+3. Created INTEGRATED_VISION_2025.md as strategic guide (Protocol, not Collective)
 4. Created MNEMOSYNE_PRIMER.md as project introduction
 5. Updated repository structure for clarity
 

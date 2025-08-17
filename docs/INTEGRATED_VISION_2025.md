@@ -1,4 +1,4 @@
-# The Mnemosyne Collective: Integrated Vision & Strategic Path Forward
+# The Mnemosyne Protocol: Integrated Vision & Strategic Path Forward
 *August 2025*
 
 ## Executive Summary
@@ -56,7 +56,7 @@ The assessment reveals a **catastrophic integration failure** rather than a desi
 
 ### From Personal Tool to Planetary Network
 
-The Mnemosyne Collective envisions a transformation from individual memory augmentation to planetary-scale collective intelligence:
+The Mnemosyne Protocol envisions a transformation from individual memory augmentation to planetary-scale collective intelligence:
 
 #### Phase Evolution
 1. **Personal Agent** (Current Focus)

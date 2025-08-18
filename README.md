@@ -41,25 +41,26 @@ open http://localhost:3000
 
 ## Current Status
 
-⚠️ **CRITICAL**: Security architecture exists but needs activation. See [Strategic Reset](docs/decisions/003-strategic-reset.md).
+⚠️ **CRITICAL**: The project has sophisticated theoretical concepts that are [UNVALIDATED]. Building proceeds on dual tracks.
 
-### What Works
-- ✅ Core memory engine with vector search
-- ✅ Basic chat interface
-- ✅ Docker containerization
-- ✅ Agent orchestration system
-- ✅ Philosophical debate engine
+### Track 1: Proven Technologies (Working)
+- ✅ Backend authentication via AuthManager
+- ✅ Database services (PostgreSQL, Redis, Qdrant)
+- ✅ Docker infrastructure
+- ✅ Basic FastAPI structure
 
-### Needs Immediate Fix
-- 🔴 Authentication disabled (components exist, need wiring)
-- 🔴 Chat endpoint user object error
-- 🔴 Memory CRUD incomplete
-- 🔴 Frontend auth flow not connected
+### Track 2: Theoretical Concepts (Require Validation)
+- ❓ Identity Compression (ICV) - 128-bit identity representation
+- ❓ Progressive Trust Exchange - Cryptographic staged disclosure
+- ❓ Resonance Algorithms - Mathematical compatibility prediction
+- ❓ Collective Intelligence - Emergent meta-minds
 
-### Next Actions
-1. **Activation Sprint** - Enable existing security components
-2. **Core Features** - Fix chat and memory operations
-3. **Documentation** - Align docs with reality
+### Immediate Priorities
+- 🔴 Phase 0.5: Code cleanup - Remove competing auth patterns
+- 🔴 Phase 1: Core features - Memory CRUD, chat, basic persona
+- 🟡 Phase 1.5: Research validation - ICV empirical testing
+
+See [IMMEDIATE_TASKS.md](docs/IMMEDIATE_TASKS.md) for detailed execution plan.
 
 ## Architecture
 
@@ -73,29 +74,35 @@ open http://localhost:3000
 - **Deployment**: Docker Compose → Kubernetes
 
 ### Core Components
-1. **Memory Engine** - Personal memory augmentation
-2. **Agent System** - AI-mediated interactions
-3. **Identity Layer** - W3C DIDs and Verifiable Credentials
-4. **Trust Network** - Progressive trust building
-5. **Collective Engine** - Group intelligence emergence
+
+#### Implementable Now
+1. **Memory Engine** - Personal memory with vector search
+2. **Numinous Confidant Persona** - Philosophical AI personality
+3. **Basic Agent System** - LLM-powered assistance
+
+#### Requires Validation First
+4. **Identity Compression (ICV)** - 128-bit identity representation
+5. **Progressive Trust Exchange** - Cryptographic disclosure protocol
+6. **Resonance System** - Mathematical compatibility prediction
+7. **Collective Intelligence** - Emergent group cognition
 
 ## Documentation
 
 ### Essential Reading
-- **[Project Primer](docs/MNEMOSYNE_PRIMER.md)** - High-level introduction
-- **[Integrated Vision](docs/INTEGRATED_VISION_2025.md)** - Strategic roadmap
-- **[Protocol Spec](docs/spec/PROTOCOL.md)** - Technical details
-- **[Philosophy](docs/philosophy/)** - Core principles
+- **[Project Primer](docs/MNEMOSYNE_PRIMER.md)** - Complete vision with 6 core innovations
+- **[Roadmap](docs/ROADMAP_2025.md)** - Dual-track development plan
+- **[Integrated Vision](docs/INTEGRATED_VISION_2025.md)** - Strategic analysis
+- **[Immediate Tasks](docs/IMMEDIATE_TASKS.md)** - Tactical execution plan
+
+### Technical Deep Dive
+- **[Concepts Deep Dive](docs/CONCEPTS_DEEP_DIVE.md)** - Complete theoretical framework
+- **[Protocol Spec](docs/spec/PROTOCOL.md)** - Technical specifications
+- **[Persona & Worldview](docs/spec/PERSONA_WORLDVIEW.md)** - Agent personality system
 
 ### For Developers
 - **[CLAUDE.md](CLAUDE.md)** - AI assistant instructions
-- **[Architecture Decisions](docs/decisions/)** - Key technical choices
-- **[Implementation Guides](docs/guides/)** - How-to documentation
-
-### Research & Innovation
-- **[Research Documentation](docs/research/)** - Academic foundations
-- **[AI-MC Integration](docs/aimc/)** - AI-mediated communication
-- **[Hypotheses](docs/hypotheses/)** - Experimental features
+- **[AI Development Guide](docs/AI_DEVELOPMENT_GUIDE.md)** - How to use AI assistants
+- **[Security Log](docs/SECURITY_ACTIVATION_LOG.md)** - Auth activation status
 
 ## Philosophy
 

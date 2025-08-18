@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     DOCS_ENABLED: bool = True  # Enable/disable OpenAPI docs
     DOCS_LOGO_URL: str = "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png"  # Placeholder
     DOCS_PRIMARY_COLOR: str = "#1f4287"  # Primary brand color
-    AUTH_REQUIRED: bool = False  # Whether authentication is required for API access
+    AUTH_REQUIRED: bool = True  # Whether authentication is required for API access
     SECRET_KEY: str = "your-secret-key-here"
     
     # CORS settings

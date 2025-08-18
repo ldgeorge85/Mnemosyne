@@ -3,13 +3,15 @@ Chat Endpoint with Real LLM Integration
 Uses OpenAI-compatible endpoint configured in settings
 """
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import datetime
 import uuid
 import httpx
 from app.core.config import settings
+from app.core.auth.manager import get_current_user, get_optional_user
+from app.core.auth.base import AuthUser
 
 router = APIRouter()
 
@@ -90,13 +92,16 @@ async def call_llm(messages: List[ChatMessage], model: Optional[str] = None,
             raise HTTPException(status_code=500, detail=f"LLM request error: {str(e)}")
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest, req: Request) -> ChatResponse:
+async def chat(
+    request: ChatRequest, 
+    user: AuthUser = Depends(get_current_user if settings.AUTH_REQUIRED else get_optional_user)
+) -> ChatResponse:
     """
     Chat endpoint connected to real LLM
+    Requires authentication if AUTH_REQUIRED is True
     """
-    # Try to get user info from cookie for context
-    user_cookie = req.cookies.get("user")
-    user_context = f" (User: {user_cookie})" if user_cookie else ""
+    # Get user context from authenticated user
+    user_context = f" (User: {user.username if user else 'anonymous'})"
     
     try:
         # Call the LLM
@@ -159,8 +164,12 @@ async def chat(request: ChatRequest, req: Request) -> ChatResponse:
         )
 
 @router.post("/completions", response_model=ChatResponse)
-async def chat_completions(request: ChatRequest, req: Request) -> ChatResponse:
+async def chat_completions(
+    request: ChatRequest,
+    user: AuthUser = Depends(get_current_user if settings.AUTH_REQUIRED else get_optional_user)
+) -> ChatResponse:
     """
     Alias for /chat to match OpenAI API
+    Requires authentication if AUTH_REQUIRED is True
     """
-    return await chat(request, req)
+    return await chat(request, user)

@@ -6,7 +6,7 @@ This module defines the main API router and includes all route handlers.
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import health, memories, agents, tasks, task_schedules, recurring_tasks, simple_auth
+from app.api.v1.endpoints import health, memories, agents, tasks, task_schedules, recurring_tasks, auth
 from app.core.config import settings
 
 # Create the main API router
@@ -36,8 +36,8 @@ api_router.include_router(task_schedules.router, prefix="/task-schedules", tags=
 # Include the Recurring Tasks router
 api_router.include_router(recurring_tasks.router, prefix="/recurring-tasks", tags=["recurring-tasks"])
 
-# Include the Authentication router
-api_router.include_router(simple_auth.router, prefix="/auth", tags=["auth"])
+# Include the Authentication router (using secure AuthManager)
+api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 # Additional routers will be added as they are implemented
 # Examples:

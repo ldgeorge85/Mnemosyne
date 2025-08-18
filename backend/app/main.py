@@ -22,6 +22,7 @@ from app.core.exceptions import (
     generic_exception_handler,
 )
 from app.core.middleware import RequestIDMiddleware
+from app.core.auth.manager import get_auth_manager
 
 # Configure logging
 configure_logging()
@@ -148,56 +149,8 @@ async def version():
     """
     return {"version": app.version}
 
-# Simple auth endpoints for development
-class DevLoginRequest(BaseModel):
-    username: str = None
-    email: str = None
-    password: str
-
-@app.post("/api/v1/auth/dev-login")
-async def dev_login(request: DevLoginRequest):
-    """
-    Simple development login endpoint that works with either username or email
-    """
-    # Accept either username or email
-    identifier = request.username or request.email
-    
-    # Simple hardcoded users for development
-    if identifier in ["test", "test@example.com"] and request.password == "test123":
-        return {
-            "access_token": "dev-token-test",
-            "refresh_token": "dev-refresh-test",
-            "token_type": "bearer",
-            "user": {
-                "id": "test-001",
-                "username": "test",
-                "email": "test@example.com"
-            }
-        }
-    elif identifier in ["admin", "admin@example.com"] and request.password == "admin123":
-        return {
-            "access_token": "dev-token-admin",
-            "refresh_token": "dev-refresh-admin",
-            "token_type": "bearer",
-            "user": {
-                "id": "admin-001",
-                "username": "admin",
-                "email": "admin@example.com"
-            }
-        }
-    else:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-
-@app.get("/api/v1/auth/dev-me")
-async def dev_me():
-    """
-    Get current user for development
-    """
-    return {
-        "id": "test-001",
-        "username": "test",
-        "email": "test@example.com"
-    }
+# Auth endpoints are now handled by the auth router in api/v1/endpoints/auth.py
+# Dev-login endpoints have been removed for security
 
 # Exception handlers (order matters - specific to general)
 # Handle custom API exceptions
@@ -220,6 +173,12 @@ async def startup_event():
     Initializes connections and resources needed by the application.
     """
     logger.info(f"Starting {settings.APP_NAME} API")
+    
+    # Initialize authentication manager
+    auth_manager = get_auth_manager()
+    available_methods = auth_manager.get_available_methods()
+    logger.info(f"Authentication initialized with methods: {available_methods}")
+    
     # Database initialization is handled by the session module
 
 @app.on_event("shutdown")

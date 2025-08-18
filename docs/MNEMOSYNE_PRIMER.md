@@ -37,21 +37,59 @@ As trust networks form, something remarkable emerges:
 
 ## Core Innovations
 
-### 1. Identity Compression
-Your digital self compressed to 100-128 bits—enough to be unique among every human who ever lived, compact enough to preserve privacy. Like a fingerprint for your soul that can't be reverse-engineered.
+### 1. Identity Compression Vector (ICV)
+Your digital essence compressed through a 5-layer pipeline into 100-128 bits:
+- **Raw streams** → Your conversations, memories, behaviors
+- **Feature extraction** → Stylometry, values, narrative motifs, behavioral signals
+- **Latent synthesis** → Unified 64-dimensional vector representation
+- **ICV packing** → 128-bit identity capsule with holographic encoding
+- **Receipts & audit** → Every change tracked, verifiable, reversible
 
-### 2. Deep Signals
-Behavioral patterns that capture your authentic self:
-- 70% stable (who you truly are)
-- 30% adaptive (how you grow)
-- Cryptographically verifiable yet privacy-preserving
+The 70/30 stability model: 70% of your identity remains stable (your core self), 30% adapts and evolves. Public/private splits ensure you control what's revealed.
 
-### 3. Agent-First Architecture
-Every interaction mediated through your personal AI:
-- Natural language is your only interface
-- Agent handles all technical complexity
-- You maintain ultimate authority
-- Progressive automation as trust builds
+### 2. Progressive Trust Exchange
+Trust builds in stages, not all at once:
+- **Awareness** → Someone exists
+- **Recognition** → Minimal verified disclosure
+- **Familiarity** → Shared interaction history
+- **Shared Memory** → Mutual experiences established
+- **Deep Trust** → Full alignment and revelation
+
+Backed by cryptographic commitments (Pedersen, zero-knowledge proofs, verifiable delay functions) ensuring fair, reciprocal disclosure. Trust naturally decays without renewal, with specific recovery rituals for rebuilding.
+
+### 3. Resonance & Compatibility
+Mathematical models determine natural connection between compressed identities:
+- **Harmonic resonance** → Frequency matching and phase coherence
+- **Quantum entanglement** → Superposition and entanglement measures
+- **Information geometry** → Divergence metrics and mutual information
+- **Archetypal patterns** → Jungian archetypes and elemental compatibility
+
+Privacy-preserved through zero-knowledge proofs and homomorphic encryption—finding connection without exposing raw identity.
+
+### 4. Agent Communication Standards
+Complete protocol stack for agent interaction:
+- Multi-transport support (HTTP, WebSocket, MQTT, gRPC)
+- Layered architecture (transport → encoding → semantic → trust)
+- AI-mediated communication with transparency
+- Behavioral signal extraction from patterns
+- Philosophical debate orchestration between specialized agents
+
+### 5. Collective Intelligence Emergence
+Individual agents temporarily form higher-order cognitive structures:
+- **Resonance clustering** → Natural grouping by compatibility
+- **Phase synchronization** → Kuramoto oscillator coherence
+- **Trust stabilization** → Only strong bonds enable emergence
+- **Time-bounded** → No permanent hive minds
+- **Dissolution triggers** → Entropy, conflict, or completion
+
+Meta-minds that exceed individual capabilities while preserving sovereignty.
+
+### 6. The Numinous Confidant Persona
+Your agent isn't just smart—it has soul:
+- **Four modes**: Confidant (deep listening), Mentor (skill guidance), Mediator (conflict navigation), Guardian (wellbeing protection)
+- **Philosophical grounding**: Synthesizes Stoic resilience, Confucian harmony, Sufi compassion, Buddhist mindfulness, and Western humanism
+- **Adaptive personality**: Bends to your values while maintaining core principles
+- **Transparent operations**: Every decision generates receipts for trust
 
 ## Use Cases
 

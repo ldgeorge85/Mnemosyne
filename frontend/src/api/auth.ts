@@ -3,7 +3,7 @@
  * 
  * This module provides functions for user authentication operations.
  */
-import { post } from './client-simple';
+import { post, get } from './client-simple';
 
 /**
  * Login request interface
@@ -11,6 +11,7 @@ import { post } from './client-simple';
 export interface LoginRequest {
   username: string;
   password: string;
+  method?: string;  // Auth method (e.g., 'static')
 }
 
 /**
@@ -39,18 +40,28 @@ export interface RegisterRequest {
  */
 export const login = async (credentials: LoginRequest) => {
   try {
-    // Use dev endpoint for now since main auth has DB issues
+    // Use the proper auth endpoint with AuthManager
     const loginData = {
       username: credentials.username,
-      email: credentials.username.includes('@') ? credentials.username : `${credentials.username}@example.com`,
-      password: credentials.password
+      password: credentials.password,
+      method: credentials.method || 'static'  // Default to static auth method
     };
     
-    return post<LoginResponse>('/auth/dev-login', loginData, {
+    const response = await post<LoginResponse>('/auth/login', loginData, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
+    
+    // Store tokens in localStorage
+    if (response.access_token) {
+      localStorage.setItem('token', response.access_token);
+    }
+    if (response.refresh_token) {
+      localStorage.setItem('refresh_token', response.refresh_token);
+    }
+    
+    return response;
   } catch (error: any) {
     // Enhance error messages for better UX
     if (error.response?.status === 401) {
@@ -80,27 +91,25 @@ export const register = async (userData: RegisterRequest) => {
  */
 export const logout = async () => {
   try {
-    // Get refresh token from cookie if available
-    const cookies = document.cookie.split(';');
-    let refreshToken = null;
-    for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split('=');
-      if (name === 'refresh_token') {
-        refreshToken = decodeURIComponent(value);
-        break;
-      }
-    }
+    // Get refresh token from localStorage
+    const refreshToken = localStorage.getItem('refresh_token');
     
-    // Send refresh token in body to invalidate it
+    // Send logout request to backend
     const response = await post('/auth/logout', refreshToken ? { refresh_token: refreshToken } : {});
     
-    // Clear all auth-related cookies
+    // Clear tokens from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('refresh_token');
+    
+    // Clear any auth-related cookies (backend handles httpOnly cookies)
     document.cookie = 'access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     document.cookie = 'refresh_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     
     return response;
   } catch (error) {
-    // Even if logout fails, clear cookies
+    // Even if logout fails, clear local storage
+    localStorage.removeItem('token');
+    localStorage.removeItem('refresh_token');
     document.cookie = 'access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     document.cookie = 'refresh_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     throw error;
@@ -112,7 +121,33 @@ export const logout = async () => {
  * @returns Promise resolving to current user data
  */
 export const getCurrentUser = async () => {
-  return post('/auth/me');
+  return get('/auth/me');
+};
+
+/**
+ * Refresh access token
+ * @returns Promise resolving to new tokens
+ */
+export const refreshToken = async () => {
+  const refresh_token = localStorage.getItem('refresh_token');
+  if (!refresh_token) {
+    throw new Error('No refresh token available');
+  }
+  
+  const response = await post<LoginResponse>('/auth/refresh', {
+    refresh_token,
+    method: 'static'
+  });
+  
+  // Store new tokens
+  if (response.access_token) {
+    localStorage.setItem('token', response.access_token);
+  }
+  if (response.refresh_token) {
+    localStorage.setItem('refresh_token', response.refresh_token);
+  }
+  
+  return response;
 };
 
 export default {
@@ -120,4 +155,5 @@ export default {
   register,
   logout,
   getCurrentUser,
+  refreshToken,
 };

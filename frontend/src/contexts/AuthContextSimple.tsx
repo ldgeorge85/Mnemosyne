@@ -87,13 +87,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    */
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
-      const formData = new FormData();
-      formData.append('username', username);
-      formData.append('password', password);
-
+      // Send JSON body matching backend expectations
       const response = await fetch('/api/v1/auth/login', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          method: 'static', // Using static auth method for development
+        }),
       });
 
       if (!response.ok) {
@@ -103,13 +107,38 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       const data = await response.json();
-      // Store token and user
+      
+      // Store tokens
       localStorage.setItem('token', data.access_token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      if (data.refresh_token) {
+        localStorage.setItem('refresh_token', data.refresh_token);
+      }
+      
+      // Get user information from /auth/me endpoint
+      const userResponse = await fetch('/api/v1/auth/me', {
+        headers: {
+          'Authorization': `Bearer ${data.access_token}`,
+        },
+      });
+      
+      if (!userResponse.ok) {
+        throw new Error('Failed to get user information');
+      }
+      
+      const userData = await userResponse.json();
+      const user: User = {
+        id: userData.id || userData.user_id,
+        username: userData.username,
+        email: userData.email,
+        created_at: userData.created_at || new Date().toISOString(),
+        updated_at: userData.updated_at || new Date().toISOString(),
+      };
+      
+      localStorage.setItem('user', JSON.stringify(user));
       
       // Update state
       setState({
-        user: data.user,
+        user,
         token: data.access_token,
         isAuthenticated: true,
         isLoading: false,
@@ -125,13 +154,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   /**
    * Logout function
    */
-  const logout = () => {
+  const logout = async () => {
+    try {
+      // Call backend logout endpoint to clear cookies
+      const token = localStorage.getItem('token');
+      if (token) {
+        await fetch('/api/v1/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+    
     // Clear localStorage
     localStorage.removeItem('token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
-    
-    // Clear API client token
-    apiClient.setAuthToken(null);
     
     // Reset state
     setState({

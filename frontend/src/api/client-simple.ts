@@ -14,7 +14,7 @@ async function makeRequest<T>(
   data?: any,
   options?: any
 ): Promise<ApiResponse<T>> {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem('token'); // Changed from 'access_token' to 'token'
   const isFormData = data instanceof URLSearchParams;
   const response = await fetch(`${BASE_URL}${url}`, {
     method,
@@ -43,7 +43,7 @@ async function makeRequest<T>(
 }
 
 export const get = async <T>(url: string): Promise<ApiResponse<T>> => {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem('token'); // Changed from 'access_token' to 'token'
   const response = await fetch(`${BASE_URL}${url}`, {
     method: 'GET',
     credentials: 'same-origin', // Include cookies with requests

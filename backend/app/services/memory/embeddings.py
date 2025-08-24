@@ -25,11 +25,21 @@ class EmbeddingConfig:
     """Configuration for embedding services."""
     
     def __init__(self):
-        # Primary embedding service (BAAI/bge-m3 API)
-        self.primary_endpoint = getattr(settings, "EMBEDDING_API_ENDPOINT", None)
-        self.primary_api_key = getattr(settings, "EMBEDDING_API_KEY", None)
-        self.primary_model = "BAAI/bge-m3"
-        self.primary_dimension = 1024
+        # Primary embedding service (OpenAI-compatible API)
+        # Use the same base URL as LLM - OpenAI API already has /embeddings endpoint
+        base_url = getattr(settings, "OPENAI_BASE_URL", None)
+        if base_url:
+            # Use base URL as-is for OpenAI-compatible endpoint
+            self.primary_endpoint = base_url.rstrip('/')
+        else:
+            self.primary_endpoint = getattr(settings, "EMBEDDING_API_ENDPOINT", None)
+        
+        # Use the same API key as LLM or dedicated embedding key
+        self.primary_api_key = getattr(settings, "EMBEDDING_API_KEY", None) or getattr(settings, "OPENAI_API_KEY", None)
+        
+        # Use configured model or default
+        self.primary_model = getattr(settings, "MEMORY_EMBEDDING_MODEL", "embeddings-inno1")
+        self.primary_dimension = getattr(settings, "MEMORY_VECTOR_DIMENSIONS", 1024)
         
         # Fallback embedding service (local sentence-transformers)
         self.fallback_model = "sentence-transformers/all-MiniLM-L6-v2"
@@ -263,8 +273,11 @@ class EmbeddingGenerator:
             "model": self.config.primary_model,
         }
         
+        # Add /embeddings to the endpoint for OpenAI-compatible API
+        endpoint = f"{self.config.primary_endpoint}/embeddings"
+        
         response = await self.client.post(
-            self.config.primary_endpoint,
+            endpoint,
             headers=headers,
             json=data
         )
@@ -280,10 +293,16 @@ class EmbeddingGenerator:
         # Handle different response formats
         if "data" in result and isinstance(result["data"], list) and len(result["data"]) > 0:
             # OpenAI-style response
-            return result["data"][0]["embedding"]
+            embedding = np.array(result["data"][0]["embedding"])
+            # Normalize to unit length
+            embedding = embedding / np.linalg.norm(embedding)
+            return embedding.tolist()
         elif "embedding" in result:
             # Direct embedding response
-            return result["embedding"]
+            embedding = np.array(result["embedding"])
+            # Normalize to unit length
+            embedding = embedding / np.linalg.norm(embedding)
+            return embedding.tolist()
         else:
             raise ValueError(f"Unexpected API response format: {result}")
     
@@ -312,8 +331,11 @@ class EmbeddingGenerator:
             "model": self.config.primary_model,
         }
         
+        # Add /embeddings to the endpoint for OpenAI-compatible API
+        endpoint = f"{self.config.primary_endpoint}/embeddings"
+        
         response = await self.client.post(
-            self.config.primary_endpoint,
+            endpoint,
             headers=headers,
             json=data
         )
@@ -328,11 +350,22 @@ class EmbeddingGenerator:
         
         # Handle different response formats
         if "data" in result and isinstance(result["data"], list):
-            # OpenAI-style response
-            return [item["embedding"] for item in result["data"]]
+            # OpenAI-style response - normalize each embedding
+            embeddings = []
+            for item in result["data"]:
+                embedding = np.array(item["embedding"])
+                # Normalize to unit length
+                embedding = embedding / np.linalg.norm(embedding)
+                embeddings.append(embedding.tolist())
+            return embeddings
         elif "embeddings" in result:
-            # Direct embeddings response
-            return result["embeddings"]
+            # Direct embeddings response - normalize each
+            embeddings = []
+            for emb in result["embeddings"]:
+                embedding = np.array(emb)
+                embedding = embedding / np.linalg.norm(embedding)
+                embeddings.append(embedding.tolist())
+            return embeddings
         else:
             raise ValueError(f"Unexpected API response format: {result}")
     

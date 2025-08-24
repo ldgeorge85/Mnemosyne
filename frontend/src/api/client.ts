@@ -15,16 +15,9 @@ export const apiClient = axios.create({
   },
 });
 
-// Helper to get refresh token from cookie
-const getRefreshTokenFromCookie = (): string | null => {
-  const cookies = document.cookie.split(';');
-  for (const cookie of cookies) {
-    const [name, value] = cookie.trim().split('=');
-    if (name === 'refresh_token') {
-      return decodeURIComponent(value);
-    }
-  }
-  return null;
+// Helper to get refresh token from localStorage (now managed there)
+const getRefreshToken = (): string | null => {
+  return localStorage.getItem('refresh_token');
 };
 
 // Flag to prevent multiple simultaneous refresh attempts
@@ -64,9 +57,9 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
       
       try {
-        const refreshToken = getRefreshTokenFromCookie();
+        const refreshTokenValue = getRefreshToken();
         
-        if (!refreshToken) {
+        if (!refreshTokenValue) {
           // No refresh token available, redirect to login
           window.location.href = '/login';
           return Promise.reject(error);
@@ -74,10 +67,16 @@ apiClient.interceptors.response.use(
         
         // Try to refresh the token
         const response = await axios.post('/api/v1/auth/refresh', {
-          refresh_token: refreshToken,
+          refresh_token: refreshTokenValue,
+          method: 'static',
         }, {
           withCredentials: true,
         });
+        
+        // Store new refresh token if provided
+        if (response.data?.refresh_token) {
+          localStorage.setItem('refresh_token', response.data.refresh_token);
+        }
         
         processQueue(null, response.data.access_token);
         

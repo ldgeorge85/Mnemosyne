@@ -89,7 +89,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
    * Clear authentication data
    */
   const clearAuthData = () => {
-    // No tokens to clear from localStorage - cookies handled by backend
+    // Clear refresh token from localStorage
+    localStorage.removeItem('refresh_token');
+    // Cookies handled by backend
     updateAuthState({
       token: null,
       user: null,
@@ -107,8 +109,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await apiClient.get('/auth/me');
 
       if (response.status === 200 && response.data) {
-        // Check if data is wrapped in ApiResponse structure
-        const userData = response.data.data || response.data;
+        // Map backend user structure to frontend structure
+        const backendUser = response.data.data || response.data;
+        const userData: User = {
+          id: backendUser.id || backendUser.user_id,
+          username: backendUser.username,
+          email: backendUser.email,
+          created_at: backendUser.created_at || new Date().toISOString(),
+          updated_at: backendUser.updated_at || new Date().toISOString(),
+        };
         setAuthData(userData);
         return true;
       } else {
@@ -126,10 +135,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
    */
   const refreshToken = async (): Promise<boolean> => {
     try {
-      // Get current refresh token from cookie (handled by backend)
-      const response = await apiClient.post('/auth/refresh');
+      // Need to get refresh token from somewhere - for now skip if not available
+      // The backend handles cookies automatically
+      const refreshTokenValue = localStorage.getItem('refresh_token');
+      if (!refreshTokenValue) {
+        // No refresh token available, need to re-login
+        return false;
+      }
+      
+      const response = await apiClient.post('/auth/refresh', {
+        refresh_token: refreshTokenValue,
+        method: 'static',
+      });
       
       if (response.status === 200) {
+        // Store new refresh token if provided
+        if (response.data?.refresh_token) {
+          localStorage.setItem('refresh_token', response.data.refresh_token);
+        }
         // Cookies are automatically updated by backend
         // Just update our state to indicate we're still authenticated
         updateAuthState({ token: 'cookie-based' });
@@ -151,26 +174,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       updateAuthState({ isLoading: true });
 
-      // Use URLSearchParams instead of FormData for OAuth2 compatibility
-      const formData = new URLSearchParams();
-      formData.append('username', username);
-      formData.append('password', password);
-
-      
-      const response = await apiClient.post('/auth/login', formData, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
+      // Send JSON body matching backend expectations
+      const response = await apiClient.post('/auth/login', {
+        username,
+        password,
+        method: 'static', // Using static auth method for development
       });
 
       if (response.status === 200) {
+        // Store refresh token if provided
+        if (response.data?.refresh_token) {
+          localStorage.setItem('refresh_token', response.data.refresh_token);
+        }
+        
         // Cookies are set by backend automatically
         // Get user information
         const userResponse = await apiClient.get('/auth/me');
 
         if (userResponse.status === 200 && userResponse.data) {
-          // Check if data is wrapped in ApiResponse structure
-          const userData = userResponse.data.data || userResponse.data;
+          // Map backend user structure to frontend structure
+          const backendUser = userResponse.data.data || userResponse.data;
+          const userData: User = {
+            id: backendUser.id || backendUser.user_id,
+            username: backendUser.username,
+            email: backendUser.email,
+            created_at: backendUser.created_at || new Date().toISOString(),
+            updated_at: backendUser.updated_at || new Date().toISOString(),
+          };
           setAuthData(userData);
           
           toast({

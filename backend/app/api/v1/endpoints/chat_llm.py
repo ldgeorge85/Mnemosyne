@@ -1,5 +1,5 @@
 """
-Chat Endpoint with Real LLM Integration
+Chat Endpoint with Real LLM Integration and Persona Support
 Uses OpenAI-compatible endpoint configured in settings
 """
 
@@ -9,9 +9,14 @@ from typing import List, Optional, Dict, Any
 import datetime
 import uuid
 import httpx
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.auth.manager import get_current_user, get_optional_user
 from app.core.auth.base import AuthUser
+from app.services.persona.base import get_persona, PersonaMode, PersonaContext
+from app.db.session import get_async_db
+from app.db.repositories.conversation import ConversationRepository, MessageRepository
+from app.services.memory.context import MemoryContextService
 
 router = APIRouter()
 
@@ -25,6 +30,7 @@ class ChatRequest(BaseModel):
     temperature: Optional[float] = None
     max_tokens: Optional[int] = None
     stream: Optional[bool] = False
+    persona_mode: Optional[str] = None  # confidant, mentor, mediator, guardian
 
 class ChatResponse(BaseModel):
     id: str
@@ -35,7 +41,8 @@ class ChatResponse(BaseModel):
     usage: dict
 
 async def call_llm(messages: List[ChatMessage], model: Optional[str] = None, 
-                   temperature: Optional[float] = None, max_tokens: Optional[int] = None) -> dict:
+                   temperature: Optional[float] = None, max_tokens: Optional[int] = None,
+                   system_prompt: Optional[str] = None) -> dict:
     """
     Call the OpenAI-compatible LLM endpoint
     """
@@ -52,15 +59,20 @@ async def call_llm(messages: List[ChatMessage], model: Optional[str] = None,
         "Content-Type": "application/json"
     }
     
-    # Add system prompt for Mnemosyne context
-    system_message = {
-        "role": "system",
-        "content": (
+    # Use provided system prompt or default
+    if system_prompt:
+        system_content = system_prompt
+    else:
+        system_content = (
             "You are Mnemosyne, a personal AI assistant focused on cognitive sovereignty and privacy. "
             "You help users manage their memories, thoughts, and knowledge while ensuring complete privacy. "
             "You are thoughtful, helpful, and respect the user's agency and privacy above all else. "
             "Never share user data, always encrypt sensitive information, and empower users to own their cognitive artifacts."
         )
+    
+    system_message = {
+        "role": "system",
+        "content": system_content
     }
     
     # Prepend system message if not already present
@@ -94,30 +106,123 @@ async def call_llm(messages: List[ChatMessage], model: Optional[str] = None,
 @router.post("/chat", response_model=ChatResponse)
 async def chat(
     request: ChatRequest, 
-    user: AuthUser = Depends(get_current_user if settings.AUTH_REQUIRED else get_optional_user)
+    user: AuthUser = Depends(get_current_user if settings.AUTH_REQUIRED else get_optional_user),
+    db: AsyncSession = Depends(get_async_db)
 ) -> ChatResponse:
     """
-    Chat endpoint connected to real LLM
+    Chat endpoint connected to real LLM with persona support
     Requires authentication if AUTH_REQUIRED is True
     """
-    # Get user context from authenticated user
-    user_context = f" (User: {user.username if user else 'anonymous'})"
+    # Get persona and set context
+    persona = get_persona()
+    
+    # Determine persona mode
+    if request.persona_mode:
+        try:
+            mode = PersonaMode(request.persona_mode)
+        except ValueError:
+            mode = PersonaMode.CONFIDANT
+    else:
+        # Auto-detect mode from conversation context
+        context = {"messages": request.messages}
+        mode = persona.select_mode(context)
+    
+    # Set persona context
+    if user:
+        persona_context = PersonaContext(
+            user_id=str(user.user_id),
+            mode=mode,
+            trust_level=0.7  # Default trust level
+        )
+        persona.set_context(persona_context)
+    
+    # Get system prompt and response modifiers from persona
+    system_prompt = persona.get_system_prompt(mode)
+    modifiers = persona.generate_response_modifiers()
+    
+    # Retrieve relevant memory context if user is authenticated
+    memory_context = ""
+    if user and request.messages:
+        # Get the last user message as the query
+        last_user_msg = None
+        for msg in reversed(request.messages):
+            if msg.role == "user":
+                last_user_msg = msg.content
+                break
+        
+        if last_user_msg:
+            memory_service = MemoryContextService(db)
+            relevant_memories = await memory_service.get_relevant_memories(
+                query=last_user_msg,
+                user_id=str(user.user_id),
+                limit=3,  # Top 3 most relevant memories
+                score_threshold=0.5  # Lower threshold for broader context
+            )
+            
+            if relevant_memories:
+                memory_context = memory_service.format_memory_context(relevant_memories)
+                # Add memory context to system prompt
+                system_prompt = f"{system_prompt}\n\n{memory_context}"
+    
+    # Use persona temperature if not explicitly set
+    if request.temperature is None:
+        request.temperature = modifiers.get("temperature", 0.7)
     
     try:
-        # Call the LLM
+        # Call the LLM with persona system prompt and memory context
         llm_response = await call_llm(
             request.messages,
             request.model,
             request.temperature,
-            request.max_tokens
+            request.max_tokens,
+            system_prompt
         )
         
         # Extract the response
         if not llm_response.get("choices") or not llm_response["choices"]:
             raise HTTPException(status_code=500, detail="No response from LLM")
         
-        # Add user context to response if available
-        response_content = llm_response["choices"][0]["message"]["content"]
+        # Persist conversation if user is authenticated
+        if user:
+            conv_repo = ConversationRepository(db)
+            msg_repo = MessageRepository(db)
+            
+            # Create or get conversation (simplified - could track conversation_id in session)
+            conversation_data = {
+                "user_id": str(user.user_id),
+                "title": request.messages[0].content[:100] if request.messages else "Chat",
+                "metadata": {"persona_mode": mode.value}
+            }
+            conversation = await conv_repo.create_conversation(conversation_data)
+            
+            # Save user messages
+            for msg in request.messages:
+                if msg.role == "user":
+                    await msg_repo.create_message({
+                        "conversation_id": str(conversation.id),
+                        "role": msg.role,
+                        "content": msg.content,
+                        "metadata": {}
+                    })
+            
+            # Save assistant response
+            if llm_response["choices"]:
+                assistant_msg = llm_response["choices"][0].get("message", {})
+                if assistant_msg:
+                    await msg_repo.create_message({
+                        "conversation_id": str(conversation.id),
+                        "role": "assistant",
+                        "content": assistant_msg.get("content", ""),
+                        "metadata": {"model": request.model or settings.OPENAI_MODEL}
+                    })
+        
+        # Log interaction for transparency
+        receipt_id = persona.log_interaction({
+            "type": "chat",
+            "mode": mode.value,
+            "user": user.username if user else "anonymous",
+            "message_count": len(request.messages)
+        })
         
         # Return in OpenAI format
         return ChatResponse(
@@ -152,24 +257,66 @@ async def chat(
                 "index": 0,
                 "message": {
                     "role": "assistant",
-                    "content": fallback_response + user_context
+                    "content": fallback_response
                 },
                 "finish_reason": "stop"
             }],
             usage={
-                "prompt_tokens": sum(len(m.content.split()) for m in request.messages),
-                "completion_tokens": len(fallback_response.split()),
-                "total_tokens": sum(len(m.content.split()) for m in request.messages) + len(fallback_response.split())
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+                "total_tokens": 0
             }
         )
 
-@router.post("/completions", response_model=ChatResponse)
-async def chat_completions(
-    request: ChatRequest,
+@router.get("/models")
+async def list_models(
     user: AuthUser = Depends(get_current_user if settings.AUTH_REQUIRED else get_optional_user)
-) -> ChatResponse:
+):
     """
-    Alias for /chat to match OpenAI API
-    Requires authentication if AUTH_REQUIRED is True
+    List available models
+    Endpoint for compatibility with OpenAI clients
     """
-    return await chat(request, user)
+    return {
+        "object": "list",
+        "data": [
+            {
+                "id": settings.OPENAI_MODEL,
+                "object": "model",
+                "created": 1677649963,
+                "owned_by": "mnemosyne",
+                "permission": [],
+                "root": settings.OPENAI_MODEL,
+                "parent": None
+            }
+        ]
+    }
+
+@router.get("/persona/modes")
+async def get_persona_modes():
+    """
+    Get available persona modes
+    """
+    return {
+        "modes": [
+            {
+                "name": "confidant",
+                "description": "Deep listener with empathic presence",
+                "focus": "Understanding and validation"
+            },
+            {
+                "name": "mentor",
+                "description": "Guide for skill development and mastery",
+                "focus": "Learning and growth"
+            },
+            {
+                "name": "mediator",
+                "description": "Navigator of conflicts with neutrality",
+                "focus": "Resolution and understanding"
+            },
+            {
+                "name": "guardian",
+                "description": "Protector of wellbeing and safety",
+                "focus": "Security and protection"
+            }
+        ]
+    }

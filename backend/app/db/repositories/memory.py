@@ -80,8 +80,13 @@ class MemoryRepository(BaseRepository):
         Returns:
             Tuple of (list of Memory instances, total count)
         """
-        # Cast user_id to text to avoid type mismatch with UUID
-        filters = [Memory.user_id.cast(String) == user_id]
+        # Convert user_id string to UUID for comparison
+        import uuid
+        if isinstance(user_id, str):
+            user_uuid = uuid.UUID(user_id)
+        else:
+            user_uuid = user_id
+        filters = [Memory.user_id == user_uuid]
         if not include_inactive:
             filters.append(Memory.is_active == True)
         

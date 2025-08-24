@@ -110,21 +110,7 @@ async def get_current_user(
     Raises:
         HTTPException: If authentication fails
     """
-    # If authentication is not required, return a development user
-    if not settings.AUTH_REQUIRED and not token:
-        # For development purposes, return a mock user when no token is provided
-        # In production, this should be removed
-        mock_user = User(
-            id=uuid.UUID("00000000-0000-0000-0000-000000000000"),
-            email="dev@example.com",
-            username="dev_user",
-            hashed_password="",
-            is_active=True,
-            is_superuser=True
-        )
-        return mock_user
-    
-    # Otherwise, validate the token
+    # Always require valid authentication
     if not token:
         raise credentials_exception
     
@@ -297,20 +283,6 @@ async def get_current_user_from_token_or_api_key(
     Raises:
         HTTPException: If authentication fails
     """
-    # If authentication is not required, return a development user
-    if not settings.AUTH_REQUIRED:
-        # For development purposes, return a mock user when no token is provided
-        # In production, this should be removed
-        mock_user = User(
-            id=uuid.UUID("00000000-0000-0000-0000-000000000000"),
-            email="dev@example.com",
-            username="dev_user",
-            hashed_password="",
-            is_active=True,
-            is_superuser=True
-        )
-        return mock_user
-    
     # Try to authenticate with API key first
     user = await get_api_key_user(request, db)
     if user:

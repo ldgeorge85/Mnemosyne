@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     DOCS_LOGO_URL: str = "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png"  # Placeholder
     DOCS_PRIMARY_COLOR: str = "#1f4287"  # Primary brand color
     AUTH_REQUIRED: bool = True  # Whether authentication is required for API access
-    SECRET_KEY: str = "your-secret-key-here"
+    SECRET_KEY: str = Field(default="CHANGE-THIS-SECRET-KEY-IN-PRODUCTION", env="SECRET_KEY")  # SECURITY WARNING: Change this!
     
     # CORS settings
     CORS_ORIGINS: List[Union[str, AnyHttpUrl]] = [
@@ -99,7 +99,7 @@ class Settings(BaseSettings):
     # Security Settings
     TOKEN_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
-    JWT_SECRET_KEY: str = Field(default="your-jwt-secret-key-change-this", env="JWT_SECRET_KEY")
+    JWT_SECRET_KEY: str = Field(default="CHANGE-THIS-JWT-SECRET-IN-PRODUCTION", env="JWT_SECRET_KEY")  # SECURITY WARNING: Change this!
     JWT_ISSUER: str = "mnemosyne"
     
     # Track Configuration (Dual-Track System)
@@ -139,11 +139,11 @@ class Settings(BaseSettings):
     OPENAI_MAX_TOKENS: int = 2048
     OPENAI_TEMPERATURE: float = 0.7
     
-    # Embedding Settings
-    EMBEDDING_API_ENDPOINT: Optional[str] = None
-    EMBEDDING_API_KEY: Optional[str] = None
-    EMBEDDING_MODEL: str = "BAAI/bge-m3"
-    EMBEDDING_DIMENSION: int = 1024  # BGE-M3 dimension
+    # Embedding Settings (uses OpenAI-compatible endpoint by default)
+    EMBEDDING_API_ENDPOINT: Optional[str] = None  # Override if different from OPENAI_BASE_URL/embeddings
+    EMBEDDING_API_KEY: Optional[str] = None  # Uses OPENAI_API_KEY if not set
+    MEMORY_EMBEDDING_MODEL: str = "embedding-inno1"  # Model name for embeddings (no 's')
+    MEMORY_VECTOR_DIMENSIONS: int = 1024  # Dimension of embeddings
     EMBEDDING_FALLBACK_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
     EMBEDDING_FALLBACK_DIMENSION: int = 384
     

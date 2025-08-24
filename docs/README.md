@@ -5,12 +5,14 @@
 ### Vision & Strategy
 - **[MNEMOSYNE_PRIMER.md](MNEMOSYNE_PRIMER.md)** - Complete vision with 6 core innovations
 - **[INTEGRATED_VISION_2025.md](INTEGRATED_VISION_2025.md)** - Current state analysis and path forward
-- **[ROADMAP_2025.md](ROADMAP_2025.md)** - Dual-track development roadmap
+- **[ROADMAP_2025.md](ROADMAP_2025.md)** - Phased development roadmap
+- **[MULTIMODAL_INTEGRATION.md](MULTIMODAL_INTEGRATION.md)** - How multimodal supports core vision
 
 ### Execution
-- **[IMMEDIATE_TASKS.md](IMMEDIATE_TASKS.md)** - Tactical task breakdown for implementation
+- **[IMMEDIATE_TASKS.md](IMMEDIATE_TASKS.md)** - Current sprint priorities
+- **[DOCUMENT_STATUS.md](DOCUMENT_STATUS.md)** - What's current and authoritative
 - **[AI_DEVELOPMENT_GUIDE.md](AI_DEVELOPMENT_GUIDE.md)** - How to use AI assistants effectively
-- **[SECURITY_ACTIVATION_LOG.md](SECURITY_ACTIVATION_LOG.md)** - Auth system activation status
+- **[SECURITY_ACTIVATION_LOG.md](SECURITY_ACTIVATION_LOG.md)** - Security phase completion
 
 ## Technical Documentation
 
@@ -22,6 +24,9 @@
   - Agent Communication Standards
   - Collective Intelligence Emergence
   - Numinous Confidant Persona
+
+### Integration Strategies
+- **[MULTIMODAL_AGENT_STRATEGY.md](MULTIMODAL_AGENT_STRATEGY.md)** - Multi-agent orchestration approach
 
 ### Specifications
 - **[spec/OVERVIEW.md](spec/OVERVIEW.md)** - System overview
@@ -39,10 +44,12 @@
 
 ## Research & Development
 
-### Theoretical Research [UNVALIDATED]
-- **[research/](research/)** - Academic foundations
-- **[aimc/](aimc/)** - AI-mediated communication research
-- **[hypotheses/](hypotheses/)** - Experimental features
+### Active Research [IN PROGRESS]
+- **[research/](research/)** - Academic foundations and active studies
+  - **CONTEXTUAL_PRESENTATION.md** - Adaptive masking system
+  - **SYNTHETIC_ICV_VALIDATION.md** - Identity compression testing
+  - **MULTI_AGENT_ARCHITECTURE.md** - Agent orchestration patterns
+- **[aimc/](aimc/)** - AI-mediated communication research (theoretical)
 
 ### Validation Requirements
 All theoretical concepts require empirical validation before implementation:
@@ -57,19 +64,19 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to the pro
 
 ## Documentation Status
 
-### Current & Updated
-- ✅ MNEMOSYNE_PRIMER.md
-- ✅ ROADMAP_2025.md  
-- ✅ INTEGRATED_VISION_2025.md
-- ✅ IMMEDIATE_TASKS.md
-- ✅ CONCEPTS_DEEP_DIVE.md
-- ✅ AI_DEVELOPMENT_GUIDE.md
+### Current & Authoritative
+- ✅ MNEMOSYNE_PRIMER.md - Core vision (model claims fixed)
+- ✅ ROADMAP_2025.md - Correct priorities restored
+- ✅ IMMEDIATE_TASKS.md - Focus on persona/ICV/trust
+- ✅ INTEGRATED_VISION_2025.md - Strategic analysis
+- ✅ MULTIMODAL_INTEGRATION.md - Supporting role clarified
+- ✅ MULTIMODAL_AGENT_STRATEGY.md - Technical approach
 
-### Requires Review
-- ⚠️ Protocol specifications may need updates
-- ⚠️ Implementation guides may be outdated
-- ⚠️ Some architecture decisions predate current vision
+### Key Updates
+- **Model Agnostic**: We orchestrate user-provided AI endpoints
+- **Priority Order**: Persona → ICV → Trust Networks → Multimodal Support
+- **Contextual Presentation**: Replaces multi-tier legibility concept
 
 ---
 
-*Building cognitive sovereignty through scientific rigor and open collaboration*
+*Building cognitive sovereignty through trust networks and collective intelligence*

@@ -25,11 +25,11 @@ class StaticAuthProvider(AuthProvider):
     def __init__(self, config: AuthConfig):
         super().__init__(config)
         
-        # Default test users if none configured
+        # Default test users if none configured (with proper UUIDs)
         self.users = config.settings.get("users", {
             "test": {
                 "password": "test123",
-                "user_id": "test-user-001",
+                "user_id": "11111111-1111-1111-1111-111111111111",  # Fixed UUID for test user
                 "email": "test@mnemosyne.local",
                 "display_name": "Test User",
                 "roles": ["user"],
@@ -37,7 +37,7 @@ class StaticAuthProvider(AuthProvider):
             },
             "admin": {
                 "password": "admin123",
-                "user_id": "admin-user-001", 
+                "user_id": "22222222-2222-2222-2222-222222222222",  # Fixed UUID for admin
                 "email": "admin@mnemosyne.local",
                 "display_name": "Admin User",
                 "roles": ["admin"],
@@ -45,7 +45,7 @@ class StaticAuthProvider(AuthProvider):
             },
             "demo": {
                 "password": "demo123",
-                "user_id": "demo-user-001",
+                "user_id": "33333333-3333-3333-3333-333333333333",  # Fixed UUID for demo
                 "email": "demo@mnemosyne.local",
                 "display_name": "Demo User",
                 "roles": ["user"],

@@ -115,7 +115,7 @@ const Login: React.FC = () => {
                 variant="outline"
                 size="sm"
                 className="flex-1"
-                onClick={() => quickLogin('test', 'test')}
+                onClick={() => quickLogin('test', 'test123')}
               >
                 Test User
               </Button>
@@ -124,7 +124,7 @@ const Login: React.FC = () => {
                 variant="outline"
                 size="sm"
                 className="flex-1"
-                onClick={() => quickLogin('admin', 'admin')}
+                onClick={() => quickLogin('admin', 'admin123')}
               >
                 Admin
               </Button>
@@ -133,7 +133,7 @@ const Login: React.FC = () => {
                 variant="outline"
                 size="sm"
                 className="flex-1"
-                onClick={() => quickLogin('demo', 'demo')}
+                onClick={() => quickLogin('demo', 'demo123')}
               >
                 Demo
               </Button>

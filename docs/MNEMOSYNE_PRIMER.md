@@ -9,17 +9,22 @@ The Mnemosyne Protocol is building this future through a revolutionary approach:
 
 ## The Problem We're Solving
 
-Current AI systems treat humans as data sources to be mined. Social platforms compress us into engagement metrics. Digital interactions strip away nuance, context, and authenticity. We're losing ourselves in the very systems meant to connect us.
+**Cognitive Feudalism** is emerging—a world where a few entities control how billions think, decide, and interact. Current AI systems:
+- Treat humans as data sources to be mined
+- Create dependency without ownership
+- Centralize cognitive power in corporate hands
+- Strip away nuance, context, and authenticity
 
-Meanwhile, as AI becomes more powerful, humans risk becoming passengers rather than pilots of their own digital lives. We need a new paradigm—one that amplifies rather than replaces human agency.
+As AI mediates more of reality, humans risk becoming tenants in their own minds. We need infrastructure that preserves cognitive sovereignty—technology that amplifies human agency rather than replacing it.
 
-## The Solution: Agent-Mediated Sovereignty
+## The Solution: Cognitive Sovereignty Infrastructure
 
-### Your Personal AI Agent
-- **Learns your patterns** without exploiting them
-- **Represents your interests** in digital interactions  
-- **Preserves your privacy** through cryptographic guarantees
-- **Mediates complexity** while maintaining your control
+### Your Sovereign AI System
+- **You own your data** - Complete control over your information
+- **You choose your AI models** - Use any API endpoint you configure
+- **Learns your patterns** to serve you, not exploit you
+- **Preserves your agency** through architectural design
+- **Adapts to your worldview** while maintaining sovereignty
 
 ### Progressive Trust Networks
 Instead of exposing yourself fully to strangers online, your agent negotiates progressive disclosure:
@@ -37,15 +42,15 @@ As trust networks form, something remarkable emerges:
 
 ## Core Innovations
 
-### 1. Identity Compression Vector (ICV)
-Your digital essence compressed through a 5-layer pipeline into 100-128 bits:
-- **Raw streams** → Your conversations, memories, behaviors
-- **Feature extraction** → Stylometry, values, narrative motifs, behavioral signals
-- **Latent synthesis** → Unified 64-dimensional vector representation
-- **ICV packing** → 128-bit identity capsule with holographic encoding
-- **Receipts & audit** → Every change tracked, verifiable, reversible
+### 1. Identity Compression (ICV) - Holographic Identity
+Your identity preserved through holographic compression:
+- **Multi-dimensional representation** - Each fragment contains the whole
+- **Temporal stability** - 70% core identity, 30% adaptive growth
+- **Privacy layers** - Public, trusted, and private scopes
+- **User control** - Your identity representation belongs to you
+- **Productive variation** - 5% controlled randomness preserves creativity
 
-The 70/30 stability model: 70% of your identity remains stable (your core self), 30% adapts and evolves. Public/private splits ensure you control what's revealed.
+Every aspect designed to preserve sovereignty while enabling connection.
 
 ### 2. Progressive Trust Exchange
 Trust builds in stages, not all at once:
@@ -133,10 +138,11 @@ Encryption:     AES-256-GCM, TLS 1.3
 
 ### AI/Agent Layer
 ```
-Models:         Local LLMs (Llama, Mistral)
+Integration:    User-provided API endpoints
 Orchestration:  LangChain + Agent Protocol
-Memory:         Vector embeddings + semantic search
-Learning:       Preference learning + RLHF
+Memory:         Vector embeddings via your APIs
+Flexibility:    Any OpenAI-compatible endpoint
+Models:         You provide, we orchestrate
 ```
 
 ### Trust & Consensus
@@ -158,11 +164,12 @@ Computation:    Homomorphic encryption
 ## Development Philosophy
 
 ### Core Principles
-1. **Sovereignty Over Convenience**: Your control is non-negotiable
-2. **Real Implementation**: No mocking, no faking—build what works
-3. **Privacy by Design**: Cryptographic guarantees, not promises
-4. **Progressive Complexity**: Simple core, validated additions
-5. **Human Agency First**: Technology serves humanity, not vice versa
+1. **Cognitive Sovereignty**: Users control their data, models, and cognitive future
+2. **Resistance to Feudalism**: Prevent centralized control of cognition
+3. **Real Implementation**: Build working infrastructure, not promises
+4. **Joy as Engineering**: Systems without delight are already captured
+5. **Contextual Presentation**: Adaptive masking based on context, not hierarchy
+6. **Natural Emergence**: Let advanced features grow organically
 
 ### Dual-Track Development
 - **Track 1**: Proven, standards-based features for production

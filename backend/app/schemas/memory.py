@@ -6,7 +6,7 @@ used in API requests and responses.
 """
 from datetime import datetime
 from typing import List, Optional, Dict, Any, Union
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, field_validator, ConfigDict
 
 
 class MemoryChunkBase(BaseModel):
@@ -45,7 +45,14 @@ class MemoryChunkResponse(MemoryChunkBase):
     has_embedding: bool = Field(False, description="Whether this chunk has an embedding")
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+        
+    @validator("id", "memory_id", pre=True)
+    def convert_uuid_to_string(cls, v):
+        """Convert UUID objects to strings."""
+        if v is None:
+            return v
+        return str(v)
         
     @validator("has_embedding", pre=True, always=True)
     def set_has_embedding(cls, v, values):
@@ -101,7 +108,26 @@ class MemoryResponse(MemoryBase):
     has_embedding: bool = Field(False, description="Whether this memory has an embedding")
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+        populate_by_name = True  # Allow field population by alias
+        
+    @validator("id", "user_id", "source_id", pre=True)
+    def convert_uuid_to_string(cls, v):
+        """Convert UUID objects to strings."""
+        if v is None:
+            return v
+        return str(v)
+    
+    @validator("metadata", pre=True)
+    def handle_metadata_field(cls, v, values):
+        """Handle metadata field which might be memory_metadata in DB."""
+        # If metadata is None but memory_metadata exists, use that
+        if v is None and "memory_metadata" in values:
+            return values["memory_metadata"]
+        # If v is a SQLAlchemy MetaData object, return None
+        if v is not None and not isinstance(v, dict):
+            return None
+        return v
         
     @validator("has_embedding", pre=True, always=True)
     def set_has_embedding(cls, v, values):

@@ -17,6 +17,7 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 - ✅ **Frontend** - React app with full auth flow
 
 ### Active Development
+- 🔄 **Task System** - Action layer for sovereignty (NEW PRIORITY)
 - 🔄 **Persona System** - Adaptive personalities (accelerated priority)
 - 🔄 **Worldview Adapters** - Cultural context adaptation
 - 🔄 **Trust Networks** - Progressive relationship building
@@ -24,6 +25,7 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 
 ### Research Track (Parallel)
 - 🔬 **Identity Compression** - Holographic representation validation
+- 🔬 **Game Mechanics** - Task gamification and engagement patterns
 - 🔬 **Productive Variation** - Creative randomness (5% target rate)
 - 🔬 **Natural Clustering** - Organic group formation
 - 🔬 **Joy Metrics** - System delight measurement
@@ -154,6 +156,50 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 - [ ] Setup CI/CD pipeline (GitHub Actions)
 - [ ] Add error monitoring (Sentry)
 - [ ] Test LLM responses with new model
+
+---
+
+### Phase 1.2: Task System - Action Layer ⭐ NEW
+**Status**: Starting Week 1
+**Goal**: Unified task tracking with time awareness and game mechanics
+**Timeline**: 4 weeks
+
+#### Week 1: Foundation
+- [ ] Create task model with sovereignty built-in
+- [ ] Basic CRUD endpoints with receipts
+- [ ] Simple frontend task list
+- [ ] Connect to consent ledger
+
+#### Week 2: Time Awareness
+- [ ] Calendar integration (iCal format)
+- [ ] Scheduling suggestions (AI-powered)
+- [ ] Recurring tasks (RRULE support)
+- [ ] Energy-aware time management
+
+#### Week 3: Game Mechanics
+- [ ] Quest classification system
+- [ ] Achievement detection from receipts
+- [ ] Multi-dimensional reputation
+- [ ] Progress visualization
+
+#### Week 4: Collaboration
+- [ ] Shared tasks for trust building
+- [ ] Collective goal decomposition
+- [ ] Dependency tracking
+- [ ] Cross-user coordination
+
+#### Integration Points
+- **Persona System**: Tasks suggested by persona mode
+- **Memory System**: Completed tasks become memories
+- **Trust Networks**: Shared tasks build trust
+- **ICV Evolution**: Task patterns shape identity
+- **Receipts**: Every task action logged
+
+#### Success Metrics
+- Tasks bridge past (memories) to future (intentions)
+- Natural gamification without dark patterns
+- Trust building through concrete collaboration
+- Time sovereignty through scheduling control
 
 ---
 
@@ -435,12 +481,14 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 
 ## Implementation Order
 
-### Immediate Priority
-1. Phase 1: Complete persona and worldview integration
-2. Phase 1.5: Synthetic ICV validation studies
-3. Phase 2: Trust network protocols
+### Immediate Priority (Updated)
+1. **Phase 1.2**: Task System (4 weeks) - Foundation for everything
+2. **Phase 1**: Complete persona and worldview integration
+3. **Phase 1.5**: Synthetic ICV validation studies
+4. **Phase 2**: Trust network protocols
 
 ### Parallel Research Track
+- Game mechanics integration
 - ICV validation studies
 - Trust protocol testing
 - Resonance correlation analysis
@@ -475,10 +523,14 @@ If ICV validation fails, the entire theoretical stack must be reconsidered.
 
 ## Next Actions
 
-1. Complete Phase 1 core features (persona, worldview)
-2. Begin synthetic ICV validation studies
-3. Start trust network protocol design
-4. Make go/no-go decisions based on validation results
+1. **Week 1**: Implement basic task system with CRUD and receipts
+2. **Week 2**: Add time awareness and calendar integration
+3. **Week 3**: Integrate game mechanics (quests, achievements)
+4. **Week 4**: Enable collaborative tasks for trust building
+5. Complete Phase 1 core features (persona, worldview)
+6. Begin synthetic ICV validation studies
+7. Start trust network protocol design
+8. Make go/no-go decisions based on validation results
 
 ---
 

@@ -54,23 +54,26 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - ✅ **Frontend** - React app with auth flow and API integration
 
 ### In Active Development
+- 🔄 **Task System** - Time-aware action layer with gamification (NEW PRIORITY)
 - 🔄 **Persona System** - Adaptive AI personality with 4 modes (accelerated priority)
 - 🔄 **Worldview Adapters** - Contextual presentation system
 - 🔄 **Trust Networks** - Progressive disclosure protocols
 - 🔄 **ICV Validation** - Identity compression research with synthetic pilots
 
 ### Research Track (Parallel)
+- 🔬 **Game Mechanics** - Task gamification and engagement patterns
 - 🔬 **Identity Compression** - Holographic identity representation
 - 🔬 **Productive Variation** - Controlled randomness for creativity
 - 🔬 **Natural Clustering** - Organic group formation patterns
 - 🔬 **Joy Metrics** - Measuring system delight and user creativity
 
 ### Next Priorities
-- 🔴 **Complete Persona System** - Four modes with worldview adaptation
-- 🔴 **ICV Validation Studies** - Test identity compression hypothesis
-- 🔴 **Trust Network Design** - Progressive disclosure mechanisms
-- 🟡 **Multimodal Support** - Documents and media as trust signals
-- 🟢 **Joy Metrics** - Track unexpected delight and creativity
+- 🔴 **Task System Foundation** - Week 1: Basic CRUD with receipts
+- 🔴 **Time Awareness** - Week 2: Calendar and scheduling
+- 🔴 **Game Mechanics** - Week 3: Quests and achievements
+- 🔴 **Collaboration** - Week 4: Shared tasks for trust building
+- 🟡 **Complete Persona System** - Four modes with worldview adaptation
+- 🟢 **Trust Network Design** - Progressive disclosure mechanisms
 
 See [IMMEDIATE_TASKS.md](docs/IMMEDIATE_TASKS.md) for detailed execution plan.
 
@@ -92,12 +95,14 @@ See [IMMEDIATE_TASKS.md](docs/IMMEDIATE_TASKS.md) for detailed execution plan.
 2. **Sovereign Identity System** - User-owned data, user-chosen AI
 3. **Adaptive Personas** - Context-aware AI personalities
 4. **Trust Networks** - Progressive relationship building
+5. **Task System** - Time-aware action layer with natural gamification
 
 #### Advanced Capabilities (Research)
-5. **Identity Compression** - Holographic identity representation
-6. **Productive Variation** - Creative randomness injection
-7. **Natural Clustering** - Organic group formation
-8. **Joy Engineering** - System delight optimization
+6. **Identity Compression** - Holographic identity representation
+7. **Productive Variation** - Creative randomness injection
+8. **Natural Clustering** - Organic group formation
+9. **Joy Engineering** - System delight optimization
+10. **Game Mechanics** - Ethical gamification patterns
 
 ## Documentation
 

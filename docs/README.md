@@ -49,6 +49,12 @@
   - **CONTEXTUAL_PRESENTATION.md** - Adaptive masking system
   - **SYNTHETIC_ICV_VALIDATION.md** - Identity compression testing
   - **MULTI_AGENT_ARCHITECTURE.md** - Agent orchestration patterns
+  - **GAME_MECHANICS_RESEARCH_PLAN.md** - Gamification research approach
+  - **GAME_MECHANICS_FINDINGS.md** - Game theory integration analysis
+  - **GAME_MECHANICS_SYNTHESIS.md** - Architecture alignment with games
+  - **GAME_MECHANICS_IMPLEMENTATION.md** - Concrete implementation steps
+  - **TASK_TRACKING_SYNTHESIS.md** - Task system as unifying layer
+  - **TASK_TRACKING_IMPLEMENTATION_PLAN.md** - 4-week rollout plan
 - **[aimc/](aimc/)** - AI-mediated communication research (theoretical)
 
 ### Validation Requirements
@@ -65,16 +71,18 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to the pro
 ## Documentation Status
 
 ### Current & Authoritative
-- ✅ MNEMOSYNE_PRIMER.md - Core vision (model claims fixed)
-- ✅ ROADMAP_2025.md - Correct priorities restored
-- ✅ IMMEDIATE_TASKS.md - Focus on persona/ICV/trust
-- ✅ INTEGRATED_VISION_2025.md - Strategic analysis
+- ✅ MNEMOSYNE_PRIMER.md - Core vision with task system added
+- ✅ ROADMAP_2025.md - Task system as new Phase 1.2 priority
+- ✅ IMMEDIATE_TASKS.md - 4-week task implementation plan
+- ✅ INTEGRATED_VISION_2025.md - Strategic analysis with action layer
 - ✅ MULTIMODAL_INTEGRATION.md - Supporting role clarified
 - ✅ MULTIMODAL_AGENT_STRATEGY.md - Technical approach
 
 ### Key Updates
+- **Task System Priority**: New action layer unifying all features
+- **Game Mechanics Research**: Natural gamification without manipulation
 - **Model Agnostic**: We orchestrate user-provided AI endpoints
-- **Priority Order**: Persona → ICV → Trust Networks → Multimodal Support
+- **Priority Order**: Tasks → Persona → ICV → Trust Networks
 - **Contextual Presentation**: Replaces multi-tier legibility concept
 
 ---

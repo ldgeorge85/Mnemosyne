@@ -1,6 +1,20 @@
 # Immediate Task Breakdown for Mnemosyne Protocol
 *Building Cognitive Sovereignty Through Iterative Development*
 
+## ⭐ NEW PRIORITY: Task System as Foundation
+
+**Critical Insight**: Tasks are the action layer that unifies all features:
+- **Memories** (past) → **Tasks** (present/future) → **Trust** (relationships)
+- Natural gamification through quest mechanics
+- Time sovereignty through calendaring
+- Collective coordination substrate
+
+**4-Week Sprint Plan**:
+1. **Week 1**: Basic task CRUD with receipts
+2. **Week 2**: Time awareness and scheduling
+3. **Week 3**: Game mechanics integration
+4. **Week 4**: Collaboration features
+
 ## Critical Path Forward
 
 ### Guiding Principles
@@ -130,14 +144,101 @@
 
 ---
 
-## Execution Order (UPDATED)
+### Phase 1.2: Task System Implementation ⭐ NEW PRIORITY
 
-### Immediate Priority (This Week)
-1. **Task Group G** (Personas) - ACCELERATED to immediate
-2. **Task Group H** (Synthetic ICV) - Start validation NOW
-3. Contextual presentation design - Adaptive masking for contexts
-4. Joy metrics implementation - Track delight
-5. Productive variation research - 5% controlled randomness
+#### Task Group K: Task System Foundation (Week 1)
+- [ ] **Day 1**: Create task model and database migrations
+  - Basic fields: id, title, description, user_id, status
+  - Time fields: created_at, due_date, completed_at
+  - Privacy: visibility_mask
+- [ ] **Day 2**: Implement CRUD endpoints
+  - POST /api/v1/tasks - Create with receipt
+  - GET /api/v1/tasks - List with filtering
+  - PATCH /api/v1/tasks/{id} - Update status
+  - DELETE /api/v1/tasks/{id} - Soft delete
+- [ ] **Day 3**: Connect to receipt system
+  - Generate receipt for every task action
+  - Link receipts to consent ledger
+  - Track task lifecycle events
+- [ ] **Day 4**: Basic frontend integration
+  - Task list component
+  - Create task form
+  - Status toggle UI
+- [ ] **Day 5**: Testing and refinement
+  - Integration tests
+  - Receipt verification
+  - Performance baseline
+
+#### Task Group L: Time Awareness (Week 2)
+- [ ] **Calendar Integration**
+  - Add scheduling fields to task model
+  - Create calendar view endpoint (iCal format)
+  - Frontend calendar component
+- [ ] **Recurring Tasks**
+  - RRULE support for recurrence patterns
+  - Template system for habits
+  - Automatic instance generation
+- [ ] **Smart Scheduling**
+  - Peak performance window detection
+  - Energy-aware scheduling
+  - Conflict detection
+- [ ] **Time Tracking**
+  - Estimated vs actual duration
+  - Time investment analytics
+  - Productivity patterns
+
+#### Task Group M: Game Mechanics (Week 3)
+- [ ] **Quest Classification**
+  - Classify tasks as quest types
+  - Difficulty rating system
+  - Reward calculation
+- [ ] **Achievement System**
+  - Pattern detection in task completion
+  - Achievement unlocking
+  - Capability grants
+- [ ] **Reputation Building**
+  - Multi-dimensional reputation model
+  - Task-based reputation gains
+  - Decay implementation
+- [ ] **Progress Visualization**
+  - XP and level tracking
+  - Progress bars and streaks
+  - Achievement gallery
+
+#### Task Group N: Collaboration (Week 4)
+- [ ] **Shared Tasks**
+  - Multi-assignee support
+  - Progress synchronization
+  - Completion consensus
+- [ ] **Trust Building Tasks**
+  - Paired challenge templates
+  - Trust impact calculation
+  - Reciprocity tracking
+- [ ] **Collective Goals**
+  - Break down group objectives
+  - Role-based task assignment
+  - Dependency management
+- [ ] **Coordination Tools**
+  - Find common availability
+  - Sync point scheduling
+  - Progress dashboards
+
+**Success Criteria**:
+- Tasks serve as action layer for all features
+- Natural gamification without manipulation
+- Time sovereignty through scheduling
+- Trust building through collaboration
+
+---
+
+## Execution Order (UPDATED - With Task System)
+
+### Immediate Priority (This Week) ⭐ NEW PRIORITY
+1. **Task Group K** (Task System Foundation) - Action layer for everything
+2. **Task Group G** (Personas) - Guides task suggestions
+3. **Task Group L** (Consent Ledger) - Every task generates receipts
+4. **Task Group H** (Synthetic ICV) - Validation through task patterns
+5. Contextual presentation design - Tasks respect masks
 
 ### Next Sprint (Weeks 2-3)
 6. Trust network protocol design
@@ -163,13 +264,19 @@
 ## Task Dependencies
 
 ```
-Audit (A) → Delete (B) → Consolidate (C)
+Audit (A) → Delete (B) → Consolidate (C) ✅
                             ↓
-                    Frontend Auth (D)
+                    Frontend Auth (D) ✅
                             ↓
-                    Fix Chat (F) → Persona (G)
+                    Memory CRUD (E) ✅
                             ↓
-                    Memory CRUD (E)
+                    Task System (K) ← NEW FOUNDATION
+                    ↙        ↓        ↘
+            Personas (G)  Time (L)  Game Mechanics (M)
+                    ↓        ↓        ↓
+                    Collaboration (N)
+                            ↓
+                    Trust Networks → Collective Intelligence
                     
 [Parallel: ICV Setup (H) → Trust Design (I) → Emergence Studies (J)]
 ```

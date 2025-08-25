@@ -14,9 +14,9 @@
 
 ## Vision
 
-A world where your AI doesn't just assist you—it truly represents you. Where digital interactions preserve rather than erode human agency. Where collective intelligence emerges from individual sovereignty rather than corporate aggregation.
+A world where your AI doesn't just assist you—it truly represents ALL of you, your full spectrum of experience. Where digital interactions preserve human agency by acknowledging human complexity without judgment. Where collective intelligence emerges from individual sovereignty rather than corporate aggregation.
 
-**The Mnemosyne Protocol is building cognitive sovereignty infrastructure** - technology that preserves human agency in an age of AI-mediated reality.
+**The Mnemosyne Protocol is building cognitive sovereignty infrastructure** - technology that preserves human agency through full spectrum awareness, not moral imposition.
 
 **Read the full vision**: [INTEGRATED_VISION_2025.md](docs/INTEGRATED_VISION_2025.md)
 
@@ -62,6 +62,21 @@ nano .env.prod  # Add your domain and API keys
 
 See [DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) for complete production setup.
 
+## Getting Started: Choose Your Path
+
+### 🎯 Pick Your Persona
+The system adapts to your worldview:
+- **Technical** → Full API access, self-hosting, metrics
+- **Creative** → Visual tools, pattern art, inspiration tracking
+- **Security-Focused** → Maximum privacy, Tor support, audit logs
+- **Contemplative** → Minimal tracking, mindfulness, simplicity
+- **Vulnerable** → Enhanced safety, support resources, guided experience
+
+### 🛡️ Choose Your Sovereignty Level
+- **Protected Mode** - Beginners with safety rails
+- **Guided Mode** - Balanced autonomy and support
+- **Sovereign Mode** - Full control for advanced users
+
 ## Current Status
 
 The project implements **cognitive sovereignty** through proven technologies while researching advanced capabilities.
@@ -79,10 +94,11 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - ✅ **Infrastructure** - Docker, PostgreSQL, Redis, Qdrant all operational
 
 ### In Active Development
-- 🔄 **Receipt Integration** - Adding receipt generation to all endpoints
-- 🔄 **Receipt UI** - Building transparency viewing components
-- 🔄 **Auth Providers** - OAuth and API key authentication
-- 🔄 **Testing & Quality** - Integration tests and CI/CD pipeline
+- 🔄 **Accessibility Layer** - Onboarding wizards and simplified UIs
+- 🔄 **Graduated Sovereignty** - Protected/Guided/Sovereign modes
+- 🔄 **Values Alignment** - Import moral/ethical frameworks
+- 🔄 **Bridge Building** - Features for different worldviews
+- 🔄 **Mirror Mode** - Fifth persona for pattern reflection
 
 ### Research Track (Parallel)
 - 🔬 **Game Mechanics** - Task gamification and engagement patterns
@@ -91,12 +107,19 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - 🔬 **Natural Clustering** - Organic group formation patterns
 - 🔬 **Joy Metrics** - Measuring system delight and user creativity
 
-### Next Priorities
-- 🔴 **Receipt Integration** - Connect receipt generation to all user actions
-- 🔴 **Receipt UI** - Build components to view transparency logs
-- 🟡 **OAuth Provider** - Implement social login authentication
-- 🟡 **API Key Auth** - Service account authentication
-- 🟢 **Integration Tests** - Comprehensive test coverage
+### Next Priorities (Sprint 6 - Accessibility)
+- 🔴 **Onboarding Wizard** - Persona selection for new users
+- 🔴 **Sovereignty Levels** - Protected/Guided/Sovereign modes
+- 🔴 **Simplified UI** - Non-technical user interfaces
+- 🔴 **Values Framework** - Import moral/ethical systems
+- 🔴 **Safety Templates** - Optional protection features
+
+### Following Priorities (Sprint 7-8)
+- 🟡 **Mirror Mode** - Pattern reflection without judgment
+- 🟡 **Community Standards** - Optional group rules
+- 🟡 **Trust Dynamics** - Appeals and due process
+- 🟢 **Specialized Modes** - Operational/Contemplative/Aesthetic
+- 🟢 **Integration Tests** - Comprehensive coverage
 
 See [IMMEDIATE_TASKS.md](docs/IMMEDIATE_TASKS.md) for detailed execution plan.
 
@@ -151,8 +174,9 @@ See [IMMEDIATE_TASKS.md](docs/IMMEDIATE_TASKS.md) for detailed execution plan.
 1. **Cognitive Sovereignty** - Users own their data and control their AI choices
 2. **Resistance to Feudalism** - Prevent centralized control of cognition
 3. **Privacy Through Architecture** - Sovereignty embedded, not added
-4. **Progressive Trust** - Relationships build naturally over time
-5. **Joy as Metric** - Systems without delight are already captured
+4. **Progressive Trust** - Trust exists on spectrums, evolves contextually
+5. **Full Spectrum Awareness** - Systems that deny any aspect of human experience are already captured
+6. **Mirror, Not Judge** - Show patterns for self-awareness, don't impose morality
 
 ### Design Philosophy
 - **Contextual Presentation** - Adaptive masking based on context

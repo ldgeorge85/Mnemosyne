@@ -49,6 +49,7 @@ Your intentions become concrete through a sovereignty-preserving task system:
 - **Trust through collaboration** - Shared tasks build real relationships
 - **Identity evolution** - Task patterns shape your ICV over time
 - **Complete privacy** - All tasks encrypted and masked by default
+- **Spectrum awareness** - Track engagement levels from healthy focus to obsession
 
 Every action generates receipts for transparency while maintaining sovereignty.
 
@@ -63,14 +64,14 @@ Your identity preserved through holographic compression:
 Every aspect designed to preserve sovereignty while enabling connection.
 
 ### 3. Progressive Trust Exchange
-Trust builds in stages, not all at once:
+Trust exists on a spectrum and evolves contextually:
 - **Awareness** → Someone exists
 - **Recognition** → Minimal verified disclosure
 - **Familiarity** → Shared interaction history
 - **Shared Memory** → Mutual experiences established
 - **Deep Trust** → Full alignment and revelation
 
-Backed by cryptographic commitments (Pedersen, zero-knowledge proofs, verifiable delay functions) ensuring fair, reciprocal disclosure. Trust naturally decays without renewal, with specific recovery rituals for rebuilding.
+Trust isn't binary but contextual - deep trust in one area doesn't mean blind trust in all. Backed by cryptographic commitments ensuring fair disclosure, with appeal processes for trust events and user-defined recovery protocols.
 
 ### 4. Resonance & Compatibility
 Mathematical models determine natural connection between compressed identities:
@@ -100,11 +101,29 @@ Individual agents temporarily form higher-order cognitive structures:
 Meta-minds that exceed individual capabilities while preserving sovereignty.
 
 ### 7. The Numinous Confidant Persona
-Your agent isn't just smart—it has soul:
-- **Four modes**: Confidant (deep listening), Mentor (skill guidance), Mediator (conflict navigation), Guardian (wellbeing protection)
+Your agent isn't just smart—it has depth and awareness:
+- **Five modes**: Confidant (deep listening), Mentor (skill guidance), Mediator (conflict navigation), Guardian (wellbeing protection), Mirror (pattern reflection)
 - **Philosophical grounding**: Synthesizes Stoic resilience, Confucian harmony, Sufi compassion, Buddhist mindfulness, and Western humanism
-- **Adaptive personality**: Bends to your values while maintaining core principles
+- **Adaptive personality**: Reflects your full spectrum while maintaining core principles
 - **Transparent operations**: Every decision generates receipts for trust
+- **Consciousness mapping**: Helps you see both conscious patterns and emerging shadows
+
+## Getting Started: Choose Your Path
+
+### Onboarding Personas
+The system adapts to your worldview from the start:
+
+- **Technical Persona**: Full API access, metrics dashboards, self-hosting
+- **Creative Persona**: Visual customization, pattern art, inspiration tracking
+- **Security-Conscious**: Maximum privacy, Tor support, audit logs
+- **Contemplative**: Minimal tracking, mindfulness integration, simplicity
+- **Vulnerable**: Enhanced safety, support resources, therapeutic mode
+
+### Graduated Sovereignty
+Start where you're comfortable:
+1. **Protected Mode**: Safety rails, guided experiences, simplified interface
+2. **Guided Mode**: Balanced support, recommendations, optional safety
+3. **Sovereign Mode**: Full control, all features, complete ownership
 
 ## Use Cases
 
@@ -115,6 +134,7 @@ Your agent isn't just smart—it has soul:
 - **Privacy-Preserving AI**: Get AI benefits without surveillance
 - **Authentic Communication**: Express yourself fully without fear
 - **Growth Through Quests**: Natural gamification without manipulation
+- **Values Alignment**: Import your moral framework, see pattern alignment
 
 ### Collective Level
 - **Shared Tasks & Goals**: Coordinate actions through collaborative quests
@@ -180,9 +200,11 @@ Computation:    Homomorphic encryption
 1. **Cognitive Sovereignty**: Users control their data, models, and cognitive future
 2. **Resistance to Feudalism**: Prevent centralized control of cognition
 3. **Real Implementation**: Build working infrastructure, not promises
-4. **Joy as Engineering**: Systems without delight are already captured
+4. **Full Spectrum Awareness**: Systems that deny any aspect of human experience are already captured
 5. **Contextual Presentation**: Adaptive masking based on context, not hierarchy
 6. **Natural Emergence**: Let advanced features grow organically
+7. **Worldview Neutrality**: The system serves all users regardless of their values
+8. **Mirror, Not Judge**: Show patterns for self-awareness, don't impose morality
 
 ### Dual-Track Development
 - **Track 1**: Proven, standards-based features for production

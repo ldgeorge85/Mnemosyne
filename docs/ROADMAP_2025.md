@@ -51,9 +51,10 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 - **Useful First**: Every feature provides immediate value
 - **Sovereignty Embedded**: Privacy and control in architecture
 - **Natural Emergence**: Advanced features grow organically
-- **Joy as Metric**: Delight indicates healthy systems
+- **Full Spectrum Awareness**: Acknowledge all aspects of human experience
 - **Progressive Complexity**: Simple core, validated additions
 - **Model Agnostic**: Interface with AI via user-configured endpoints
+- **Mirror, Not Judge**: Show patterns without imposing values
 
 ## Phase Structure
 
@@ -115,9 +116,9 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 
 ---
 
-### Phase 1: Core Foundation ✅ BACKEND COMPLETE / 🔄 FRONTEND IN PROGRESS
-**Status**: Backend 100%, Frontend 60%
-**Goal**: Sovereign personal AI with unified user experience
+### Phase 1: Core Foundation + Accessibility 🔄 ENHANCING
+**Status**: Core complete, adding accessibility layer
+**Goal**: Sovereign personal AI accessible to diverse worldviews
 
 #### Backend Complete ✅
 - ✅ Memory CRUD with embeddings
@@ -127,17 +128,18 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 - ✅ Authentication system
 - ✅ Production deployment ready
 
-#### Frontend In Progress 🔄
-- ✅ Basic pages functional
-- 🔴 **UI/UX Critical Issues** - Chat scrolling, navigation
-- 🔄 **Unification Needed** - Connect features under single shell
-- 🔄 **Progressive Enhancement** - Port sophisticated unused components
+#### Accessibility Enhancements (Q4 2024 - Q1 2025)
+- 🆕 **Graduated Sovereignty**: Protected/Guided/Sovereign modes
+- 🆕 **Onboarding Personas**: 5 worldview-specific entry points
+- 🆕 **Values Alignment**: Import moral/ethical frameworks
+- 🆕 **Simplified UI**: Non-technical user interfaces
+- 🆕 **Safety Templates**: Optional protection for vulnerable users
 
 #### Next Priority
-- 🔄 Persona system with four modes (Confidant, Mentor, Mediator, Guardian)
-- 🔄 Worldview adapters for cultural contexts
-- 🔄 Contextual presentation system
-- 🔄 Receipts and transparency logging
+- 🔄 Mirror mode (5th persona mode for pattern reflection)
+- 🔄 Trust dynamics with appeals process
+- 🔄 Community standards layer (optional)
+- 🔄 Bridge-building features between worldviews
 
 #### Success Metrics
 - User satisfaction with persona interactions
@@ -216,36 +218,87 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 
 ---
 
-### Phase 1.5: Research Track - Sovereignty Validation
+### Phase 1.5: Research Track - Sovereignty & Governance
 **Parallel to Phase 1**
-**Goal**: Validate cognitive sovereignty through synthetic pilots
+**Goal**: Validate cognitive sovereignty with robust governance
 **Track**: Research with immediate application
+
+#### Trust Dynamics & Governance
+- [ ] Implement trust event system (not "violations")
+- [ ] Build appeals process with due process
+- [ ] Add policy versioning for all decisions
+- [ ] Create separation of duties (reporter ≠ resolver)
+- [ ] Design contextual visibility controls
+
+##### Database Schema for Trust System
+```sql
+-- Trust events tracking (neutral language)
+CREATE TABLE trust_events (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    event_type VARCHAR(50) NOT NULL,
+    impact_score FLOAT CHECK (impact_score >= -1 AND impact_score <= 1),
+    context JSONB,
+    created_by UUID REFERENCES users(id),
+    resolved_by UUID REFERENCES users(id),
+    appeal_id UUID,
+    policy_version TEXT NOT NULL DEFAULT 'v1',
+    visibility_level VARCHAR(20) DEFAULT 'contextual'
+);
+
+-- Appeals process
+CREATE TABLE appeals (
+    id UUID PRIMARY KEY,
+    trust_event_id UUID REFERENCES trust_events(id),
+    appellant UUID REFERENCES users(id),
+    status VARCHAR(20) NOT NULL,
+    submitted_at TIMESTAMP NOT NULL,
+    resolved_at TIMESTAMP,
+    resolver UUID REFERENCES users(id)
+);
+```
+
+#### Spectrum Awareness Features
+- [ ] Track behavioral patterns on spectrums
+- [ ] Build Mirror mode for persona (reflection without judgment)
+- [ ] Create consciousness mapping (opt-in only)
+- [ ] Implement pattern recognition without moral judgment
+- [ ] Add user-editable notes on their patterns
+
+##### Database Schema for Consciousness Mapping
+```sql
+-- Consciousness mapping (opt-in, not "shadow profiles")
+CREATE TABLE consciousness_maps (
+    user_id UUID PRIMARY KEY REFERENCES users(id),
+    conscious_values JSONB,
+    observed_patterns JSONB,
+    emerging_patterns JSONB,
+    integration_score FLOAT DEFAULT 0.0,
+    last_updated TIMESTAMP,
+    user_consent BOOLEAN NOT NULL DEFAULT FALSE,
+    user_notes TEXT  -- User can add their own context
+);
+```
 
 #### Synthetic ICV Pilots (Accelerated)
 - Generate synthetic identities for testing
 - Validate compression before real users
 - Test holographic properties (each part contains whole)
 - Measure temporal stability (70/30 model)
-- Implement productive variation (5% rate)
-
-#### Joy Engineering Research
-- Define joy metrics (unexpected delight, creativity spikes)
-- Implement measurement framework
-- Test correlation with user engagement
-- Optimize for laughter coefficient
+- Include shadow aspects in compression
 
 #### Natural Clustering Studies
 - Observe organic group formation
 - Measure trust network emergence
 - Identify resonance patterns
-- Document cell formation dynamics
+- Add spectrum diversity indicators (descriptive only)
 
 #### Voice & Archetype Refinement
 - [ ] Tune persona voice for each mode
-- [ ] Implement archetype variations
+- [ ] Implement Mirror mode for pattern reflection
 - [ ] Create aesthetic customization options
-- [ ] Build ritual language patterns
-- [ ] Test intimacy vs elevation balance
+- [ ] Build neutral observation language
+- [ ] Test reflection vs judgment balance
 
 #### ICV Blending Engine
 - [ ] Create rules engine for ICV adaptation

@@ -112,12 +112,13 @@ The task system now serves as the bridge between abstract concepts and concrete 
 
 ### The Numinous Confidant Persona [STATUS: IMPLEMENTABLE]
 
-The agent isn't just functional—it embodies a philosophical persona:
-- **Four Modes**: Confidant, Mentor, Mediator, Guardian
+The agent isn't just functional—it embodies depth and awareness:
+- **Five Modes**: Confidant, Mentor, Mediator, Guardian, Mirror
 - **Philosophical Synthesis**: Stoic, Confucian, Sufi, Buddhist, Humanist
-- **Core Axioms**: Life sacred, meaning constructed, agency inviolable
-- **Adaptive Personality**: Bends to user values while maintaining principles
-- **Transparent Operations**: Every decision generates receipts
+- **Core Axioms**: Life sacred, meaning constructed, agency inviolable, spectrum awareness
+- **Adaptive Personality**: Reflects user's full spectrum while maintaining principles
+- **Transparent Operations**: Every decision generates receipts with appeal process
+- **Consciousness Mapping**: Shows patterns without moral judgment
 
 ### Critical Reality Check
 
@@ -174,19 +175,24 @@ Human → Personal Agent → Trust Layer → Collective Engine
 - Add monitoring (Prometheus/Grafana)
 - Deploy error tracking
 
-### Phase 2: Simplified MVP
+### Phase 2: Accessible MVP with Graduated Sovereignty
 
-#### Focus: Single-User Value
+#### Focus: Meeting Users Where They Are
+- **Graduated Sovereignty Levels**:
+  - Protected Mode (beginners with safety rails)
+  - Guided Mode (balanced autonomy)
+  - Sovereign Mode (full control)
+- **Five Onboarding Personas**:
+  - Technical, Creative, Security-Conscious, Contemplative, Vulnerable
 - Personal memory augmentation
 - Semantic search capabilities
 - Privacy-preserving storage
-- Local AI agent
 
-#### Defer Complexity
-- No collective features
-- No governance mechanisms
-- No distributed systems
-- No blockchain integration
+#### Bridge Building Features
+- Values alignment framework (import any moral system)
+- Community standards (optional, user-chosen)
+- Specialized modes for different worldviews
+- Simplified interfaces for non-technical users
 
 ### Phase 3: Trust Network Pilot
 

@@ -1,7 +1,7 @@
 # Immediate Task Breakdown for Mnemosyne Protocol
 *Building Cognitive Sovereignty Through Iterative Development*
 
-## ⭐ CURRENT PRIORITY: Receipt Integration & UI
+## ⭐ CURRENT PRIORITY: Trust Dynamics & Receipt Integration
 
 **Current State (2025-08-25)**: 
 - ✅ Memory UI Complete - Full CRUD interface with search
@@ -9,22 +9,37 @@
 - ✅ UI/UX Fixed - Navigation, scrolling, chat history all working
 - ✅ Receipts Backend Complete - Database, service, and API endpoints ready
 
-**Next Implementation**:
-- 🔴 Add receipt generation to memory endpoints
-- 🔴 Add receipt generation to task endpoints
-- 🔴 Add receipt generation to chat endpoint
-- 🔴 Create receipt viewing UI components
-- 🔴 Add receipts page to frontend navigation
+**Immediate Implementation** (Sprint 6 - Accessibility):
+- 🔴 Implement graduated sovereignty levels (Protected/Guided/Sovereign)
+- 🔴 Create onboarding wizard with 5 personas
+- 🔴 Build simplified UI for non-technical users
+- 🔴 Add values alignment framework
+- 🔴 Design trust event schema with appeals
+
+**Next Sprint** (Sprint 7 - Bridge Building):
+- 🟡 Mirror mode for persona (observe-only first)
+- 🟡 Community standards layer (optional)
+- 🟡 Specialized modes (Operational/Contemplative/Aesthetic)
+- 🟡 Safety templates for vulnerable users
+- 🟡 Pattern recognition without judgment
+
+**Following Sprint** (Sprint 8 - Full Spectrum):
+- 🟢 Trust dynamics with contextual awareness
+- 🟢 Spectrum position tracking
+- 🟢 User-editable consciousness notes
+- 🟢 Insight pacing controls
+- 🟢 Therapeutic mode with safeguards
 
 ## Critical Path Forward
 
 ### Guiding Principles
 - **Contextual Presentation**: Adaptive masking based on context, not hierarchy
-- **Accelerated Personas**: Worldview integration moved to immediate priority
-- **Synthetic Validation**: Test with synthetic identities before real users
-- **Joy as Metric**: Track unexpected delight and creativity spikes
+- **Full Spectrum Awareness**: Acknowledge all aspects of human experience
+- **Mirror, Not Judge**: Show patterns without imposing moral values
+- **Governance First**: Due process, appeals, and policy versioning
 - **Natural Emergence**: Let advanced features grow organically
 - **Model Agnostic**: All AI via user-configured API endpoints
+- **Observe Before Enforce**: New features run in observe-only mode first
 
 ### Phase 0.5: Code Cleanup ✅ COMPLETE
 
@@ -92,6 +107,44 @@
 - [x] Ensure chat history is persisted ✅ SAVING TO DB
 - [ ] Add streaming response support (enhancement)
 - [ ] Connect memory context to chat (next priority)
+
+#### Task Group G: Persona & Worldview Implementation ✅ COMPLETE (2025-08-25)
+
+#### Task Group H: Accessibility & Onboarding 🆕 NEW (Sprint 6)
+- [ ] Create `OnboardingWizard` component with persona selection
+- [ ] Implement `SovereigntySelector` (Protected/Guided/Sovereign)
+- [ ] Build persona-specific default configurations
+- [ ] Create simplified UI components for non-technical users
+- [ ] Add mode switching with data preservation
+- [ ] Implement values framework importer
+- [ ] Design safety templates system
+- [ ] Add gradual revelation settings
+- [ ] Build insight pacing controls
+- [ ] Create therapeutic mode safeguards
+
+#### Task Group I: Trust Dynamics & Governance 🆕 NEW (Sprint 7)
+- [ ] Implement trust event system endpoints:
+  - `POST /api/v1/trust/event` - Record trust-impacting events
+  - `POST /api/v1/trust/appeal` - Appeal trust decisions
+  - `GET /api/v1/trust/appeal/{id}` - Check appeal status
+- [ ] Add Mirror mode endpoint:
+  - `POST /api/v1/persona/mirror` - Pattern reflection
+- [ ] Implement database tables:
+  - `trust_events` table with neutral language
+  - `appeals` table with due process
+  - `consciousness_maps` table (opt-in only)
+- [ ] Add governance features:
+  - Policy versioning on all decisions
+  - Separation of duties (reporter ≠ resolver)
+  - Contextual visibility controls
+  - Rate limiting and idempotency
+
+**Acceptance Criteria**:
+- New user can select persona and sovereignty level
+- System adapts interface based on selection
+- Users can switch modes without losing data
+- Non-technical users can navigate easily
+- Safety features are optional but discoverable
 
 #### Task Group G: Persona & Worldview Implementation ✅ COMPLETE (2025-08-25)
 - [x] Create `services/persona/` directory structure ✅

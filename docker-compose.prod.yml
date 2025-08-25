@@ -1,0 +1,145 @@
+services:
+  # PostgreSQL with pgvector for production
+  postgres:
+    image: ankane/pgvector:latest
+    environment:
+      POSTGRES_DB: mnemosyne
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-pgvector.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mnemosyne_internal
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mnemosyne_internal
+
+  # Qdrant vector database
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    restart: unless-stopped
+    networks:
+      - mnemosyne_internal
+
+  # Mnemosyne Backend
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - MODE=personal
+      - TRACK=production
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/mnemosyne
+      - REDIS_URL=redis://redis:6379
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      - SECRET_KEY=${SECRET_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+      - OPENAI_MODEL=${OPENAI_MODEL}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - W3C_DID_ENABLED=true
+      - W3C_DID_METHOD=mnem
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      # Production optimizations
+      - WORKERS=4
+      - MAX_CONNECTIONS=100
+    volumes:
+      - ./backend:/app
+      - backend_logs:/app/logs
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mnemosyne_internal
+    command: ["/app/startup.sh"]
+
+  # Frontend (production build)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile  # Use production Dockerfile
+    environment:
+      - VITE_API_URL=https://${DOMAIN}/api
+      - NODE_ENV=production
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - mnemosyne_internal
+
+  # Nginx reverse proxy with SSL
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/prod.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - mnemosyne_internal
+      - mnemosyne_external
+
+  # Optional: Certbot for automatic SSL certificates
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./ssl:/etc/letsencrypt
+      - ./nginx/logs:/var/log/letsencrypt
+    depends_on:
+      - nginx
+    command: |
+      sh -c "sleep 6 &&
+             certbot certonly --webroot -w /var/www/certbot 
+             --email ${SSL_EMAIL} 
+             --agree-tos --no-eff-email 
+             -d ${DOMAIN}"
+    networks:
+      - mnemosyne_external
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
+  backend_logs:
+
+networks:
+  mnemosyne_internal:
+    driver: bridge
+    internal: true
+  mnemosyne_external:
+    driver: bridge

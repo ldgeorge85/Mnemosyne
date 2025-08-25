@@ -1,19 +1,20 @@
 # Immediate Task Breakdown for Mnemosyne Protocol
 *Building Cognitive Sovereignty Through Iterative Development*
 
-## ⭐ NEW PRIORITY: Task System as Foundation
+## ⭐ CURRENT PRIORITY: Receipt Integration & UI
 
-**Critical Insight**: Tasks are the action layer that unifies all features:
-- **Memories** (past) → **Tasks** (present/future) → **Trust** (relationships)
-- Natural gamification through quest mechanics
-- Time sovereignty through calendaring
-- Collective coordination substrate
+**Current State (2025-08-25)**: 
+- ✅ Memory UI Complete - Full CRUD interface with search
+- ✅ Persona System Complete - 4 modes with worldview adapters
+- ✅ UI/UX Fixed - Navigation, scrolling, chat history all working
+- ✅ Receipts Backend Complete - Database, service, and API endpoints ready
 
-**4-Week Sprint Plan**:
-1. **Week 1**: Basic task CRUD with receipts
-2. **Week 2**: Time awareness and scheduling
-3. **Week 3**: Game mechanics integration
-4. **Week 4**: Collaboration features
+**Next Implementation**:
+- 🔴 Add receipt generation to memory endpoints
+- 🔴 Add receipt generation to task endpoints
+- 🔴 Add receipt generation to chat endpoint
+- 🔴 Create receipt viewing UI components
+- 🔴 Add receipts page to frontend navigation
 
 ## Critical Path Forward
 
@@ -57,7 +58,7 @@
 
 ---
 
-### Phase 1: Core Foundation (Current Focus)
+### Phase 1: Core Foundation ✅ BACKEND COMPLETE / 🔄 FRONTEND IN PROGRESS
 
 #### Task Group D: Frontend Auth Connection ✅ COMPLETE (2025-08-22)
 - [x] Update `AuthContext.tsx` to use `/api/v1/auth/*` endpoints
@@ -92,15 +93,16 @@
 - [ ] Add streaming response support (enhancement)
 - [ ] Connect memory context to chat (next priority)
 
-#### Task Group G: Persona & Worldview Implementation 🔴 ACCELERATED PRIORITY
-- [x] Create `services/persona/` directory structure
-- [x] Implement BasePersona class with four modes
-- [ ] **IMMEDIATE**: Complete worldview adapter integration
-- [ ] **IMMEDIATE**: Implement contextual presentation system
-- [ ] **IMMEDIATE**: Add productive variation (5% rate)
-- [ ] Create mode switching logic (Confidant/Mentor/Mediator/Guardian)
-- [ ] Build receipts and transparency system
-- [ ] Implement joy metrics tracking
+#### Task Group G: Persona & Worldview Implementation ✅ COMPLETE (2025-08-25)
+- [x] Create `services/persona/` directory structure ✅
+- [x] Implement BasePersona class with four modes ✅
+- [x] Complete worldview adapter integration ✅
+- [x] Implement PersonaManager with mode switching ✅
+- [x] Create context analysis for auto-mode selection ✅
+- [x] Add persona API endpoints ✅
+- [x] Integrate with chat endpoint ✅
+- [ ] Add productive variation (5% rate) - deferred
+- [ ] Implement joy metrics tracking - deferred
 
 **Success Criteria**:
 - User can login through frontend
@@ -144,84 +146,107 @@
 
 ---
 
-### Phase 1.2: Task System Implementation ⭐ NEW PRIORITY
+### Phase 1.1: UI/UX Unification ✅ PHASE 1 & 2 COMPLETE
 
-#### Task Group K: Task System Foundation (Week 1)
-- [ ] **Day 1**: Create task model and database migrations
-  - Basic fields: id, title, description, user_id, status
-  - Time fields: created_at, due_date, completed_at
-  - Privacy: visibility_mask
-- [ ] **Day 2**: Implement CRUD endpoints
-  - POST /api/v1/tasks - Create with receipt
-  - GET /api/v1/tasks - List with filtering
-  - PATCH /api/v1/tasks/{id} - Update status
-  - DELETE /api/v1/tasks/{id} - Soft delete
-- [ ] **Day 3**: Connect to receipt system
+#### Task Group H: Critical UI Fixes ✅ COMPLETE
+- [x] Fix chat scrolling (change to viewport-relative height) ✅
+- [x] Fix tip text positioning ✅
+- [x] Adjust chat message container for proper internal scrolling ✅
+- [x] Test on mobile/tablet viewports ✅
+
+#### Task Group I: Navigation & Shell ✅ COMPLETE
+- [x] Create AppShell.tsx wrapper component ✅
+- [x] Port Sidebar logic from Chakra to shadcn/ui ✅
+- [x] Add chat history/sessions in sidebar ✅
+- [x] Implement mobile-responsive navigation ✅
+- [x] Wire router to use AppShell ✅
+
+#### Task Group J: Progressive Enhancement (Phase 3)
+- [ ] Port EnhancedChat features (intelligence indicators)
+- [ ] Integrate existing MessageFormatter/MarkdownRenderer
+- [ ] Add context panel (memories/tasks while chatting)
+- [ ] Implement keyboard shortcuts (Cmd+K)
+- [ ] Unify all pages under consistent navigation
+
+**Success Criteria**:
+- Chat works like ChatGPT/Claude (fixed input, scrolling messages)
+- Navigation persists across all features
+- Can switch between chat sessions
+- Mobile responsive
+
+---
+
+### Phase 1.2: Task System Implementation ✅ BACKEND COMPLETE
+
+#### Task Group K: Task System Foundation ✅ CORE COMPLETE
+- [x] Create task model and database migrations ✅ COMPLETE
+  - Basic fields: id, title, description, user_id, status ✅
+  - Time fields: created_at, due_date, completed_at ✅
+  - Privacy: visibility_mask ✅
+  - Game mechanics, ICV evolution, collaboration fields ✅
+- [x] Implement CRUD endpoints ✅ COMPLETE
+  - POST /api/v1/tasks - Create with game mechanics ✅
+  - GET /api/v1/tasks - List with filtering ✅
+  - PATCH /api/v1/tasks/{id}/start - Mark in progress ✅
+  - PATCH /api/v1/tasks/{id}/complete - Complete with XP ✅
+  - DELETE /api/v1/tasks/{id} - Soft delete ✅
+  - XP calculation, reputation tracking ✅
+
+#### Next: Core UI & Testing
+- [ ] Connect to receipt system
   - Generate receipt for every task action
   - Link receipts to consent ledger
   - Track task lifecycle events
-- [ ] **Day 4**: Basic frontend integration
-  - Task list component
-  - Create task form
+- [x] Basic frontend integration ✅ COMPLETE
+  - Task list component ✅
+  - Create task form ✅
+
+---
+
+### Phase 1.3: Memory UI Implementation ✅ COMPLETE (2025-08-25)
+
+#### Task Group L: Memory Interface Components ✅
+- [x] Create memory list view ✅
+  - Display memories with title, content preview, tags ✅
+  - Show source type and importance score ✅
+  - Display creation time with relative formatting ✅
+  - Delete functionality with confirmation ✅
+- [x] Build memory creation form ✅
+  - Title and content fields ✅
+  - Tag management with add/remove ✅
+  - Source type selection ✅
+  - Importance slider (0-100%) ✅
+- [x] Add memory detail view ✅
+  - Full content display ✅
+  - Metadata visualization ✅
+  - Edit/delete capabilities ✅
+  - Navigation between views ✅
+- [x] Implement search interface ✅
+  - Text search functionality ✅
+  - Search results with similarity scores ✅
+  - Clear search to return to full list ✅
+
+**Success Criteria Achieved**:
+- Users can create, view, edit, and delete memories ✅
+- Search works with text search ✅
+- Memories properly categorized by source type ✅
+- UI displays all relevant metadata ✅
   - Status toggle UI
-- [ ] **Day 5**: Testing and refinement
+- [ ] Testing and refinement
   - Integration tests
   - Receipt verification
   - Performance baseline
 
-#### Task Group L: Time Awareness (Week 2)
-- [ ] **Calendar Integration**
-  - Add scheduling fields to task model
-  - Create calendar view endpoint (iCal format)
-  - Frontend calendar component
-- [ ] **Recurring Tasks**
-  - RRULE support for recurrence patterns
-  - Template system for habits
-  - Automatic instance generation
-- [ ] **Smart Scheduling**
-  - Peak performance window detection
-  - Energy-aware scheduling
-  - Conflict detection
-- [ ] **Time Tracking**
-  - Estimated vs actual duration
-  - Time investment analytics
-  - Productivity patterns
+#### Future Enhancements
 
-#### Task Group M: Game Mechanics (Week 3)
-- [ ] **Quest Classification**
-  - Classify tasks as quest types
-  - Difficulty rating system
-  - Reward calculation
-- [ ] **Achievement System**
-  - Pattern detection in task completion
-  - Achievement unlocking
-  - Capability grants
-- [ ] **Reputation Building**
-  - Multi-dimensional reputation model
-  - Task-based reputation gains
-  - Decay implementation
-- [ ] **Progress Visualization**
-  - XP and level tracking
-  - Progress bars and streaks
-  - Achievement gallery
+**Time Awareness**:
+- Calendar integration, recurring tasks, smart scheduling
 
-#### Task Group N: Collaboration (Week 4)
-- [ ] **Shared Tasks**
-  - Multi-assignee support
-  - Progress synchronization
-  - Completion consensus
-- [ ] **Trust Building Tasks**
-  - Paired challenge templates
-  - Trust impact calculation
-  - Reciprocity tracking
-- [ ] **Collective Goals**
-  - Break down group objectives
-  - Role-based task assignment
-  - Dependency management
-- [ ] **Coordination Tools**
-  - Find common availability
-  - Sync point scheduling
-  - Progress dashboards
+**Advanced Game Mechanics**:
+- Achievement system, reputation building, progress visualization
+
+**Collaboration Features**:
+- Shared tasks, trust building, collective goals
 
 **Success Criteria**:
 - Tasks serve as action layer for all features
@@ -231,27 +256,27 @@
 
 ---
 
-## Execution Order (UPDATED - With Task System)
+## Execution Order
 
-### Immediate Priority (This Week) ⭐ NEW PRIORITY
-1. **Task Group K** (Task System Foundation) - Action layer for everything
-2. **Task Group G** (Personas) - Guides task suggestions
-3. **Task Group L** (Consent Ledger) - Every task generates receipts
-4. **Task Group H** (Synthetic ICV) - Validation through task patterns
-5. Contextual presentation design - Tasks respect masks
+### ✅ COMPLETE
+1. **Backend Core** - Auth, Memory, Chat, Tasks all working
+2. **Task System** - Full CRUD with game mechanics
+3. **Production Deployment** - Docker, SSL, automated deployment ready
+4. **Memory UI** - Full CRUD interface with search
+5. **Persona System** - 4 modes with worldview adapters
+6. **Receipts Backend** - Database, service, and API endpoints
 
-### Next Sprint (Weeks 2-3)
-6. Trust network protocol design
-7. Natural clustering observation
-8. Worldview adapter completion (3+ contexts)
-9. Receipts and transparency system
-10. Vector similarity search for memories
+### 🔴 IMMEDIATE PRIORITIES
+1. **Receipt Integration** - Add generation to all endpoints
+2. **Receipt UI** - Build viewing components and page
+3. **Auth Providers** - Implement OAuth, API key authentication  
+4. **Testing & Quality** - Integration tests, CI/CD pipeline
 
-### Following Month
-11. Trust exchange implementation
-12. Agent communication protocols
-13. Reputation and trust scoring
-14. Progressive disclosure mechanisms
+### 🟡 NEXT PHASE
+1. **Time Awareness** - Calendar and scheduling
+2. **Advanced Game Mechanics** - Achievements and reputation
+3. **Trust Networks** - Progressive relationship building
+4. **Agent Integration** - Connect philosophical agents
 
 ### Ongoing Parallel
 - Natural emergence documentation
@@ -264,21 +289,28 @@
 ## Task Dependencies
 
 ```
-Audit (A) → Delete (B) → Consolidate (C) ✅
-                            ↓
-                    Frontend Auth (D) ✅
-                            ↓
-                    Memory CRUD (E) ✅
-                            ↓
-                    Task System (K) ← NEW FOUNDATION
-                    ↙        ↓        ↘
-            Personas (G)  Time (L)  Game Mechanics (M)
-                    ↓        ↓        ↓
-                    Collaboration (N)
-                            ↓
-                    Trust Networks → Collective Intelligence
-                    
-[Parallel: ICV Setup (H) → Trust Design (I) → Emergence Studies (J)]
+Backend Foundation ✅
+    ├── Auth (D) ✅
+    ├── Memory CRUD (E) ✅
+    ├── Chat System (F) ✅
+    └── Task System (K) ✅
+            ↓
+    UI/UX Unification 🔴 CURRENT
+    ├── Critical Fixes (H) ← IMMEDIATE
+    ├── Navigation Shell (I)
+    └── Progressive Enhancement (J)
+            ↓
+    Feature Integration
+    ├── Personas (G)
+    ├── Receipts/Transparency
+    └── Context Awareness
+            ↓
+    Advanced Features
+    ├── Trust Networks
+    ├── Collective Intelligence
+    └── ICV Validation
+
+[Parallel Research Track: Synthetic Validation → Trust Design → Emergence Studies]
 ```
 
 ---
@@ -328,18 +360,25 @@ These can be done immediately:
 
 Before moving to next phase, verify:
 
-### After Phase 0.5:
-- [ ] Zero startup warnings
-- [ ] Single auth pattern
-- [ ] No dev endpoints
+### After Phase 0.5: ✅ COMPLETE
+- [x] Zero startup warnings
+- [x] Single auth pattern
+- [x] No dev endpoints
 
-### After Phase 1:
+### After Phase 1: 
+#### Backend ✅ COMPLETE
 - [x] User can login/logout
 - [x] Chat works with auth
 - [x] Memory CRUD complete
-- [ ] Persona fully integrated
-- [ ] Worldview adapters active
-- [ ] ICV validation data collected
+- [x] Task system with XP
+- [x] Production deployment ready
+
+#### Frontend 🔄 IN PROGRESS
+- [x] Basic pages working
+- [ ] Unified navigation
+- [ ] Chat UX fixed
+- [ ] Mobile responsive
+- [ ] All features accessible
 
 ### Before Phase 2:
 - [ ] ICV validation data collected

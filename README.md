@@ -18,9 +18,11 @@ A world where your AI doesn't just assist you—it truly represents you. Where d
 
 **The Mnemosyne Protocol is building cognitive sovereignty infrastructure** - technology that preserves human agency in an age of AI-mediated reality.
 
-**Read the full vision**: [MNEMOSYNE_PRIMER.md](docs/MNEMOSYNE_PRIMER.md)
+**Read the full vision**: [INTEGRATED_VISION_2025.md](docs/INTEGRATED_VISION_2025.md)
 
 ## Quick Start
+
+### Development Setup
 
 ```bash
 # Clone and setup
@@ -41,24 +43,44 @@ docker compose up
 open http://localhost:3000
 ```
 
+### Production Deployment
+
+```bash
+# Configure production environment
+cp .env.prod .env.prod
+nano .env.prod  # Add your domain and API keys
+
+# Test configuration
+./test_production_config.sh
+
+# Deploy with SSL
+./deploy.sh deploy
+./deploy.sh ssl
+
+# Your app is now live at https://your-domain.com
+```
+
+See [DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) for complete production setup.
+
 ## Current Status
 
 The project implements **cognitive sovereignty** through proven technologies while researching advanced capabilities.
 
 ### Working Now
 - ✅ **Authentication System** - Secure, consolidated auth with JWT
-- ✅ **Memory CRUD** - Complete with embeddings (CREATE/LIST/GET/UPDATE/DELETE)
+- ✅ **Memory System** - Full CRUD with embeddings, search, and UI
 - ✅ **Vector Storage** - Qdrant integration for semantic search
-- ✅ **Chat System** - Authenticated conversations with persistence
-- ✅ **Infrastructure** - Docker, PostgreSQL, Redis, all operational
-- ✅ **Frontend** - React app with auth flow and API integration
+- ✅ **Chat System** - Conversations with streaming, history, and persona
+- ✅ **Task System** - Complete with toned-down gamification
+- ✅ **Persona System** - 4 modes with worldview adaptation
+- ✅ **UI Shell** - Persistent navigation with all features integrated
+- ✅ **Infrastructure** - Docker, PostgreSQL, Redis, Qdrant all operational
 
 ### In Active Development
-- 🔄 **Task System** - Time-aware action layer with gamification (NEW PRIORITY)
-- 🔄 **Persona System** - Adaptive AI personality with 4 modes (accelerated priority)
-- 🔄 **Worldview Adapters** - Contextual presentation system
-- 🔄 **Trust Networks** - Progressive disclosure protocols
-- 🔄 **ICV Validation** - Identity compression research with synthetic pilots
+- 🔄 **Receipts System** - Database storage for transparency audit trail
+- 🔄 **Auth Providers** - OAuth and API key authentication
+- 🔄 **Testing & Quality** - Integration tests and CI/CD pipeline
+- 🔄 **Trust Networks** - Progressive relationship building
 
 ### Research Track (Parallel)
 - 🔬 **Game Mechanics** - Task gamification and engagement patterns
@@ -68,12 +90,11 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - 🔬 **Joy Metrics** - Measuring system delight and user creativity
 
 ### Next Priorities
-- 🔴 **Task System Foundation** - Week 1: Basic CRUD with receipts
-- 🔴 **Time Awareness** - Week 2: Calendar and scheduling
-- 🔴 **Game Mechanics** - Week 3: Quests and achievements
-- 🔴 **Collaboration** - Week 4: Shared tasks for trust building
-- 🟡 **Complete Persona System** - Four modes with worldview adaptation
-- 🟢 **Trust Network Design** - Progressive disclosure mechanisms
+- 🔴 **Receipts Database** - Store interaction receipts for audit trail
+- 🔴 **Receipt UI** - View transparency logs and interactions
+- 🟡 **OAuth Provider** - Implement social login authentication
+- 🟡 **API Key Auth** - Service account authentication
+- 🟢 **Integration Tests** - Comprehensive test coverage
 
 See [IMMEDIATE_TASKS.md](docs/IMMEDIATE_TASKS.md) for detailed execution plan.
 

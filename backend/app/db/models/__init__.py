@@ -12,5 +12,6 @@ from app.db.models.user import User  # noqa
 from app.db.models.conversation import Conversation, Message  # noqa
 from app.db.models.memory import Memory, MemoryChunk  # noqa
 from app.db.models.agent import Agent, AgentLink, AgentLog, MemoryReflection  # noqa
-from app.db.models.task import Task, TaskLog  # noqa
+from app.db.models.task import Task, TaskLog, TaskStatus, TaskPriority, QuestType  # noqa
 from app.db.models.task_schedule import TaskSchedule  # noqa
+from app.db.models.receipt import Receipt, ReceiptType  # noqa

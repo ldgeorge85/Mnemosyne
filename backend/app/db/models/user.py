@@ -44,6 +44,7 @@ class User(BaseModel):
     api_keys = relationship("APIKey", back_populates="user", cascade="all, delete-orphan")
     memories = relationship("Memory", back_populates="user", cascade="all, delete-orphan")
     tasks = relationship("Task", back_populates="user", cascade="all, delete-orphan")
+    receipts = relationship("Receipt", back_populates="user", cascade="all, delete-orphan")
     
     def __repr__(self):
         """String representation of the user."""

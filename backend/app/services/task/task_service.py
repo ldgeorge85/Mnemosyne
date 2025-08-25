@@ -12,7 +12,7 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.repositories.task import TaskRepository
-from app.db.models.task import Task, TaskLog, TaskStatus, TaskPriority
+from app.db.models.task import Task, TaskLog, TaskStatus, TaskPriority, QuestType
 
 
 class TaskService:
@@ -45,7 +45,18 @@ class TaskService:
         tags: Optional[List[str]] = None,
         metadata: Optional[Dict[str, Any]] = None,
         parent_id: Optional[Union[UUID, str]] = None,
-        agent_id: Optional[Union[UUID, str]] = None
+        agent_id: Optional[Union[UUID, str]] = None,
+        # Game mechanics fields
+        estimated_duration_minutes: Optional[int] = None,
+        difficulty: int = 1,
+        quest_type: Optional[QuestType] = None,
+        value_impact: Optional[Dict[str, float]] = None,
+        skill_development: Optional[Dict[str, Any]] = None,
+        visibility_mask: str = 'private',
+        is_shared: bool = False,
+        assignees: Optional[List[UUID]] = None,
+        is_recurring: bool = False,
+        recurrence_rule: Optional[str] = None
     ) -> Task:
         """
         Create a new task.
@@ -75,7 +86,18 @@ class TaskService:
             "tags": tags or [],
             "metadata": metadata or {},
             "parent_id": parent_id,
-            "agent_id": agent_id
+            "agent_id": agent_id,
+            # Game mechanics fields
+            "estimated_duration_minutes": estimated_duration_minutes,
+            "difficulty": difficulty,
+            "quest_type": quest_type,
+            "value_impact": value_impact or {},
+            "skill_development": skill_development or {},
+            "visibility_mask": visibility_mask,
+            "is_shared": is_shared,
+            "assignees": assignees or [],
+            "is_recurring": is_recurring,
+            "recurrence_rule": recurrence_rule
         }
         
         task = await self.repository.create_task(task_data)

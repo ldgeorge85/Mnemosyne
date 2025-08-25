@@ -14,6 +14,7 @@ from app.core.config import settings
 from app.core.auth.manager import get_current_user, get_optional_user
 from app.core.auth.base import AuthUser
 from app.services.persona.base import get_persona, PersonaMode, PersonaContext
+from app.services.persona.manager import PersonaManager
 from app.db.session import get_async_db
 from app.db.repositories.conversation import ConversationRepository, MessageRepository
 from app.services.memory.context import MemoryContextService
@@ -113,8 +114,12 @@ async def chat(
     Chat endpoint connected to real LLM with persona support
     Requires authentication if AUTH_REQUIRED is True
     """
-    # Get persona and set context
-    persona = get_persona()
+    # Initialize PersonaManager
+    persona_manager = PersonaManager(db)
+    
+    # Initialize for user if authenticated
+    if user:
+        await persona_manager.initialize_for_user(str(user.user_id))
     
     # Determine persona mode
     if request.persona_mode:
@@ -123,22 +128,25 @@ async def chat(
         except ValueError:
             mode = PersonaMode.CONFIDANT
     else:
-        # Auto-detect mode from conversation context
-        context = {"messages": request.messages}
-        mode = persona.select_mode(context)
-    
-    # Set persona context
-    if user:
-        persona_context = PersonaContext(
-            user_id=str(user.user_id),
-            mode=mode,
-            trust_level=0.7  # Default trust level
+        # Auto-detect mode from last message
+        last_user_msg = ""
+        for msg in reversed(request.messages):
+            if msg.role == "user":
+                last_user_msg = msg.content
+                break
+        
+        mode = await persona_manager.analyze_context_for_mode(
+            last_user_msg,
+            [{"role": m.role, "content": m.content} for m in request.messages]
         )
-        persona.set_context(persona_context)
     
-    # Get system prompt and response modifiers from persona
-    system_prompt = persona.get_system_prompt(mode)
-    modifiers = persona.generate_response_modifiers()
+    # Switch to appropriate mode if needed
+    if persona_manager.persona.current_mode != mode:
+        await persona_manager.switch_mode(mode, "Context analysis")
+    
+    # Get enhanced system prompt with worldview adaptations
+    system_prompt = persona_manager.get_enhanced_prompt()
+    modifiers = persona_manager.get_response_parameters()
     
     # Retrieve relevant memory context if user is authenticated
     memory_context = ""
@@ -216,13 +224,16 @@ async def chat(
                         "metadata": {"model": request.model or settings.OPENAI_MODEL}
                     })
         
-        # Log interaction for transparency
-        receipt_id = persona.log_interaction({
-            "type": "chat",
-            "mode": mode.value,
-            "user": user.username if user else "anonymous",
-            "message_count": len(request.messages)
-        })
+        # Create interaction receipt for transparency
+        receipt_id = await persona_manager.create_interaction_receipt(
+            "chat",
+            {
+                "mode": mode.value,
+                "user": user.username if user else "anonymous",
+                "message_count": len(request.messages),
+                "model": request.model or settings.OPENAI_MODEL
+            }
+        )
         
         # Return in OpenAI format
         return ChatResponse(

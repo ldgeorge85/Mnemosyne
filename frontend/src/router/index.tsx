@@ -26,7 +26,7 @@ const ensureFutureFlags = () => {
 ensureFutureFlags();
 
 // Layout components
-// import MainLayout from '../components/layout/MainLayout';
+import AppShell from '../layouts/AppShell';
 import ProtectedRoute from '../components/auth/ProtectedRouteSimple';
 
 // Page components
@@ -34,6 +34,8 @@ import DashboardPage from '../pages/DashboardMinimal';
 import LoginPage from '../pages/Login';
 import RegisterPage from '../pages/Register';
 import ChatSimple from '../pages/ChatSimple';
+import TasksPage from '../pages/Tasks';
+import MemoriesPage from '../pages/Memories';
 
 
 /**
@@ -43,34 +45,23 @@ const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<LoginPage />} />
+        {/* Public routes (no AppShell) */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         
-        {/* Protected routes */}
-        <Route path="/dashboard" element={
+        {/* Protected routes with AppShell */}
+        <Route element={
           <ProtectedRoute>
-            <DashboardPage />
+            <AppShell />
           </ProtectedRoute>
-        } />
-        
-        {/* Temporary redirects for other routes */}
-        <Route path="/settings" element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/chat" element={
-          <ProtectedRoute>
-            <ChatSimple />
-          </ProtectedRoute>
-        } />
-        <Route path="/memories" element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        } />
+        }>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/chat" element={<ChatSimple />} />
+          <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/memories" element={<MemoriesPage />} />
+          <Route path="/settings" element={<DashboardPage />} />
+        </Route>
         
         {/* 404 route */}
         <Route path="*" element={<LoginPage />} />

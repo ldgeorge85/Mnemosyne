@@ -36,7 +36,7 @@ Execute a strategic reset focused on:
 ## Implementation
 
 ### Immediate Actions
-1. Created `.archive/` directory (gitignored) for historical docs
+1. Created archive directory for historical docs
 2. Moved assessment/, review/, and stale docs to archive
 3. Created INTEGRATED_VISION_2025.md as strategic guide (Protocol, not Collective)
 4. Created MNEMOSYNE_PRIMER.md as project introduction
@@ -48,7 +48,7 @@ mnemosyne/
 ├── README.md              # Updated with current reality
 ├── CLAUDE.md              # AI assistant instructions
 ├── ATTRIBUTION.md         # Credits and acknowledgments
-├── .archive/              # Historical documents (gitignored)
+├── archive/               # Historical documents
 ├── docs/
 │   ├── decisions/         # Architecture decisions
 │   ├── research/          # Research documentation
@@ -96,5 +96,5 @@ mnemosyne/
 ## References
 - [INTEGRATED_VISION_2025.md](../INTEGRATED_VISION_2025.md)
 - [MNEMOSYNE_PRIMER.md](../MNEMOSYNE_PRIMER.md)
-- Original assessments in `.archive/assessment/`
-- Historical reviews in `.archive/review/`
+- Original assessments in archive/assessment/
+- Historical reviews in archive/review/

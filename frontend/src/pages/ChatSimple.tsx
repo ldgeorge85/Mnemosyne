@@ -6,8 +6,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '../contexts/AuthContextSimple';
-import { useNavigate } from 'react-router-dom';
 
 interface Message {
   role: 'user' | 'assistant' | 'system';
@@ -16,8 +14,6 @@ interface Message {
 }
 
 const ChatSimple: React.FC = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -97,24 +93,13 @@ const ChatSimple: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Chat with Mnemosyne</h1>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-              Back to Dashboard
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <Card className="h-[600px] flex flex-col">
-          <CardHeader>
+    <div className="h-full flex flex-col bg-background">
+      <div className="flex-1 container mx-auto px-4 py-8 max-w-4xl min-h-0">
+        <Card className="h-full flex flex-col">
+          <CardHeader className="flex-shrink-0">
             <CardTitle>Conversation</CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
+          <CardContent className="flex-1 flex flex-col min-h-0">
             <div className="flex-1 overflow-y-auto mb-4 space-y-4">
               {messages.map((message, index) => (
                 <div
@@ -149,26 +134,27 @@ const ChatSimple: React.FC = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="flex gap-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
-                disabled={isLoading}
-                className="flex-1"
-              />
-              <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
-                Send
-              </Button>
+            <div className="border-t pt-4 flex flex-col gap-2 flex-shrink-0">
+              <div className="flex gap-2">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type your message..."
+                  disabled={isLoading}
+                  className="flex-1"
+                />
+                <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
+                  Send
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                💡 Your conversations are private and encrypted
+              </p>
             </div>
           </CardContent>
         </Card>
-
-        <div className="mt-4 text-sm text-muted-foreground text-center">
-          <p>💡 Tip: Your conversations are private and encrypted. No data leaves your instance.</p>
-        </div>
-      </main>
+      </div>
     </div>
   );
 };

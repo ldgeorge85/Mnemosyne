@@ -23,6 +23,16 @@ export enum TaskPriority {
   URGENT = 'urgent'
 }
 
+export enum QuestType {
+  TUTORIAL = 'tutorial',
+  DAILY = 'daily',
+  SOLO = 'solo',
+  PARTY = 'party',
+  RAID = 'raid',
+  EPIC = 'epic',
+  CHALLENGE = 'challenge'
+}
+
 /**
  * Task interfaces
  */
@@ -56,6 +66,14 @@ export interface Task {
   };
   estimated_duration?: number;
   actual_duration?: number;
+  // Game mechanics
+  quest_type?: QuestType;
+  difficulty?: number;
+  experience_points?: number;
+  reputation_impact?: Record<string, number>;
+  value_impact?: Record<string, number>;
+  skill_development?: Record<string, number>;
+  started_at?: string;
 }
 
 export interface TaskCreate {
@@ -68,6 +86,9 @@ export interface TaskCreate {
   tags?: string[];
   metadata?: Record<string, any>;
   estimated_duration?: number;
+  // Game mechanics
+  quest_type?: QuestType;
+  difficulty?: number;
 }
 
 export interface TaskUpdate {
@@ -363,6 +384,29 @@ export const getTaskSuggestions = async (includeContext: boolean = true) => {
   return get<TaskSuggestion[]>(`/tasks/suggestions?${queryParams.toString()}`);
 };
 
+/**
+ * Start a task (mark as in-progress)
+ */
+export const startTask = async (taskId: string) => {
+  return post<Task>(`/tasks/${taskId}/start`, {});
+};
+
+/**
+ * Complete a task with XP calculation
+ */
+export interface TaskCompleteResponse {
+  task: Task;
+  experience_gained: number;
+  reputation_changes: Record<string, number>;
+  achievements_unlocked?: string[];
+}
+
+export const completeTask = async (taskId: string, actual_duration?: number) => {
+  return post<TaskCompleteResponse>(`/tasks/${taskId}/complete`, { 
+    actual_duration 
+  });
+};
+
 export default {
   listTasks,
   getTask,
@@ -379,4 +423,6 @@ export default {
   getUpcomingReminders,
   getDailySummary,
   getTaskSuggestions,
+  startTask,
+  completeTask,
 };

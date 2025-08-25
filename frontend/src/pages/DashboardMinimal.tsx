@@ -1,36 +1,27 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '../contexts/AuthContextSimple';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Mnemosyne</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
-              Welcome, {user?.username || 'User'}
-            </span>
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="h-full overflow-auto bg-background">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Tasks</CardTitle>
+              <CardDescription>Quests and achievements</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full" onClick={() => navigate('/tasks')}>
+                View Tasks
+              </Button>
+            </CardContent>
+          </Card>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
               <CardTitle>Memories</CardTitle>
@@ -76,7 +67,7 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

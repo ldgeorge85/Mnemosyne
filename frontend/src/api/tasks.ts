@@ -165,7 +165,8 @@ export const listTasks = async (params?: {
   if (params?.due_date_end) queryParams.append('due_date_end', params.due_date_end);
   
   const url = `/tasks/${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
-  return get<TaskListResponse>(url);
+  const response = await get<TaskListResponse>(url);
+  return response.data;
 };
 
 /**

@@ -23,6 +23,7 @@ from app.core.exceptions import (
 )
 from app.core.middleware import RequestIDMiddleware
 from app.core.auth.manager import get_auth_manager
+from app.middleware.receipt_enforcement import ReceiptEnforcementMiddleware
 
 # Configure logging
 configure_logging()
@@ -40,6 +41,10 @@ app = FastAPI(
 # Add middleware in order (reverse order of execution)
 # Request ID middleware (executes first)
 app.add_middleware(RequestIDMiddleware)
+
+# Receipt enforcement middleware (sovereignty safeguard)
+# Start in non-strict mode, can be made strict once all endpoints have receipts
+app.add_middleware(ReceiptEnforcementMiddleware, strict_mode=False)
 
 # Add CORS middleware
 app.add_middleware(

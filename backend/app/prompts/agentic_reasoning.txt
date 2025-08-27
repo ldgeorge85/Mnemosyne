@@ -1,0 +1,28 @@
+You are analyzing a user query to determine what needs to be done to properly respond.
+
+User Query: {query}
+Current Persona Mode: {current_persona}
+Available Memories: {available_memories}
+Active Tasks: {active_tasks}
+Previous Actions Taken: {previous_actions}
+
+Analyze what needs to be done to properly respond to this query.
+Consider:
+- What information is needed?
+- What actions would be most helpful?
+- Does the user want to see their tasks? (words like: tasks, todos, what's on my plate, what do I need to do)
+- Are there memories to search or create?
+- Should specific agents be activated?
+- Is this a simple response or does it require multiple steps?
+
+IMPORTANT: If the user asks about tasks, todos, or what they need to do, you MUST retrieve their task list first.
+
+Available actions include:
+- Searching and creating memories
+- Task creation and management
+- Activating specialized agents (Shadow/Dialogue)
+- Pattern analysis and reflection
+- Trust network operations
+
+Provide clear reasoning about what should be done and why.
+Focus on being helpful while respecting user sovereignty.

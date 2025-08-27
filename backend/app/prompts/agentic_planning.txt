@@ -1,0 +1,40 @@
+Based on the reasoning provided, create a specific action plan.
+
+Reasoning: {reasoning}
+
+Available Actions: {available_actions}
+
+Context Summary: {context}
+
+Create a specific action plan as a JSON array. Each action should have:
+- action: the action name from available actions
+- parameters: any parameters needed
+- reasoning: why this action is needed
+- confidence: confidence score 0-1
+
+Return ONLY a valid JSON array, no other text. 
+
+Common patterns:
+- When user asks about their tasks: use LIST_TASKS
+- When user wants to remember something: use CREATE_MEMORY
+- When user wants to create a task: use CREATE_TASK
+- When searching for past information: use SEARCH_MEMORIES
+
+Example format:
+[
+  {{
+    "action": "LIST_TASKS",
+    "parameters": {{"limit": 10}},
+    "reasoning": "User asking about their current tasks",
+    "confidence": 0.95
+  }},
+  {{
+    "action": "SUGGEST",
+    "parameters": {{"type": "next_action"}},
+    "reasoning": "Provide proactive guidance",
+    "confidence": 0.7
+  }}
+]
+
+If no specific actions are needed, return:
+[{{"action": "DONE", "parameters": {{}}, "reasoning": "Simple response sufficient", "confidence": 1.0}}]

@@ -19,6 +19,8 @@ from app.core.auth.base import AuthUser
 from app.core.config import settings
 from app.db.session import async_session_maker
 from app.db.repositories.memory import MemoryRepository, MemoryChunkRepository
+from app.services.receipt_service import ReceiptService
+from app.db.models.receipt import ReceiptType
 
 logger = logging.getLogger(__name__)
 
@@ -131,20 +133,52 @@ async def create_memory(
     memory_repo = MemoryRepository(db)
     memory = await memory_repo.create_memory(memory_dict)
     
+    # Extract memory attributes while still in session context
+    memory_id = str(memory.id)
+    user_id = str(memory.user_id)
+    memory_title = memory.title
+    memory_tags = memory.tags if memory.tags else []
+    memory_importance = memory.importance
+    memory_source_type = memory.source_type
+    
     # Store embedding in Qdrant
     qdrant_store = get_qdrant_store()
     await qdrant_store.add_memory(
-        memory_id=str(memory.id),
+        memory_id=memory_id,
         embedding=embedding_result["embedding"],
         metadata={
-            "user_id": str(memory.user_id),
-            "title": memory.title,
-            "tags": memory.tags,
-            "importance": memory.importance,
-            "source_type": memory.source_type,
+            "user_id": user_id,
+            "title": memory_title,
+            "tags": memory_tags,
+            "importance": memory_importance,
+            "source_type": memory_source_type,
             "embedding_model": embedding_result["model"],
         }
     )
+    
+    # Create receipt for transparency
+    receipt_service = ReceiptService(db)
+    await receipt_service.create_receipt(
+        user_id=current_user.user_id,
+        entity_type="memory",
+        entity_id=memory_id,
+        action="Created new memory",
+        receipt_type=ReceiptType.MEMORY_CREATED,
+        request_data={
+            "title": memory_data.title,
+            "tags": memory_data.tags,
+            "source_type": memory_data.source_type,
+            "importance": memory_data.importance
+        },
+        response_data={
+            "memory_id": memory_id,
+            "embedding_model": embedding_result["model"],
+            "embedding_dimension": embedding_result["dimension"]
+        }
+    )
+    
+    # Refresh the memory object within session to ensure all attributes are loaded
+    await db.refresh(memory)
     
     return memory
 
@@ -285,7 +319,32 @@ async def update_memory(
             detail="You don't have permission to update this memory"
         )
     
-    updated_memory = await memory_repo.update_memory(memory_id, memory_data.dict(exclude_unset=True))
+    # Store the update data for the receipt
+    update_data = memory_data.dict(exclude_unset=True)
+    
+    updated_memory = await memory_repo.update_memory(memory_id, update_data)
+    
+    # Extract the memory ID while in session
+    updated_memory_id = str(updated_memory.id)
+    
+    # Create receipt for transparency
+    receipt_service = ReceiptService(db)
+    await receipt_service.create_receipt(
+        user_id=current_user.user_id,
+        entity_type="memory",
+        entity_id=updated_memory_id,
+        action="Updated memory",
+        receipt_type=ReceiptType.MEMORY_UPDATED,
+        request_data=update_data,
+        response_data={
+            "memory_id": updated_memory_id,
+            "fields_updated": list(update_data.keys())
+        }
+    )
+    
+    # Refresh the memory object within session to ensure all attributes are loaded
+    await db.refresh(updated_memory)
+    
     return updated_memory
 
 
@@ -323,6 +382,24 @@ async def delete_memory(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to delete this memory"
         )
+    
+    # Create receipt before deletion
+    receipt_service = ReceiptService(db)
+    await receipt_service.create_receipt(
+        user_id=current_user.user_id,
+        entity_type="memory",
+        entity_id=memory.id,
+        action=f"{'Permanently deleted' if permanent else 'Soft deleted'} memory",
+        receipt_type=ReceiptType.MEMORY_DELETED,
+        request_data={
+            "permanent": permanent,
+            "memory_title": memory.title
+        },
+        response_data={
+            "memory_id": str(memory_id),
+            "deletion_type": "permanent" if permanent else "soft"
+        }
+    )
     
     if permanent:
         await memory_repo.delete_memory(memory_id)

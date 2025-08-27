@@ -136,8 +136,16 @@ class Settings(BaseSettings):
     OPENAI_ORG_ID: Optional[str] = None
     OPENAI_BASE_URL: Optional[str] = None
     OPENAI_MODEL: str = "gpt-4"
-    OPENAI_MAX_TOKENS: int = 2048
+    OPENAI_MAX_TOKENS: Optional[int] = None  # None = no limit, let model decide response length
+    OPENAI_MAX_TOKENS_REASONING: int = 1000  # Max tokens for reasoning/decision prompts
     OPENAI_TEMPERATURE: float = 0.7
+    
+    # LLM Configuration Control
+    LLM_TEMPERATURE_MODE: str = "variable"  # "static" or "variable"
+    LLM_STATIC_TEMPERATURE: float = 0.7  # Used when mode is "static"
+    LLM_SYSTEM_PROMPT_MODE: str = "separate"  # "separate" or "embedded"
+    LLM_SUPPORTS_REASONING_LEVEL: bool = False  # True for models with reasoning channels
+    LLM_MODEL_PROFILE: str = "standard"  # Profile: standard, reasoning_channel, embedded_system, deepseek
     
     # Embedding Settings (uses OpenAI-compatible endpoint by default)
     EMBEDDING_API_ENDPOINT: Optional[str] = None  # Override if different from OPENAI_BASE_URL/embeddings

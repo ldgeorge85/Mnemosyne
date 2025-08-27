@@ -20,6 +20,7 @@ from app.services.persona.worldview import (
     PhilosophicalTradition,
     get_worldview_adapter
 )
+from app.services.persona.mirror import MirrorPersona, create_mirror_persona, PatternDimension
 from app.db.models.user import User
 from app.db.models.memory import Memory
 
@@ -41,10 +42,12 @@ class PersonaManager:
         """
         self.db = db
         self.persona = get_persona()
+        self.mirror_persona = create_mirror_persona()  # Separate Mirror instance
         self.worldview_adapter = get_worldview_adapter()
         self._mode_history: List[Dict[str, Any]] = []
         self._current_user_id: Optional[str] = None
         self._user_profile: Optional[WorldviewProfile] = None
+        self._mirror_mode_active = False
     
     async def initialize_for_user(self, user_id: str) -> None:
         """
@@ -55,9 +58,9 @@ class PersonaManager:
         """
         self._current_user_id = user_id
         
-        # Load user preferences
+        # Load user preferences (if available)
         user = await self.db.get(User, user_id)
-        if user and user.preferences:
+        if user and hasattr(user, 'preferences') and user.preferences:
             self._user_profile = self._parse_user_preferences(user.preferences)
             self.worldview_adapter.set_profile(self._user_profile)
         
@@ -155,10 +158,17 @@ class PersonaManager:
             "learning": False,
             "conflict": False,
             "emotional": False,
+            "reflection": False,
         }
         
         # Analyze message for mode signals
         message_lower = message.lower()
+        
+        # Mirror/Reflection signals
+        reflection_keywords = ["pattern", "observe", "reflect", "mirror", "notice",
+                             "tendency", "behavior", "habit", "recurring", "spectrum"]
+        if any(keyword in message_lower for keyword in reflection_keywords):
+            context_signals["reflection"] = True
         
         # Crisis/Guardian signals
         crisis_keywords = ["help", "emergency", "urgent", "danger", "scared", 
@@ -187,6 +197,8 @@ class PersonaManager:
         # Determine mode based on signals
         if context_signals["crisis"]:
             return PersonaMode.GUARDIAN
+        elif context_signals["reflection"]:
+            return PersonaMode.MIRROR
         elif context_signals["conflict"]:
             return PersonaMode.MEDIATOR
         elif context_signals["learning"]:
@@ -234,6 +246,125 @@ class PersonaManager:
             "greeting": self._get_mode_transition_message(old_mode, new_mode)
         }
     
+    async def _select_mode_fallback(
+        self, 
+        query: str, 
+        context: Dict[str, Any]
+    ) -> PersonaMode:
+        """
+        Fallback mode selection using keywords.
+        
+        Args:
+            query: User's query text
+            context: Current conversation context
+            
+        Returns:
+            Selected PersonaMode
+        """
+        query_lower = query.lower()
+        
+        # Guardian mode for safety/protection
+        if any(word in query_lower for word in ["help", "worried", "scared", "danger", "protect"]):
+            return PersonaMode.GUARDIAN
+            
+        # Mentor mode for learning/growth
+        if any(word in query_lower for word in ["learn", "teach", "how to", "understand", "skill"]):
+            return PersonaMode.MENTOR
+            
+        # Mediator mode for conflict
+        if any(word in query_lower for word in ["argue", "conflict", "disagree", "partner", "relationship"]):
+            return PersonaMode.MEDIATOR
+            
+        # Mirror mode for reflection
+        if any(word in query_lower for word in ["reflect", "think", "analyze", "pattern"]):
+            return PersonaMode.MIRROR
+            
+        # Default to confidant for emotional support
+        return PersonaMode.CONFIDANT
+    
+    async def select_mode_llm(
+        self, 
+        query: str, 
+        context: Dict[str, Any]
+    ) -> PersonaMode:
+        """
+        Select persona mode using LLM reasoning instead of keywords.
+        
+        Args:
+            query: User's query
+            context: Current context
+            
+        Returns:
+            Selected PersonaMode
+        """
+        # Import here to avoid circular dependency
+        from app.services.llm.service import LLMService
+        from app.core.config import settings
+        
+        llm_service = LLMService()
+        
+        # Load persona selection prompt
+        import os
+        prompt_path = os.path.join(
+            os.path.dirname(__file__),
+            "..", "..", "prompts", "agentic_persona_selection.txt"
+        )
+        
+        try:
+            with open(prompt_path, "r") as f:
+                prompt_template = f.read()
+        except FileNotFoundError:
+            logger.warning(f"Persona selection prompt not found at {prompt_path}, using fallback")
+            # Fallback to simple keyword detection
+            return await self._select_mode_fallback(query, context)
+        
+        # Build context for LLM
+        mood_indicators = context.get("mood_indicators", {})
+        recent_context = {
+            "memories_count": len(context.get("memories", [])),
+            "recent_modes": [h["to_mode"] for h in self._mode_history[-5:]],
+            "trust_level": self.persona.context.trust_level if self.persona.context else 0.5
+        }
+        
+        prompt = prompt_template.format(
+            query=query,
+            current_mode=self.persona.current_mode.value if self.persona.current_mode else "confidant",
+            context=json.dumps(recent_context),
+            mood_indicators=json.dumps(mood_indicators)
+        )
+        
+        try:
+            # Get LLM response (limited tokens for efficiency)
+            response = await llm_service.complete(
+                prompt=prompt,
+                system="You are a persona mode selector for the Mnemosyne Protocol.",
+                max_tokens=settings.OPENAI_MAX_TOKENS_REASONING
+            )
+            
+            # Parse JSON response
+            result = json.loads(response.get("content", "{}"))
+            selected_mode = result.get("selected_mode", "confidant").lower()
+            confidence = result.get("confidence", 0.5)
+            reasoning = result.get("reasoning", "")
+            
+            logger.info(f"LLM selected {selected_mode} mode with {confidence:.2f} confidence: {reasoning}")
+            
+            # Convert to PersonaMode enum
+            mode_map = {
+                "confidant": PersonaMode.CONFIDANT,
+                "mentor": PersonaMode.MENTOR,
+                "mediator": PersonaMode.MEDIATOR,
+                "guardian": PersonaMode.GUARDIAN,
+                "mirror": PersonaMode.MIRROR
+            }
+            
+            return mode_map.get(selected_mode, PersonaMode.CONFIDANT)
+            
+        except Exception as e:
+            logger.error(f"LLM persona selection failed: {e}, falling back to keyword detection")
+            # Fallback to keyword-based selection
+            return await self.select_mode(query, context)
+    
     def _get_mode_transition_message(self, 
                                     old_mode: Optional[PersonaMode], 
                                     new_mode: PersonaMode) -> str:
@@ -252,9 +383,30 @@ class PersonaManager:
             PersonaMode.MENTOR: "Let me help guide you through this.",
             PersonaMode.MEDIATOR: "Let's work through this together with balance and fairness.",
             PersonaMode.GUARDIAN: "I'm here to help keep you safe.",
+            PersonaMode.MIRROR: "I'll observe and reflect your patterns without judgment.",
         }
         
         return transitions.get(new_mode, "I'm here for you.")
+    
+    def get_llm_config(self, model_profile: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get LLM configuration for current persona mode.
+        
+        Args:
+            model_profile: Optional model profile (standard, reasoning_channel, etc.)
+            
+        Returns:
+            Dictionary of LLM parameters
+        """
+        from app.core.persona_config import get_llm_config_for_persona
+        
+        if not self.persona.current_mode:
+            return {"temperature": 0.7}  # Default
+            
+        return get_llm_config_for_persona(
+            self.persona.current_mode.value,
+            model_profile
+        )
     
     def get_enhanced_prompt(self, base_message: str = None) -> str:
         """
@@ -272,6 +424,11 @@ class PersonaManager:
         # Apply worldview adaptations
         if self._user_profile:
             system_prompt = self.worldview_adapter.adapt_prompt(system_prompt)
+        
+        # Check if we need reasoning level prefix
+        llm_config = self.get_llm_config()
+        if llm_config.get("system_prompt_prefix"):
+            system_prompt = llm_config["system_prompt_prefix"] + system_prompt
         
         # Add current context
         if self.persona.context:
@@ -368,3 +525,54 @@ class PersonaManager:
             }
         
         return state
+    
+    # Mirror mode specific methods
+    async def observe_user_pattern(self, 
+                                  user_id: str,
+                                  interaction: Dict[str, Any]) -> None:
+        """
+        Observe user patterns in Mirror mode.
+        
+        Args:
+            user_id: User to observe
+            interaction: Interaction data
+        """
+        if self._mirror_mode_active or self.persona.current_mode == PersonaMode.MIRROR:
+            # Observe patterns
+            patterns = self.mirror_persona.observe_interaction(interaction)
+            
+            # Update observed patterns
+            for dimension, value in patterns.items():
+                self.mirror_persona.update_patterns(dimension, value)
+            
+            # Log observation for transparency
+            receipt = self.mirror_persona.generate_observation_receipt(user_id)
+            logger.info(f"Pattern observation receipt: {receipt}")
+    
+    def get_mirror_reflections(self, user_id: str) -> List[str]:
+        """
+        Get neutral reflections about observed patterns.
+        
+        Args:
+            user_id: User whose patterns to reflect
+            
+        Returns:
+            List of neutral observations
+        """
+        if self._mirror_mode_active or self.persona.current_mode == PersonaMode.MIRROR:
+            return self.mirror_persona.reflect_patterns(user_id)
+        return []
+    
+    def get_mirror_prompt(self) -> str:
+        """
+        Get the Mirror mode system prompt.
+        
+        Returns:
+            Mirror mode prompt
+        """
+        return self.mirror_persona.get_mirror_prompt()
+    
+    def reset_mirror_observations(self):
+        """Reset all Mirror mode observations."""
+        self.mirror_persona.reset_observations()
+        logger.info("Mirror mode observations reset")

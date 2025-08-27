@@ -211,6 +211,48 @@ LLMService
 - **Streaming**: Server-sent events for chat
 - **Embeddings**: 1024-dimensional vectors
 - **Fallback**: Local models if API fails
+- **Token Management**: 64k context window support
+- **Flexible Configuration**: Per-persona temperatures
+
+## Agentic Flow Architecture (Phase 1.A Complete)
+
+### ReAct Pattern Implementation
+The system uses a ReAct (Reasoning + Acting) pattern for intelligent query processing:
+
+```python
+# Flow Controller Pattern
+async def execute_flow(query, context):
+    while iteration < max_iterations:
+        # 1. Reason about the query
+        reasoning = await reason_about_query(query, context)
+        
+        # 2. Plan multiple actions
+        actions = await plan_actions(reasoning, context)
+        
+        # 3. Execute in parallel
+        results = await asyncio.gather(*[
+            execute_action(action) for action in actions
+        ])
+        
+        # 4. Check if more needed
+        if not await needs_more_info(results):
+            break
+```
+
+### Action System
+- **20+ Available Actions**: LIST_TASKS, SEARCH_MEMORIES, CREATE_TASK, etc.
+- **Parallel Execution**: asyncio.gather() for efficiency
+- **Action Receipts**: Every action generates transparency receipt
+- **Extensible Design**: Easy to add new action types
+
+### SSE Streaming Events
+```
+event: status - Processing updates
+event: reasoning - Reasoning explanation
+event: content - Actual response
+event: suggestions - Proactive suggestions
+event: done - Completion signal
+```
 
 ## Configuration Management
 

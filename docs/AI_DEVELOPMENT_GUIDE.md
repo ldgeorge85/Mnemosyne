@@ -1,5 +1,6 @@
 # AI-Assisted Development Guide for Mnemosyne
 *How to effectively use AI coding assistants on this project*
+*Last Updated: August 27, 2025*
 
 ## Core Principles
 
@@ -70,34 +71,35 @@ No mocks, real implementation only."
 
 ## Common Tasks & AI Context
 
-### Task: Auth System Cleanup
-**Context**: "Multiple auth patterns exist. Consolidate to AuthManager only."
+### Task: Shadow Agent Integration (Phase 1.B)
+**Context**: "Agents exist but need wiring to agentic flow."
 **Files**: 
-- `backend/app/core/auth/manager.py` (keep)
-- `backend/app/api/v1/endpoints/simple_auth.py` (remove)
-- `backend/app/main.py` (update to use AuthManager)
+- `backend/app/services/agentic/executors.py` (add agent activation)
+- `shadow/agents/engineer.py` (existing agent)
+- `shadow/agents/librarian.py` (existing agent)
+- `shadow/agents/priest.py` (existing agent)
 
-### Task: Memory CRUD Completion
-**Context**: "Memory model exists but CRUD incomplete."
+### Task: CREATE_MEMORY Action Wiring
+**Context**: "Action stub exists, needs executor implementation."
 **Files**:
-- `backend/app/models/memory.py` (model)
-- `backend/app/api/v1/endpoints/memories.py` (endpoints)
-- `backend/app/services/memory_service.py` (business logic)
-**Requirements**: Include vector embeddings, metadata extraction
+- `backend/app/services/agentic/executors.py` (implement _create_memory)
+- `backend/app/services/memory/memory_service.py` (existing service)
+**Requirements**: Create real memories with embeddings
 
-### Task: Frontend Auth Integration
-**Context**: "Frontend uses old auth. Update to new `/api/v1/auth/*` endpoints."
+### Task: Multi-Agent Collaboration
+**Context**: "Test agents working together on complex queries."
 **Files**:
-- `frontend/src/contexts/AuthContext.tsx` (update)
-- `frontend/src/api/auth.ts` (rewrite)
-- `frontend/src/components/Login.tsx` (update)
+- `backend/app/services/agentic/flow_controller.py` (orchestration)
+- `backend/app/services/agentic/actions.py` (action definitions)
+**Requirements**: Agents should debate and reach consensus
 
-### Task: Persona Implementation
-**Context**: "Integrate Numinous Confidant persona into chat."
+### Task: Receipt UI Components ✅ COMPLETE
+**Context**: "Receipt UI viewer is complete and working."
 **Files**:
-- `backend/app/services/persona/` (create)
-- `backend/app/services/chat_service.py` (integrate)
-**Requirements**: Use prompts from `docs/spec/PERSONA_WORLDVIEW.md`
+- `frontend/src/pages/ReceiptsSimple.tsx` (complete)
+- `frontend/src/api/receipts.ts` (API client complete)
+- `frontend/src/pages/Receipts.tsx` (working)
+**Status**: Receipt viewer with filtering working
 
 ### Task: ICV Research Setup
 **Context**: "Begin collecting data for Identity Compression validation."

@@ -33,9 +33,10 @@ import ProtectedRoute from '../components/auth/ProtectedRouteSimple';
 import DashboardPage from '../pages/DashboardMinimal';
 import LoginPage from '../pages/Login';
 import RegisterPage from '../pages/Register';
-import ChatSimple from '../pages/ChatSimple';
+import ChatEnhanced from '../pages/ChatEnhanced';
 import TasksPage from '../pages/Tasks';
 import MemoriesPage from '../pages/Memories';
+import ReceiptsPage from '../pages/ReceiptsSimple';
 
 
 /**
@@ -55,11 +56,12 @@ const AppRouter: React.FC = () => {
             <AppShell />
           </ProtectedRoute>
         }>
-          <Route path="/" element={<DashboardPage />} />
+          <Route path="/" element={<ChatEnhanced />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/chat" element={<ChatSimple />} />
+          <Route path="/chat" element={<ChatEnhanced />} />
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/memories" element={<MemoriesPage />} />
+          <Route path="/receipts" element={<ReceiptsPage />} />
           <Route path="/settings" element={<DashboardPage />} />
         </Route>
         

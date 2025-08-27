@@ -12,7 +12,7 @@ import {
   createMemory, 
   updateMemory 
 } from '../api/memories';
-import useAuthStore from '../stores/authStore';
+import { useAuth } from '../contexts/AuthContextSimple';
 
 interface MemoryFormProps {
   memory?: Memory | null;
@@ -25,7 +25,7 @@ const MemoryForm: React.FC<MemoryFormProps> = ({
   onSuccess, 
   onCancel 
 }) => {
-  const { user } = useAuthStore();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   

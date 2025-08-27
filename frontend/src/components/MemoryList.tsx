@@ -52,18 +52,42 @@ const MemoryList: React.FC<MemoryListProps> = ({
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const LIMIT = 20;
 
-  const fetchMemories = async () => {
+  const fetchMemories = async (loadMore = false) => {
     try {
-      setLoading(true);
-      const response = await listMemories({ limit: 50 });
+      if (loadMore) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+        setSearchQuery('');
+      }
+      const response = await listMemories({ 
+        limit: LIMIT, 
+        offset: loadMore ? offset : 0 
+      });
       if (response.data) {
-        setMemories(response.data);
+        if (loadMore) {
+          setMemories(prev => [...prev, ...response.data]);
+          setOffset(prev => prev + LIMIT);
+        } else {
+          setMemories(response.data);
+          setOffset(LIMIT);
+        }
+        setHasMore(response.data.length === LIMIT);
       }
     } catch (error) {
       console.error('Failed to fetch memories:', error);
+      if (!loadMore) {
+        setMemories([]);
+      }
+      setHasMore(false);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -75,12 +99,16 @@ const MemoryList: React.FC<MemoryListProps> = ({
 
     try {
       setSearchLoading(true);
+      setHasMore(false); // Disable pagination for search results
       const response = await searchMemories({ 
         query: searchQuery,
         limit: 50 
       });
-      if (response.data) {
-        setMemories(response.data);
+      // Backend returns {query, results, total}
+      if (response.results) {
+        setMemories(response.results);
+      } else if (Array.isArray(response)) {
+        setMemories(response);
       }
     } catch (error) {
       console.error('Search failed:', error);
@@ -119,21 +147,78 @@ const MemoryList: React.FC<MemoryListProps> = ({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Brain className="h-6 w-6" />
+          <h2 className="text-3xl font-bold flex items-center gap-2">
+            <Brain className="h-7 w-7" />
             Memories
           </h2>
-          <p className="text-muted-foreground">
-            {memories.length} memories stored
+          <p className="text-muted-foreground mt-1">
+            Your knowledge base and experiences
           </p>
         </div>
         <Button onClick={onCreateClick}>
           <Plus className="h-4 w-4 mr-2" />
           New Memory
         </Button>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Total Memories</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{memories.length}</div>
+            <p className="text-xs text-muted-foreground">Stored entries</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Tags Used</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {Array.from(new Set(memories.flatMap(m => m.tags || []))).length}
+            </div>
+            <p className="text-xs text-muted-foreground">Unique tags</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Avg Importance</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {memories.length > 0 
+                ? Math.round(memories.reduce((acc, m) => acc + (m.importance || 0.5), 0) / memories.length * 100)
+                : 0}%
+            </div>
+            <p className="text-xs text-muted-foreground">Average score</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">This Week</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {memories.filter(m => {
+                const createdDate = new Date(m.created_at);
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return createdDate > weekAgo;
+              }).length}
+            </div>
+            <p className="text-xs text-muted-foreground">Recent memories</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Search Bar */}
@@ -149,6 +234,7 @@ const MemoryList: React.FC<MemoryListProps> = ({
           />
         </div>
         <Button 
+          variant="secondary"
           onClick={handleSearch}
           disabled={searchLoading}
         >
@@ -167,13 +253,14 @@ const MemoryList: React.FC<MemoryListProps> = ({
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
-          {memories.map(memory => (
-            <Card 
-              key={memory.id} 
-              className="hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() => onMemoryClick?.(memory)}
-            >
+        <>
+          <div className="space-y-3">
+            {memories.map(memory => (
+              <Card 
+                key={memory.id} 
+                className="hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => onMemoryClick?.(memory)}
+              >
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -261,7 +348,19 @@ const MemoryList: React.FC<MemoryListProps> = ({
               </CardContent>
             </Card>
           ))}
-        </div>
+          </div>
+          {hasMore && !searchQuery && (
+            <div className="flex justify-center mt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => fetchMemories(true)}
+                disabled={loadingMore}
+              >
+                {loadingMore ? 'Loading...' : 'Load More'}
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

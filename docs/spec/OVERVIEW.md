@@ -68,24 +68,33 @@ Your own AI assistant that:
 
 ### What Makes This Different
 
-1. **Dual-Track Architecture**
+1. **Agentic Intelligence (Phase 1.A - COMPLETE)**
+   - ✅ LLM-driven reasoning replaces keyword matching
+   - ✅ Parallel action execution using ReAct patterns
+   - ✅ Proactive suggestions that respect user sovereignty
+   - ✅ Task queries working with LIST_TASKS action
+   - ✅ Every decision transparent and overridable
+   - ✅ Reasoning recorded in receipts for trust
+   - 🔴 Multi-agent orchestration (Phase 1.B - Next)
+
+2. **Dual-Track Architecture**
    - Production features use only proven technology
    - Experimental features clearly labeled and sandboxed
    - Scientific validation before production deployment
 
-2. **Standards-First Design**
+3. **Standards-First Design**
    - W3C DIDs for decentralized identity
    - OAuth 2.0/OIDC for authentication
    - MLS for secure messaging
    - PROV for data provenance
 
-3. **Privacy by Design**
+4. **Privacy by Design**
    - Formal differential privacy (Dwork et al.)
    - Private Set Intersection for matching
    - Zero-knowledge proofs for verification
    - Local-first architecture
 
-4. **Trust Calibration**
+5. **Trust Calibration**
    - Lee & See framework for appropriate reliance
    - Model Cards for transparency
    - Provenance chains for all data

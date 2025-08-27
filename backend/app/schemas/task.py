@@ -150,8 +150,10 @@ class TaskResponse(BaseModel):
 
 class TaskListResponse(BaseModel):
     """Schema for task list response data."""
-    items: List[TaskInDB]
+    tasks: List[TaskInDB]
     total: int
+    limit: int
+    offset: int
 
 
 class TaskSearchParams(BaseModel):

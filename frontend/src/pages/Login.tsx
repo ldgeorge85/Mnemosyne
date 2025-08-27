@@ -35,9 +35,9 @@ const Login: React.FC = () => {
       if (isSuccess) {
         setSuccess('Login successful! Redirecting...');
         
-        // Redirect to dashboard after a short delay
+        // Redirect to chat after a short delay
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/chat');
         }, 1500);
         
       } else {

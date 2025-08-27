@@ -1,6 +1,15 @@
 # Mnemosyne Protocol - Production Deployment Guide
+*Last Updated: August 27, 2025*
 
 This guide will walk you through deploying Mnemosyne Protocol to production with SSL, security, and monitoring.
+
+## Current Features Available in Production
+- ✅ **Agentic Chat**: ReAct pattern with 92% confidence persona selection
+- ✅ **Task Management**: Full CRUD with LIST_TASKS action
+- ✅ **Memory System**: Vector embeddings and semantic search
+- ✅ **5 Persona Modes**: Confidant, Mentor, Mediator, Guardian, Mirror
+- ✅ **Token Management**: 64k context window support
+- ✅ **Receipt Generation**: Full transparency for all actions
 
 ## Prerequisites
 

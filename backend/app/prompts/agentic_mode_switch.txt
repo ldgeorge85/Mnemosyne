@@ -1,0 +1,28 @@
+You are evaluating whether the user should transition between sovereignty modes based on their demonstrated capabilities and needs.
+
+Current Sovereignty Mode: {current_mode}
+User Behavior Patterns: {behavior_patterns}
+Competency Indicators: {competency_indicators}
+Risk Factors: {risk_factors}
+
+Sovereignty Modes:
+- PROTECTED: Safety rails, guided interactions, limited actions. For new users or those needing extra support.
+- GUIDED: Balanced autonomy, contextual help, most features. Default for most users.
+- SOVEREIGN: Full control, all features, no restrictions. For experienced users who demonstrate understanding.
+
+Progression Principles:
+1. User agency is paramount - never force a mode change
+2. Suggest progression only when user shows readiness
+3. Allow regression if user requests or shows need
+4. Consider both capability AND comfort
+
+Evaluate whether a mode change should be suggested.
+
+Return as JSON:
+{{
+  "suggest_change": true/false,
+  "suggested_mode": "MODE_NAME or null",
+  "reasoning": "Explanation of the suggestion",
+  "indicators": ["List of specific behaviors/patterns observed"],
+  "user_override": true
+}}

@@ -98,10 +98,13 @@ The schema needs completion. Key tables:
 ### 3. API Endpoints
 See `docs/reference/API.md` for complete specification. Many endpoints need implementation.
 
-### 4. Agent System
+### 4. Agent System (Phase 1.A Priority!)
 - Base agents in `shadow/` directory
 - Philosophical agents in `dialogues/` directory
-- Resource management needed for 50+ agents
+- **NEW**: Agentic flow controller in `backend/app/services/agentic/`
+- Use ReAct pattern (Reasoning + Acting)
+- Parallel execution with asyncio.gather()
+- LLM decisions replace keyword matching
 
 ### 5. Privacy Requirements
 - K-anonymity minimum of 3
@@ -113,13 +116,62 @@ See `docs/reference/API.md` for complete specification. Many endpoints need impl
 - Run `pytest` before committing
 - Security > Features > Performance
 
-## Current Priorities (Week 2 - Sprint 5)
+## Current Status: Phase 1.A COMPLETE! 🎆
 
-1. Fix chat endpoint user object issue
-2. Complete memory CRUD with embeddings
-3. Wire up frontend auth flow (using Chakra UI)
-4. Configure alternative embedding model
-5. Deploy first philosophical agent demo
+**Agentic Enhancement is WORKING** - All core features operational:
+- ✅ Flow controller with ReAct pattern
+- ✅ LLM reasoning replacing keyword matching (92% confidence)
+- ✅ Parallel action execution with asyncio.gather()
+- ✅ Task queries working with LIST_TASKS action
+- ✅ Proactive suggestions with error handling
+- ✅ SSE streaming with status updates
+- ✅ Token management (64k context, unlimited responses)
+- ✅ Every decision generates a receipt
+- ✅ User override always available
+
+## Next Priority: Phase 1.B - Shadow Integration
+
+1. Connect Engineer, Librarian, Priest agents
+2. Wire up 50+ philosophical dialogue agents
+3. Implement multi-agent debate orchestration
+4. Test agent collaboration and synthesis
+
+## LLM Configuration System
+
+The system supports flexible LLM configuration through environment variables:
+
+### Configuration Modes
+```bash
+# Temperature Control
+LLM_TEMPERATURE_MODE=variable  # "static" or "variable" (static uses env, variable uses persona)
+LLM_STATIC_TEMPERATURE=0.7     # Used when mode is "static"
+
+# System Prompt Handling
+LLM_SYSTEM_PROMPT_MODE=separate # "separate" or "embedded" (for models without system role)
+LLM_SUPPORTS_REASONING_LEVEL=false # Set true for models with reasoning channels
+
+# Model Profile Selection
+LLM_MODEL_PROFILE=standard # Profile type (not tied to specific models)
+```
+
+### Model Profiles (Generic Capability Types)
+- **standard**: Models with system role support (GPT-4, Claude, most OpenAI-compatible)
+- **reasoning_channel**: Models with explicit reasoning (o1-preview, certain research models)
+- **embedded_system**: Models without separate system role (Gemma, some Llama variants)
+- **deepseek**: Models requiring special token handling
+
+### Per-Persona Temperatures (Variable Mode)
+- **Confidant**: 0.8 (empathetic, understanding)
+- **Mentor**: 0.6 (balanced, instructive)
+- **Mediator**: 0.5 (neutral, diplomatic)
+- **Guardian**: 0.3 (cautious, protective)
+- **Mirror**: 0.7 (reflective, exploratory)
+
+### Testing Configuration
+Run comprehensive tests with:
+```bash
+docker compose exec backend python scripts/test_llm_config.py
+```
 
 ## Architecture Notes
 
@@ -137,7 +189,29 @@ See `docs/reference/API.md` for complete specification. Many endpoints need impl
 
 ### Core Architectural Patterns
 
-#### 1. Configuration Management
+#### 1. Agentic Flow Pattern (NEW - Phase 1.A)
+```python
+class AgenticFlowController:
+    async def execute_flow(self, query: str, context: Dict):
+        # Step 1: LLM analyzes and plans multiple actions
+        actions = await self.plan_actions(query, context)
+        
+        # Step 2: Execute all actions in parallel
+        results = await asyncio.gather(*[
+            self.execute_action(action) for action in actions
+        ])
+        
+        # Step 3: Check if more needed
+        if await self.needs_more_info(results):
+            return await self.execute_flow(query, updated_context)
+        
+        # Step 4: Proactive suggestions
+        suggestions = await self.get_suggestions(results)
+        
+        return {"response": results, "suggestions": suggestions}
+```
+
+#### 2. Configuration Management
 ```python
 from pydantic_settings import BaseSettings
 from functools import lru_cache

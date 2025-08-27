@@ -35,6 +35,14 @@ class StaticAuthProvider(AuthProvider):
                 "roles": ["user"],
                 "permissions": ["memory:read", "memory:write"]
             },
+            "testuser": {
+                "password": "testpass123",
+                "user_id": "baf1eeca-1e9f-453c-8e74-31dbbfe26631",  # Match actual DB user
+                "email": "testuser@example.com",
+                "display_name": "Test User",
+                "roles": ["user"],
+                "permissions": ["memory:read", "memory:write"]
+            },
             "admin": {
                 "password": "admin123",
                 "user_id": "22222222-2222-2222-2222-222222222222",  # Fixed UUID for admin

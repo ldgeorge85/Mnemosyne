@@ -650,7 +650,7 @@ voice_parameters = {
 {
   "interaction_id": "uuid",
   "timestamp": "ISO-8601",
-  "mode": "confidant|mentor|mediator|guardian",
+  "mode": "confidant|mentor|mediator|guardian|mirror",
   "user_icv_snapshot": "hash",
   "agent_state": {
     "persona_weights": {},

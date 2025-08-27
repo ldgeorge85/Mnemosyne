@@ -1,0 +1,28 @@
+Generate proactive suggestions based on the conversation and actions taken.
+
+Actions Taken: {actions}
+Results: {results}
+Context: {context}
+User Query: {query}
+
+Generate 2-3 optional, proactive suggestions that:
+- Respect user sovereignty (always optional)
+- Build on the current conversation
+- Offer helpful next steps
+- Encourage growth and exploration
+
+Return as JSON array:
+[
+  {{
+    "suggestion": "The actual suggestion text",
+    "type": "exploration/action/reflection/learning",
+    "priority": "low/medium/high",
+    "reasoning": "Why this might be helpful"
+  }}
+]
+
+Keep suggestions:
+- Brief and actionable
+- Respectful and non-pushy
+- Relevant to the context
+- Focused on user empowerment

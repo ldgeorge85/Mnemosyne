@@ -33,7 +33,7 @@ class PersonaStateResponse(BaseModel):
 
 class ModeSwitchRequest(BaseModel):
     """Request to switch persona mode"""
-    mode: str  # confidant, mentor, mediator, guardian
+    mode: str  # confidant, mentor, mediator, guardian, mirror
     reason: Optional[str] = None
 
 
@@ -246,10 +246,64 @@ async def get_available_modes() -> Dict[str, List[Dict[str, str]]]:
             "mode": "guardian",
             "name": "Guardian",
             "description": "Protects wellbeing proactively. Flags risks and ensures safety boundaries."
+        },
+        {
+            "mode": "mirror",
+            "name": "Mirror",
+            "description": "Observes and reflects patterns without judgment. Shows you your behavioral tendencies neutrally."
         }
     ]
     
     return {"modes": modes}
+
+
+class PatternReflectionResponse(BaseModel):
+    """Pattern reflections from Mirror mode"""
+    reflections: List[str]
+    observation_count: int
+    patterns_observed: List[str]
+
+
+@router.get("/mirror/reflections", response_model=PatternReflectionResponse)
+async def get_mirror_reflections(
+    user: AuthUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_async_db)
+) -> PatternReflectionResponse:
+    """
+    Get neutral pattern reflections from Mirror mode.
+    Only available when in Mirror mode or with Mirror history.
+    """
+    persona_manager = PersonaManager(db)
+    await persona_manager.initialize_for_user(str(user.user_id))
+    
+    # Get reflections
+    reflections = persona_manager.get_mirror_reflections(str(user.user_id))
+    
+    # Get pattern info from mirror persona
+    pattern_info = persona_manager.mirror_persona.observed_patterns
+    
+    return PatternReflectionResponse(
+        reflections=reflections,
+        observation_count=len(persona_manager.mirror_persona.pattern_history),
+        patterns_observed=list(pattern_info.keys())
+    )
+
+
+@router.post("/mirror/reset")
+async def reset_mirror_observations(
+    user: AuthUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_async_db)
+) -> Dict[str, str]:
+    """
+    Reset all Mirror mode observations for the user.
+    This is for privacy protection - users can clear their pattern history.
+    """
+    persona_manager = PersonaManager(db)
+    await persona_manager.initialize_for_user(str(user.user_id))
+    
+    persona_manager.reset_mirror_observations()
+    
+    return {"status": "success", "message": "Mirror observations reset"}
 
 
 @router.get("/traditions")

@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
+import { listMemories } from '../api/memories';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [memoryCount, setMemoryCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Fetch memory count
+    listMemories({ limit: 1 })
+      .then(memories => {
+        setMemoryCount(memories.length);
+      })
+      .catch(err => {
+        console.error('Failed to fetch memories:', err);
+        setMemoryCount(0);
+      });
+  }, []);
 
   return (
     <div className="h-full overflow-auto bg-background">
@@ -28,7 +42,22 @@ const Dashboard: React.FC = () => {
               <CardDescription>Your stored memories and thoughts</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">No memories yet</p>
+              {memoryCount === null ? (
+                <p className="text-sm text-muted-foreground">Loading...</p>
+              ) : memoryCount === 0 ? (
+                <p className="text-sm text-muted-foreground">No memories yet</p>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-2xl font-bold">{memoryCount}</p>
+                  <Button 
+                    className="w-full" 
+                    variant="outline"
+                    onClick={() => navigate('/memories')}
+                  >
+                    View Memories
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
 

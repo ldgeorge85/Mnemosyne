@@ -19,6 +19,7 @@ class PersonaMode(Enum):
     MENTOR = "mentor"
     MEDIATOR = "mediator"
     GUARDIAN = "guardian"
+    MIRROR = "mirror"  # Pattern reflection without judgment
 
 
 @dataclass

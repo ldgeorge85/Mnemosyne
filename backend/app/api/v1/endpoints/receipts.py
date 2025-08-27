@@ -13,8 +13,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, Field
 
-from app.api.dependencies.auth import get_current_user
-from app.core.auth.models import AuthUser
+from app.core.auth.manager import get_current_user
+from app.core.auth.base import AuthUser
 from app.db.session import get_async_db
 from app.db.models.receipt import Receipt, ReceiptType
 from app.services.receipt_service import ReceiptService
@@ -97,7 +97,7 @@ async def get_user_receipts(
                 )
         
         receipts = await service.get_user_receipts(
-            user_id=UUID(current_user.id),
+            user_id=UUID(current_user.user_id),
             receipt_type=receipt_type_enum,
             entity_type=entity_type,
             entity_id=entity_uuid,
@@ -154,7 +154,7 @@ async def get_receipt_stats(
         service = ReceiptService(db)
         
         stats = await service.get_receipt_stats(
-            user_id=UUID(current_user.id),
+            user_id=UUID(current_user.user_id),
             start_date=start_date,
             end_date=end_date
         )
@@ -193,7 +193,7 @@ async def get_receipt(
         
         receipt = await service.get_receipt_by_id(
             receipt_id=receipt_uuid,
-            user_id=UUID(current_user.id)
+            user_id=UUID(current_user.user_id)
         )
         
         if not receipt:
@@ -256,7 +256,7 @@ async def get_entity_receipts(
         receipts = await service.get_entity_receipts(
             entity_type=entity_type,
             entity_id=entity_uuid,
-            user_id=UUID(current_user.id)
+            user_id=UUID(current_user.user_id)
         )
         
         return [

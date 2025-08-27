@@ -171,14 +171,15 @@ const Memories: React.FC = () => {
   );
 
   return (
-    <div className="h-full flex flex-col">
-      {viewMode === 'list' && (
-        <MemoryList
-          onCreateClick={handleCreateClick}
-          onMemoryClick={handleMemoryClick}
-          onEditClick={handleEditClick}
-        />
-      )}
+    <div className="h-full overflow-auto bg-background">
+      <div className="container mx-auto px-4 py-8">
+        {viewMode === 'list' && (
+          <MemoryList
+            onCreateClick={handleCreateClick}
+            onMemoryClick={handleMemoryClick}
+            onEditClick={handleEditClick}
+          />
+        )}
       
       {viewMode === 'create' && (
         <div className="space-y-4">
@@ -218,6 +219,7 @@ const Memories: React.FC = () => {
       {viewMode === 'detail' && selectedMemory && (
         <MemoryDetail memory={selectedMemory} />
       )}
+      </div>
     </div>
   );
 };

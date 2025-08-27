@@ -305,8 +305,46 @@ Get AI-powered task suggestions based on patterns.
 
 ### Chat (`/chat`)
 
+#### POST `/chat/agentic/stream`
+Stream agentic chat response with ReAct pattern and multi-action planning.
+
+**Request Body:**
+```json
+{
+  "messages": [
+    {"role": "user", "content": "What tasks do I have?"}
+  ],
+  "use_agentic": true,
+  "max_iterations": 3,
+  "stream_status": true,
+  "include_reasoning": true,
+  "parallel_actions": true
+}
+```
+
+**Response:** Server-sent events stream
+```
+event: status
+data: {"status": "Retrieving relevant memories..."}
+
+event: reasoning
+data: {"reasoning": "User is asking about tasks..."}
+
+event: status
+data: {"status": "Executing 2 actions: LIST_TASKS, SUGGEST"}
+
+event: content
+data: {"content": "Here are your tasks..."}
+
+event: suggestions
+data: {"suggestions": [{"text": "Mark task as complete", "action": "UPDATE_TASK"}]}
+
+event: done
+data: {"duration_ms": 1234, "iterations": 1}
+```
+
 #### POST `/chat/stream`
-Stream chat response from LLM.
+Stream standard chat response from LLM.
 
 **Request Body:**
 ```json

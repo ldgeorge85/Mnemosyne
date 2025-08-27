@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '../contexts/AuthContextSimple';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import useConversationStore from '../stores/conversationStore';
 import {
   Home,
   MessageSquare,
   CheckSquare,
   Brain,
+  Shield,
   Settings,
   LogOut,
   ChevronLeft,
@@ -33,10 +33,11 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { name: 'Dashboard', icon: Home, path: '/dashboard' },
   { name: 'Chat', icon: MessageSquare, path: '/chat' },
+  { name: 'Dashboard', icon: Home, path: '/dashboard' },
   { name: 'Tasks', icon: CheckSquare, path: '/tasks' },
   { name: 'Memories', icon: Brain, path: '/memories' },
+  { name: 'Receipts', icon: Shield, path: '/receipts' },
   { name: 'Settings', icon: Settings, path: '/settings' },
 ];
 
@@ -45,15 +46,50 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({ isOpen, onToggle, onClose
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   
-  // Get conversations from store
-  const { conversations, currentConversation, fetchConversations, getConversation } = useConversationStore();
+  // Local state for conversations from localStorage
+  const [localConversations, setLocalConversations] = React.useState<any[]>([]);
+  const [selectedConversationId, setSelectedConversationId] = React.useState<string | null>(null);
   
-  // Fetch conversations when on chat page
-  useEffect(() => {
-    if (location.pathname === '/chat') {
-      fetchConversations();
+  // Load conversations from localStorage
+  const loadConversations = () => {
+    const stored = localStorage.getItem('mnemosyne_conversations');
+    if (!stored) return [];
+    try {
+      const parsed = JSON.parse(stored);
+      return parsed.map((conv: any) => ({
+        id: conv.id,
+        title: conv.title,
+        updatedAt: conv.updatedAt,
+        persona_mode: conv.persona_mode
+      }));
+    } catch {
+      return [];
     }
-  }, [location.pathname, fetchConversations]);
+  };
+  
+  // Listen for conversation updates from chat page
+  useEffect(() => {
+    const handleConversationUpdate = (event: CustomEvent) => {
+      const conversations = event.detail;
+      setLocalConversations(conversations.map((conv: any) => ({
+        id: conv.id,
+        title: conv.title,
+        updatedAt: conv.updatedAt,
+        persona_mode: conv.persona_mode
+      })));
+    };
+    
+    window.addEventListener('conversationsUpdated', handleConversationUpdate as EventListener);
+    
+    // Initial load
+    if (location.pathname === '/chat') {
+      setLocalConversations(loadConversations());
+    }
+    
+    return () => {
+      window.removeEventListener('conversationsUpdated', handleConversationUpdate as EventListener);
+    };
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
@@ -61,7 +97,7 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({ isOpen, onToggle, onClose
   };
 
   const isActive = (path: string) => {
-    if (path === '/dashboard' && location.pathname === '/') return true;
+    if (path === '/chat' && location.pathname === '/') return true;
     return location.pathname === path;
   };
 
@@ -145,19 +181,24 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({ isOpen, onToggle, onClose
                 size="icon" 
                 className="h-6 w-6"
                 onClick={() => {
-                  // Create new conversation
-                  // TODO: Implement new conversation creation
+                  // Dispatch event to create new conversation
+                  window.dispatchEvent(new CustomEvent('createNewConversation'));
                 }}
               >
                 <Plus className="h-3 w-3" />
               </Button>
             </div>
             <div className="space-y-1">
-              {conversations.length > 0 ? (
-                conversations.slice(0, 10).map((conversation) => {
-                  const isActive = currentConversation?.id === conversation.id;
-                  const lastMessageTime = conversation.updated_at 
-                    ? new Date(conversation.updated_at).toLocaleString()
+              {localConversations.length > 0 ? (
+                localConversations.slice(0, 10).map((conversation) => {
+                  const isActive = selectedConversationId === conversation.id;
+                  const lastMessageTime = conversation.updatedAt 
+                    ? new Date(conversation.updatedAt).toLocaleString('en-US', { 
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        month: 'short',
+                        day: 'numeric'
+                      })
                     : 'No messages';
                   
                   return (
@@ -167,9 +208,12 @@ const SimpleSidebar: React.FC<SimpleSidebarProps> = ({ isOpen, onToggle, onClose
                         "w-full text-left px-3 py-2 rounded-lg transition-colors",
                         isActive ? "bg-accent" : "hover:bg-accent"
                       )}
-                      onClick={async () => {
-                        await getConversation(conversation.id);
-                        // TODO: Update chat view with loaded conversation
+                      onClick={() => {
+                        setSelectedConversationId(conversation.id);
+                        // Dispatch event to load conversation
+                        window.dispatchEvent(new CustomEvent('loadConversation', { 
+                          detail: conversation.id 
+                        }));
                       }}
                     >
                       <div className="text-sm font-medium truncate">

@@ -33,6 +33,8 @@ from app.schemas.task import (
 from app.services.task.task_service import TaskService
 from app.services.task.task_intelligence import TaskIntelligenceService
 from app.services.task.suggestion_engine import TaskSuggestionEngine
+from app.services.receipt_service import ReceiptService
+from app.db.models.receipt import ReceiptType
 
 
 router = APIRouter()
@@ -125,7 +127,36 @@ async def create_task(
         recurrence_rule=task_data.recurrence_rule
     )
     
-    await db.commit()
+    # Extract task attributes while in session
+    task_id = str(task.id)
+    task_status = task.status.value if task.status else None
+    task_xp = task.experience_points
+    task_progress = task.progress
+    
+    # Create receipt for transparency
+    receipt_service = ReceiptService(db)
+    await receipt_service.create_receipt(
+        user_id=current_user.user_id,
+        entity_type="task",
+        entity_id=task_id,
+        action="Created new task",
+        receipt_type=ReceiptType.TASK_CREATED,
+        request_data={
+            "title": task_data.title,
+            "priority": task_data.priority.value if task_data.priority else None,
+            "difficulty": task_data.difficulty,
+            "quest_type": task_data.quest_type.value if task_data.quest_type else None,
+            "estimated_duration": task_data.estimated_duration_minutes
+        },
+        response_data={
+            "task_id": task_id,
+            "status": task_status,
+            "experience_points": task_xp,
+            "progress": task_progress
+        }
+    )
+    
+    # Refresh the task object to ensure all attributes are loaded
     await db.refresh(task)
     
     return {"task": task_to_dict(task)}
@@ -175,7 +206,15 @@ async def list_tasks(
         due_date_end=due_date_end
     )
     
-    return {"items": tasks, "total": total}
+    # Convert tasks to dicts to avoid lazy loading issues
+    task_dicts = [task_to_dict(task) for task in tasks]
+    
+    return {
+        "tasks": task_dicts,
+        "total": total,
+        "limit": limit,
+        "offset": offset
+    }
 
 
 @router.get("/{task_id}", response_model=TaskResponse)
@@ -214,7 +253,7 @@ async def get_task(
             detail="You can only access your own tasks"
         )
     
-    return {"task": task}
+    return {"task": task_to_dict(task)}
 
 
 @router.get("/{task_id}/with-logs", response_model=TaskWithLogs)
@@ -366,9 +405,22 @@ async def update_task(
     update_data = task_update.dict(exclude_unset=True)
     updated_task = await task_service.update_task(task_id, update_data)
     
-    await db.commit()
+    # Create receipt for transparency
+    receipt_service = ReceiptService(db)
+    await receipt_service.create_receipt(
+        user_id=current_user.user_id,
+        entity_type="task",
+        entity_id=task_id,
+        action="Updated task",
+        receipt_type=ReceiptType.TASK_UPDATED,
+        request_data=update_data,
+        response_data={
+            "task_id": str(task_id),
+            "fields_updated": list(update_data.keys())
+        }
+    )
     
-    return {"task": updated_task}
+    return {"task": task_to_dict(updated_task)}
 
 
 @router.patch("/{task_id}/complete", response_model=TaskCompleteResponse)
@@ -457,8 +509,35 @@ async def complete_task(
     # TODO: Create memory from completed task if reflection provided
     memory_created = None
     
+    # Commit changes through the service
     await db.commit()
+    
+    # Extract task attributes while in session
+    task_id_str = str(task.id)
+    
+    # Refresh the task to ensure all attributes are loaded
     await db.refresh(task)
+    
+    # Create receipt for task completion
+    receipt_service = ReceiptService(db)
+    await receipt_service.create_receipt(
+        user_id=current_user.user_id,
+        entity_type="task",
+        entity_id=task_id_str,
+        action="Completed task",
+        receipt_type=ReceiptType.TASK_COMPLETED,
+        request_data={
+            "evidence": completion_data.evidence,
+            "reflection": completion_data.reflection,
+            "actual_duration": completion_data.actual_duration_minutes
+        },
+        response_data={
+            "task_id": str(task_id),
+            "experience_gained": experience_gained,
+            "experience_points": task.experience_points,
+            "progress": task.progress
+        }
+    )
     
     return TaskCompleteResponse(
         task=task_to_dict(task),
@@ -644,6 +723,24 @@ async def delete_task(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only delete your own tasks"
         )
+    
+    # Create receipt before deletion
+    receipt_service = ReceiptService(db)
+    await receipt_service.create_receipt(
+        user_id=current_user.user_id,
+        entity_type="task",
+        entity_id=task_id,
+        action=f"{'Hard deleted' if hard_delete else 'Soft deleted'} task",
+        receipt_type=ReceiptType.TASK_DELETED,
+        request_data={
+            "hard_delete": hard_delete,
+            "task_title": task.title
+        },
+        response_data={
+            "task_id": str(task_id),
+            "deletion_type": "hard" if hard_delete else "soft"
+        }
+    )
     
     # Delete the task
     result = await task_service.delete_task(task_id, hard_delete)

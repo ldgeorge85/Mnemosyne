@@ -18,6 +18,8 @@ from app.services.persona.manager import PersonaManager
 from app.db.session import get_async_db
 from app.db.repositories.conversation import ConversationRepository, MessageRepository
 from app.services.memory.context import MemoryContextService
+from app.services.receipt_service import ReceiptService
+from app.db.models.receipt import ReceiptType
 
 router = APIRouter()
 
@@ -31,7 +33,7 @@ class ChatRequest(BaseModel):
     temperature: Optional[float] = None
     max_tokens: Optional[int] = None
     stream: Optional[bool] = False
-    persona_mode: Optional[str] = None  # confidant, mentor, mediator, guardian
+    persona_mode: Optional[str] = None  # confidant, mentor, mediator, guardian, mirror
 
 class ChatResponse(BaseModel):
     id: str
@@ -52,7 +54,8 @@ async def call_llm(messages: List[ChatMessage], model: Optional[str] = None,
     api_key = settings.OPENAI_API_KEY
     model_name = model or settings.OPENAI_MODEL
     temp = temperature or settings.OPENAI_TEMPERATURE
-    max_tok = max_tokens or settings.OPENAI_MAX_TOKENS
+    # Use provided max_tokens, or settings value, or None for no limit
+    max_tok = max_tokens if max_tokens is not None else settings.OPENAI_MAX_TOKENS
     
     # Prepare the request
     headers = {
@@ -83,9 +86,12 @@ async def call_llm(messages: List[ChatMessage], model: Optional[str] = None,
         "model": model_name,
         "messages": message_list,
         "temperature": temp,
-        "max_tokens": max_tok,
         "stream": False
     }
+    
+    # Only add max_tokens if it's not None (let model decide length)
+    if max_tok is not None:
+        data["max_tokens"] = max_tok
     
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
@@ -144,8 +150,12 @@ async def chat(
     if persona_manager.persona.current_mode != mode:
         await persona_manager.switch_mode(mode, "Context analysis")
     
-    # Get enhanced system prompt with worldview adaptations
-    system_prompt = persona_manager.get_enhanced_prompt()
+    # Get appropriate system prompt based on mode
+    if mode == PersonaMode.MIRROR:
+        system_prompt = persona_manager.get_mirror_prompt()
+    else:
+        # Get enhanced system prompt with worldview adaptations
+        system_prompt = persona_manager.get_enhanced_prompt()
     modifiers = persona_manager.get_response_parameters()
     
     # Retrieve relevant memory context if user is authenticated
@@ -224,6 +234,25 @@ async def chat(
                         "metadata": {"model": request.model or settings.OPENAI_MODEL}
                     })
         
+        # If in Mirror mode, observe patterns
+        if mode == PersonaMode.MIRROR and user:
+            # Get the last user message for pattern observation
+            last_user_msg = ""
+            for msg in reversed(request.messages):
+                if msg.role == "user":
+                    last_user_msg = msg.content
+                    break
+            
+            if last_user_msg:
+                await persona_manager.observe_user_pattern(
+                    str(user.user_id),
+                    {
+                        "message": last_user_msg,
+                        "timestamp": datetime.datetime.utcnow().isoformat(),
+                        "interaction_count": len(request.messages),
+                    }
+                )
+        
         # Create interaction receipt for transparency
         receipt_id = await persona_manager.create_interaction_receipt(
             "chat",
@@ -234,6 +263,29 @@ async def chat(
                 "model": request.model or settings.OPENAI_MODEL
             }
         )
+        
+        # Also create standard receipt for transparency
+        if user and db:
+            receipt_service = ReceiptService(db)
+            assistant_response = llm_response["choices"][0].get("message", {}).get("content", "") if llm_response["choices"] else ""
+            await receipt_service.create_receipt(
+                user_id=user.user_id,
+                entity_type="chat",
+                entity_id=conversation.id if 'conversation' in locals() else None,
+                action="Chat interaction",
+                receipt_type=ReceiptType.CHAT_MESSAGE,
+                persona_mode=mode.value,
+                request_data={
+                    "messages": [{"role": m.role, "content": m.content[:200]} for m in request.messages],  # Truncate for privacy
+                    "model": request.model or settings.OPENAI_MODEL,
+                    "temperature": request.temperature
+                },
+                response_data={
+                    "model": llm_response.get("model", request.model or settings.OPENAI_MODEL),
+                    "response_preview": assistant_response[:200] if assistant_response else None,  # Truncate for privacy
+                    "usage": llm_response.get("usage", {})
+                }
+            )
         
         # Return in OpenAI format
         return ChatResponse(

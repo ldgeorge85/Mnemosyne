@@ -141,9 +141,11 @@ async def stream_agentic_response(
         # Custom streaming for status updates
         iteration = 0
         max_iterations = request_params.max_iterations
+        logger.info(f"Starting agentic flow with max_iterations={max_iterations}")
         
         # Initialize action plan
         from app.services.agentic.actions import ActionPlan
+        logger.info("Importing ActionPlan...")
         plan = ActionPlan(
             query=query,
             context=context,
@@ -152,6 +154,7 @@ async def stream_agentic_response(
             parallel=request_params.parallel_actions,
             max_iterations=request_params.max_iterations
         )
+        logger.info(f"ActionPlan created, entering while loop...")
         
         while iteration < max_iterations:
             iteration += 1

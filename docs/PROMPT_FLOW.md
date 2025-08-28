@@ -113,15 +113,18 @@ backend/app/prompts/
    - Model profile support for different architectures
    - Configurable reasoning levels
 
-## Next Priorities (Phase 1.B)
+## Next Priorities (Phase 1.B - Tools & Plugins)
 
-1. **Agent Integration**:
-   - Connect Shadow agents (Engineer, Librarian, Priest)
-   - Wire up Dialogue agents (50+ philosophical)
-   - Multi-agent collaboration
+1. **Tool System**:
+   - Build tool infrastructure with registry
+   - Port Shadow agents as tools
+   - Port Dialogue agents as tools
+   - Add MCP, OpenAPI, A2A protocol support
+   - Privacy controls for tool exposure
 
-2. **Action Expansion**:
-   - Wire CREATE_MEMORY to executor
-   - Wire UPDATE_TASK to executor
-   - Implement DECOMPOSE_TASK
-   - Model-aware prompt formatting
+2. **Tool Integration**:
+   - Implement USE_TOOL action
+   - Create composite tools (ConceptChecker, ConceptDebate)
+   - UI tool palette for manual selection
+   - Dynamic agent cards for A2A
+   - Wire CREATE_MEMORY and UPDATE_TASK executors

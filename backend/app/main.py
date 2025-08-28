@@ -184,6 +184,14 @@ async def startup_event():
     available_methods = auth_manager.get_available_methods()
     logger.info(f"Authentication initialized with methods: {available_methods}")
     
+    # Initialize tool registry
+    try:
+        from app.services.tools import tool_registry
+        await tool_registry.initialize()
+        logger.info(f"Tool registry initialized with {len(tool_registry.tools)} tools")
+    except Exception as e:
+        logger.warning(f"Failed to initialize tool registry: {e}")
+    
     # Database initialization is handled by the session module
 
 @app.on_event("shutdown")
@@ -193,6 +201,15 @@ async def shutdown_event():
     Cleans up resources used by the application.
     """
     logger.info(f"Shutting down {settings.APP_NAME} API")
+    
+    # Cleanup tool registry
+    try:
+        from app.services.tools import tool_registry
+        await tool_registry.cleanup()
+        logger.info("Tool registry cleaned up")
+    except Exception as e:
+        logger.warning(f"Failed to cleanup tool registry: {e}")
+    
     # Close database connections, etc.
 
 # Run the application if executed directly

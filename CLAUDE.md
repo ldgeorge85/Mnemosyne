@@ -52,8 +52,8 @@ mnemosyne/
 │   └── philosophy/   # Vision and principles
 ├── backend/          # FastAPI + Python backend
 ├── frontend/         # React + TypeScript frontend
-├── shadow/           # Agent orchestration system
-├── dialogues/        # 50+ philosophical agents
+├── shadow/           # Shadow Council orchestration system
+├── dialogues/        # Forum of Echoes - 50+ philosophical voices
 ├── collective/       # Collective intelligence service
 ├── scripts/          # Setup and utilities
 └── tests/            # Test suites
@@ -98,9 +98,9 @@ The schema needs completion. Key tables:
 ### 3. API Endpoints
 See `docs/reference/API.md` for complete specification. Many endpoints need implementation.
 
-### 4. Agent System (Phase 1.A Priority!)
-- Base agents in `shadow/` directory
-- Philosophical agents in `dialogues/` directory
+### 4. Agent System (Phase 1.B Priority!)
+- Shadow Council in `shadow/` directory (Artificer, Archivist, Mystagogue, Tactician, Daemon)
+- Forum of Echoes in `dialogues/` directory (50+ philosophical voices)
 - **NEW**: Agentic flow controller in `backend/app/services/agentic/`
 - Use ReAct pattern (Reasoning + Acting)
 - Parallel execution with asyncio.gather()

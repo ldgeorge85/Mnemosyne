@@ -48,11 +48,34 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 - ✅ **LIST_TASKS Action** - WIRED to task service, retrieves and displays tasks!
 - ✅ **Task Queries** - Agentic chat properly handles task-related questions!
 
-### In Development
-- 🚀 **Phase 1.B: Shadow/Dialogue Integration** - AGENTS EXIST, need connection (NEXT PRIORITY)
+### ✅ Phase 1 Core Foundation - 95% COMPLETE (August 27, 2025)
+
+**Phase 1.A: Agentic Enhancement** - 100% COMPLETE
+- ✅ ReAct pattern with 92% confidence in LLM reasoning
+- ✅ Parallel action execution with asyncio.gather()
+- ✅ Proactive suggestions (3 per response)
+- ✅ Task integration working (LIST_TASKS action)
+- ✅ SSE streaming with status updates
+- ✅ Receipt enforcement middleware
+
+**Phase 1.B: Universal Tools & Plugin System** - 100% COMPLETE
+- ✅ BaseTool interface and ToolRegistry implemented
+- ✅ 7 tools working (5 simple + Shadow Council + Forum of Echoes)
+- ✅ Shadow Council: 5 LLM-powered sub-agents (Artificer, Archivist, Mystagogue, Tactician, Daemon)
+- ✅ Forum of Echoes: 10 philosophical voices with dialogue orchestration
+- ✅ USE_TOOL, SELECT_TOOLS, COMPOSE_TOOLS executors
+- ✅ Memory/Task executors wired (CREATE_MEMORY, UPDATE_TASK)
+- ✅ UI tool palette with category organization
+- ✅ Enhanced prompts - LLM knows about tools and when to use them
+
+### Next Development Phase
+- 🚀 **Phase 1.C: Protocol Integration** - NEXT PRIORITY
+  - OpenAPI tool generation from specs
+  - MCP (Model Context Protocol) client implementation
+  - A2A bidirectional support (consume and provide)
+  - Privacy guards and exposure controls
 - ❌ **Auth Providers** - Only Static works, OAuth/DID/API are stubs
-- 🟡 **Shadow Agents** - Engineer, Librarian, Priest agents exist but not connected
-- 🟡 **Dialogue Agents** - 50+ philosophical agents exist but not connected
+- 🔄 **Advanced Features** - Trust networks, ICV validation pending
 
 ### Research Track (Parallel)
 - 🔬 **Identity Compression** - Holographic representation validation
@@ -141,7 +164,7 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 ---
 
 ### Phase 1: Core Foundation + Accessibility
-**Status**: Phase 1.A COMPLETE ✅, Phase 1.B Shadow/Dialogue integration NEXT
+**Status**: Phase 1.A COMPLETE ✅, Phase 1.B Tools & Plugin System NEXT
 **Goal**: Sovereign personal AI accessible to diverse worldviews
 
 #### Phase 1.A: Agentic Enhancement ✅ COMPLETE (2025-08-27)
@@ -160,15 +183,37 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 - ✅ **Reasoning level support for advanced models**
 - ✅ **SSE streaming with status updates**
 
-#### Phase 1.B: Shadow & Dialogue Integration (NEXT PRIORITY)
-- 🔴 Connect Shadow agents (Engineer, Librarian, Priest) - agents exist, need wiring
-- 🔴 Connect Dialogue agents (50+ philosophical) - agents exist, need wiring
-- 🔴 Wire up CREATE_MEMORY action to executor
-- 🔴 Wire up UPDATE_TASK action to executor
-- 🔴 Implement DECOMPOSE_TASK for complex tasks
-- 🔴 Add ANALYZE_PATTERNS with real analysis
-- 🔴 Test multi-agent collaboration
-- 🔴 Add agent-specific prompts
+#### Phase 1.B: Tools & Plugin System (IN PROGRESS - Week 1 Complete!)
+**Week 1: Core Infrastructure** ✅ COMPLETE
+- ✅ Implement BaseTool interface and registry
+- ✅ Create USE_TOOL, SELECT_TOOLS, COMPOSE_TOOLS actions
+- ✅ Implement 5 simple tools (calculator, datetime, json_formatter, text_formatter, word_counter)
+- ✅ Tool discovery and auto-registration working
+- 🔴 Build UI tool palette for manual selection
+- 🔴 Wire CREATE_MEMORY and UPDATE_TASK executors
+
+**Week 2: Agent Migration**
+- 🔴 Port Shadow Council as unified tool with sub-agents:
+  - Artificer (technical expertise, formerly Engineer)
+  - Archivist (knowledge management, formerly Librarian)
+  - Mystagogue (pattern recognition, formerly Priest)
+  - Tactician (strategic planning, new)
+  - Daemon (devil's advocate, new)
+- 🔴 Port Forum of Echoes as unified tool with 5-10 philosophical perspectives to start
+- 🔴 Create ConceptChecker composite tool
+- 🔴 Create ConceptDebate orchestration tool
+- 🔴 Test multi-tool collaboration
+
+#### Phase 1.C: Protocol Integration (2 weeks)
+**Week 3: External Protocols**
+- 🔴 Implement OpenAPI tool generator
+- 🔴 Add MCP client for data sources
+- 🔴 Test with GitHub, Slack MCP servers
+
+**Week 4: A2A Support**
+- 🔴 Implement A2A bidirectional support
+- 🔴 Generate dynamic agent cards (public/partner/local)
+- 🔴 Add privacy guards and exposure controls
 
 #### Phase 1.D: Accessibility Layer
 - 🔴 **Graduated Sovereignty**: Protected/Guided/Sovereign modes

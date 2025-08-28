@@ -76,7 +76,12 @@ class ActionExecutor:
             MnemosyneAction.UPDATE_TASK: self._update_task,
             MnemosyneAction.COMPLETE_TASK: self._complete_task,
             
-            # Agent Activation
+            # Tool Operations
+            MnemosyneAction.USE_TOOL: self._use_tool,
+            MnemosyneAction.SELECT_TOOLS: self._select_tools,
+            MnemosyneAction.COMPOSE_TOOLS: self._compose_tools,
+            
+            # Legacy Agent Activation
             MnemosyneAction.ACTIVATE_SHADOW: self._activate_shadow,
             MnemosyneAction.ACTIVATE_DIALOGUE: self._activate_dialogue,
             
@@ -188,28 +193,36 @@ class ActionExecutor:
         user_id: Optional[str]
     ) -> Dict[str, Any]:
         """Create a new memory."""
-        if not self.memory_service:
-            from app.services.memory.memory_service import MemoryService
-            self.memory_service = MemoryService()
-            
+        from app.db.session import async_session_maker
+        from app.services.memory.memory_service import MemoryService
+        
         content = params.get("content", "")
         memory_type = params.get("type", "observation")
         tags = params.get("tags", [])
+        title = params.get("title", content[:50] + "..." if len(content) > 50 else content)
         
-        # Create memory
-        memory = await self.memory_service.create(
-            user_id=user_id,
-            content=content,
-            memory_type=memory_type,
-            tags=tags,
-            metadata=params.get("metadata", {})
-        )
-        
-        return {
-            "memory_id": str(memory.id) if memory else None,
-            "created": True,
-            "type": memory_type
-        }
+        async with async_session_maker() as db:
+            memory_service = MemoryService(db)
+            
+            # Create memory
+            memory = await memory_service.create_memory(
+                user_id=user_id,
+                title=title,
+                content=content,
+                source=memory_type,  # Fixed parameter name
+                tags=tags,
+                importance_score=params.get("importance", 0.5)  # Fixed parameter name and default
+                # Note: metadata not supported by current memory service
+            )
+            
+            await db.commit()
+            
+            return {
+                "memory_id": str(memory.id) if memory else None,
+                "created": True,
+                "type": memory_type,
+                "title": title
+            }
     
     async def _link_memories(
         self, 
@@ -405,6 +418,164 @@ class ActionExecutor:
             user_id
         )
     
+    # ============= Tool Operations =============
+    
+    async def _use_tool(
+        self, 
+        params: Dict[str, Any], 
+        context: Dict[str, Any],
+        user_id: Optional[str]
+    ) -> Dict[str, Any]:
+        """Execute a specific tool."""
+        from app.services.tools.registry import tool_registry
+        from app.services.tools.base import ToolInput
+        
+        tool_name = params.get("tool_name")
+        tool_params = params.get("parameters", {})
+        query = params.get("query", "")
+        
+        try:
+            # Get the tool from registry
+            tool = tool_registry.get(tool_name)
+            
+            # Create tool input
+            tool_input = ToolInput(
+                query=query,
+                parameters=tool_params,
+                context=context,
+                options=params.get("options", {})
+            )
+            
+            # Execute the tool
+            output = await tool_registry.execute_tool(tool_name, tool_input)
+            
+            return {
+                "tool_name": tool_name,
+                "success": output.success,
+                "result": output.result,
+                "error": output.error,
+                "metadata": output.metadata,
+                "confidence": output.confidence,
+                "follow_up_tools": output.follow_up_tools
+            }
+            
+        except Exception as e:
+            logger.error(f"Error executing tool {tool_name}: {e}")
+            return {
+                "tool_name": tool_name,
+                "success": False,
+                "error": str(e)
+            }
+    
+    async def _select_tools(
+        self, 
+        params: Dict[str, Any], 
+        context: Dict[str, Any],
+        user_id: Optional[str]
+    ) -> Dict[str, Any]:
+        """Select relevant tools for a query."""
+        from app.services.tools.registry import tool_registry
+        
+        query = params.get("query", context.get("query", ""))
+        max_tools = params.get("max_tools", 5)
+        threshold = params.get("threshold", 0.3)
+        
+        try:
+            # Get relevant tools from registry
+            relevant_tools = await tool_registry.get_relevant_tools(
+                query=query,
+                context=context,
+                threshold=threshold,
+                max_tools=max_tools
+            )
+            
+            # Format results
+            tools = [
+                {
+                    "name": tool_name,
+                    "confidence": confidence,
+                    "metadata": tool_registry.get_tool_metadata(tool_name).__dict__
+                }
+                for tool_name, confidence in relevant_tools
+            ]
+            
+            return {
+                "query": query,
+                "tools_selected": len(tools),
+                "tools": tools
+            }
+            
+        except Exception as e:
+            logger.error(f"Error selecting tools: {e}")
+            return {
+                "query": query,
+                "tools_selected": 0,
+                "tools": [],
+                "error": str(e)
+            }
+    
+    async def _compose_tools(
+        self, 
+        params: Dict[str, Any], 
+        context: Dict[str, Any],
+        user_id: Optional[str]
+    ) -> Dict[str, Any]:
+        """Compose multiple tools into a workflow."""
+        from app.services.tools.registry import tool_registry
+        from app.services.tools.base import ToolInput
+        
+        tools = params.get("tools", [])  # List of {name, parameters}
+        parallel = params.get("parallel", True)
+        
+        try:
+            # Prepare tool inputs
+            tool_inputs = []
+            for tool_spec in tools:
+                tool_input = ToolInput(
+                    query=tool_spec.get("query", ""),
+                    parameters=tool_spec.get("parameters", {}),
+                    context=context,
+                    options=tool_spec.get("options", {})
+                )
+                tool_inputs.append((tool_spec["name"], tool_input))
+            
+            # Execute tools
+            results = await tool_registry.execute_multiple(
+                tool_inputs=tool_inputs,
+                parallel=parallel
+            )
+            
+            # Format results
+            formatted_results = []
+            for i, result in enumerate(results):
+                tool_name = tools[i]["name"]
+                if isinstance(result, Exception):
+                    formatted_results.append({
+                        "tool_name": tool_name,
+                        "success": False,
+                        "error": str(result)
+                    })
+                else:
+                    formatted_results.append({
+                        "tool_name": tool_name,
+                        "success": result.success,
+                        "result": result.result,
+                        "error": result.error
+                    })
+            
+            return {
+                "tools_executed": len(formatted_results),
+                "parallel": parallel,
+                "results": formatted_results
+            }
+            
+        except Exception as e:
+            logger.error(f"Error composing tools: {e}")
+            return {
+                "tools_executed": 0,
+                "error": str(e)
+            }
+    
     # ============= Agent Activation =============
     
     async def _activate_shadow(
@@ -413,8 +584,8 @@ class ActionExecutor:
         context: Dict[str, Any],
         user_id: Optional[str]
     ) -> Dict[str, Any]:
-        """Activate Shadow system agents."""
-        agent_type = params.get("agent_type", "Engineer")
+        """Activate Shadow Council agents (Artificer/Archivist/Mystagogue/Tactician/Daemon)."""
+        agent_type = params.get("agent_type", "Artificer")
         query = params.get("query", context.get("query", ""))
         
         # TODO: Connect to Shadow agent system
@@ -430,8 +601,8 @@ class ActionExecutor:
         context: Dict[str, Any],
         user_id: Optional[str]
     ) -> Dict[str, Any]:
-        """Activate Dialogue system for philosophical debate."""
-        agents = params.get("agents", ["socrates", "confucius"])
+        """Activate Forum of Echoes for philosophical perspectives (50+ voices)."""
+        voices = params.get("voices", ["socrates", "confucius"])
         topic = params.get("topic", context.get("query", ""))
         
         # TODO: Connect to Dialogue agent system

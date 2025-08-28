@@ -81,7 +81,7 @@ The system now employs true agentic behavior through proven ReAct patterns:
 - ✅ **LLM-driven decision making** replacing primitive keyword matching (working!)
 - ✅ **Parallel action execution** for efficient multi-tasking (asyncio.gather)
 - ✅ **Proactive suggestions** that respect user sovereignty (3 suggestions per response)
-- 🔴 **Agent orchestration** connecting Shadow (technical) and Dialogue (philosophical) systems (pending)
+- ✅ **Tool orchestration** connecting all capabilities through unified interface (infrastructure complete!)
 - ✅ **Transparent reasoning** with all decisions logged in receipts (infrastructure ready)
 - ✅ **User override always available** preserving human agency (toggle in UI)
 
@@ -219,12 +219,14 @@ Human → Personal Agent → Trust Layer → Collective Engine
 - ✅ Stream status updates during processing
 - ✅ Create decision receipts infrastructure
 
-#### Next Priority (Phase 1.B)
-- 🔴 Connect Shadow (technical) agents
-- 🔴 Connect Dialogue (philosophical) agents
-- 🔴 Wire up CREATE_MEMORY action to executor
-- 🔴 Wire up UPDATE_TASK action to executor
-- 🔴 Test multi-agent collaboration
+#### Next Priority (Phase 1.B - Tools & Plugin System)
+- 🔴 Build universal tool infrastructure with registry
+- 🔴 Port Shadow agents as tools (Engineer, Librarian, Priest)
+- 🔴 Port Dialogue agents as tools (philosophical perspectives)
+- 🔴 Add protocol support (MCP, OpenAPI, A2A)
+- 🔴 Implement privacy controls for tool exposure
+- 🔴 Create UI tool palette for manual selection
+- 🔴 Wire CREATE_MEMORY and UPDATE_TASK executors
 
 **Success Metrics**:
 - Decision latency < 2 seconds

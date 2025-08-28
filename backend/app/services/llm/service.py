@@ -70,6 +70,9 @@ class LLMService:
         if final_max_tokens is not None:
             data["max_tokens"] = final_max_tokens
         
+        logger.info(f"Making LLM request to {self.base_url}/chat/completions")
+        logger.debug(f"Request data: {json.dumps(data, indent=2)}")
+        
         async with httpx.AsyncClient(timeout=60.0) as client:
             try:
                 response = await client.post(
@@ -80,12 +83,33 @@ class LLMService:
                 response.raise_for_status()
                 
                 result = response.json()
-                content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+                logger.debug(f"LLM response: {json.dumps(result, indent=2)[:500]}")
+                
+                # Handle different response formats
+                if "choices" in result and len(result["choices"]) > 0:
+                    choice = result["choices"][0]
+                    if "message" in choice:
+                        # InnoGPT-1 returns content in reasoning_content when content is null
+                        content = choice["message"].get("content")
+                        if content is None:
+                            content = choice["message"].get("reasoning_content", "")
+                        if not content:
+                            content = ""
+                    elif "text" in choice:
+                        content = choice["text"]
+                    else:
+                        content = str(choice)
+                else:
+                    logger.warning(f"Unexpected LLM response format: {result}")
+                    content = ""
                 
                 return {"content": content}
                 
+            except httpx.HTTPStatusError as e:
+                logger.error(f"LLM HTTP error: {e.response.status_code} - {e.response.text}")
+                return {"content": ""}
             except Exception as e:
-                logger.error(f"LLM completion error: {e}")
+                logger.error(f"LLM completion error: {e}", exc_info=True)
                 return {"content": ""}
     
     async def stream_complete(

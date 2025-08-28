@@ -30,9 +30,14 @@ class MnemosyneAction(str, Enum):
     UPDATE_TASK = "UPDATE_TASK"            # Modify task status/details
     COMPLETE_TASK = "COMPLETE_TASK"        # Mark task as done
     
-    # Agent Activation
-    ACTIVATE_SHADOW = "ACTIVATE_SHADOW"    # Technical agents (Engineer, Librarian, Priest)
-    ACTIVATE_DIALOGUE = "ACTIVATE_DIALOGUE" # Philosophical agents (50+ debate agents)
+    # Tool Operations
+    USE_TOOL = "USE_TOOL"                  # Execute any registered tool
+    SELECT_TOOLS = "SELECT_TOOLS"          # LLM selects relevant tools
+    COMPOSE_TOOLS = "COMPOSE_TOOLS"        # Create composite tool flow
+    
+    # Legacy Agent Activation (will be migrated to unified tools)
+    ACTIVATE_SHADOW = "ACTIVATE_SHADOW"    # Shadow Council (Artificer, Archivist, Mystagogue, Tactician, Daemon)
+    ACTIVATE_DIALOGUE = "ACTIVATE_DIALOGUE" # Forum of Echoes (50+ philosophical voices)
     
     # Trust Operations
     UPDATE_TRUST = "UPDATE_TRUST"          # Modify trust relationships

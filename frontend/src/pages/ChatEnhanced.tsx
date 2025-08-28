@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { countMessageTokens, truncateMessages, checkTokenLimit } from '@/utils/tokenCounter';
+import ToolPalette from '@/components/ToolPalette';
 import { 
   Send, 
   Plus, 
@@ -23,7 +24,8 @@ import {
   Brain,
   Users,
   Eye,
-  Trash2
+  Trash2,
+  Wrench
 } from 'lucide-react';
 
 interface Message {
@@ -117,6 +119,8 @@ const ChatEnhanced: React.FC = () => {
   const [agenticReasoning, setAgenticReasoning] = useState<string>('');
   const [streamingPersonaMode, setStreamingPersonaMode] = useState<string>('');  // Reasoning display
   const [agenticSuggestions, setAgenticSuggestions] = useState<any[]>([]);  // Suggestions
+  const [selectedTools, setSelectedTools] = useState<string[]>([]);  // Selected tools from palette
+  const [showToolPalette, setShowToolPalette] = useState(false);  // Tool palette visibility
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -419,7 +423,8 @@ const ChatEnhanced: React.FC = () => {
         max_iterations: 3,
         stream_status: true,
         include_reasoning: true,
-        parallel_actions: true
+        parallel_actions: true,
+        selected_tools: selectedTools.length > 0 ? selectedTools : undefined  // Add selected tools if any
       } : {
         messages: conversationMessages,
         persona_mode: personaMode,
@@ -568,6 +573,23 @@ const ChatEnhanced: React.FC = () => {
                   </div>
                 </div>
                 
+                {/* Tool Palette Toggle */}
+                <Button
+                  onClick={() => setShowToolPalette(!showToolPalette)}
+                  variant={showToolPalette ? "default" : "outline"}
+                  size="sm"
+                  disabled={isLoading}
+                  title="Toggle tool palette"
+                >
+                  <Wrench className="w-4 h-4 mr-1" />
+                  Tools
+                  {selectedTools.length > 0 && (
+                    <Badge variant="secondary" className="ml-1">
+                      {selectedTools.length}
+                    </Badge>
+                  )}
+                </Button>
+                
                 {/* Streaming Toggle - Improved */}
                 <label className="flex items-center gap-2 text-sm cursor-pointer hover:bg-accent px-2 py-1 rounded" title="Enable real-time streaming responses">
                   <input
@@ -595,6 +617,16 @@ const ChatEnhanced: React.FC = () => {
             </div>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col min-h-0 px-0">
+            
+            {/* Tool Palette - Show when toggled */}
+            {showToolPalette && (
+              <div className="container mx-auto px-4 max-w-4xl mb-4">
+                <ToolPalette 
+                  onToolsChange={setSelectedTools}
+                  className="animate-in slide-in-from-top-2"
+                />
+              </div>
+            )}
             
             <div className="flex-1 overflow-y-auto mb-4 custom-scrollbar">
               <div className="container mx-auto px-4 max-w-4xl space-y-4">

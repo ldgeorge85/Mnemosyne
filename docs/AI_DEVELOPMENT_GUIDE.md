@@ -71,13 +71,14 @@ No mocks, real implementation only."
 
 ## Common Tasks & AI Context
 
-### Task: Shadow Agent Integration (Phase 1.B)
-**Context**: "Agents exist but need wiring to agentic flow."
+### Task: Tool System Implementation (Phase 1.B)
+**Context**: "Build universal tool architecture, port agents as tools."
 **Files**: 
-- `backend/app/services/agentic/executors.py` (add agent activation)
-- `shadow/agents/engineer.py` (existing agent)
-- `shadow/agents/librarian.py` (existing agent)
-- `shadow/agents/priest.py` (existing agent)
+- `backend/app/services/tools/` (create new directory)
+- `backend/app/services/tools/base.py` (BaseTool interface)
+- `backend/app/services/tools/registry.py` (tool discovery)
+- `shadow/agents/` (agents to be ported as tools)
+- `dialogues/agents/` (agents to be ported as tools)
 
 ### Task: CREATE_MEMORY Action Wiring
 **Context**: "Action stub exists, needs executor implementation."
@@ -86,12 +87,13 @@ No mocks, real implementation only."
 - `backend/app/services/memory/memory_service.py` (existing service)
 **Requirements**: Create real memories with embeddings
 
-### Task: Multi-Agent Collaboration
-**Context**: "Test agents working together on complex queries."
+### Task: Multi-Tool Orchestration
+**Context**: "Composite tools that orchestrate other tools."
 **Files**:
-- `backend/app/services/agentic/flow_controller.py` (orchestration)
-- `backend/app/services/agentic/actions.py` (action definitions)
-**Requirements**: Agents should debate and reach consensus
+- `backend/app/services/tools/composite.py` (create)
+- `backend/app/services/tools/concept_checker.py` (create)
+- `backend/app/services/tools/concept_debate.py` (create)
+**Requirements**: Tools should work together seamlessly
 
 ### Task: Receipt UI Components ✅ COMPLETE
 **Context**: "Receipt UI viewer is complete and working."

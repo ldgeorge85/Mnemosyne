@@ -28,7 +28,7 @@
 - ✅ Token management system (64k context, unlimited responses)
 - ✅ Per-message persona badges showing mode used
 - ✅ Collapsible reasoning display (persistent for transparency)
-- 🔄 Phase 1.B Starting: Shadow/Dialogue agent integration
+- ✅ Phase 1.B IN PROGRESS: Universal Tools & Plugin System (core infrastructure complete!)
 
 ## Quick Introduction
 
@@ -114,8 +114,8 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - ✅ **Infrastructure** - Docker, PostgreSQL, Redis, Qdrant all operational
 - ✅ **Agentic Flow** - ReAct pattern with reasoning, planning, and parallel action execution
 - ✅ **LLM Persona Selection** - Intelligent mode selection based on context (92% confidence achieved)
-- ✅ **CREATE_MEMORY Action** - Wired and working, creates real memories
-- ✅ **CREATE_TASK Action** - Wired and working, creates real tasks
+- 🔄 **CREATE_MEMORY Action** - Stub exists, needs executor implementation
+- 🔄 **CREATE_TASK Action** - Stub exists, needs executor implementation
 - ✅ **Proactive Suggestions** - Context-aware next steps while respecting sovereignty
 - ✅ **SSE Streaming** - Real-time status updates during agentic processing
 - ✅ **Token Management** - 64k context window with automatic truncation (August 27, 2025)
@@ -123,11 +123,17 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - ✅ **Per-Message Personas** - Shows which mode was used for each response
 
 ### In Active Development
-- 🚀 **Phase 1.B: Shadow & Dialogue Integration** - Connecting specialized agents
-  - ✅ CREATE_MEMORY and CREATE_TASK actions wired and working!
-  - 🔴 Connect Engineer, Librarian, Priest agents (agents exist, need wiring)
-  - 🔴 Integrate 50+ philosophical dialogue agents (agents exist, need wiring)
-  - 🔴 Test multi-agent collaboration
+- 🚀 **Phase 1.B: Tools & Plugin System** - Universal tool architecture
+  - ✅ Build core tool infrastructure with registry (COMPLETE!)
+  - ✅ Implement USE_TOOL, SELECT_TOOLS, COMPOSE_TOOLS actions
+  - ✅ Create 5 simple example tools (calculator, datetime, formatters)
+  - ✅ Tool discovery and registration on startup
+  - 🔴 Implement tool UI palette for manual selection
+  - 🔴 Port Shadow Council as unified tool (Artificer, Archivist, Mystagogue, Tactician, Daemon)
+  - 🔴 Port Forum of Echoes as unified tool (50+ philosophical perspectives)
+  - 🔴 Add OpenAPI support for REST API tools
+  - 🔴 Integrate MCP for data source access
+  - 🔴 Implement A2A bidirectional support with agent cards
 - 🔄 **Accessibility Layer** - Onboarding wizards and simplified UIs
 - 🔄 **Graduated Sovereignty** - Protected/Guided/Sovereign modes
 - 🔄 **Values Alignment** - Import moral/ethical frameworks
@@ -141,14 +147,14 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - 🔬 **Natural Clustering** - Organic group formation patterns
 - 🔬 **Joy Metrics** - Measuring system delight and user creativity
 
-### Next Priorities (Phase 1.B - Agent Integration)
+### Next Priorities (Phase 1.B - Tools & Plugin System)
 - 🔴 **Onboarding Wizard** - Persona selection for new users
 - 🔴 **Sovereignty Levels** - Protected/Guided/Sovereign modes
 - 🔴 **Simplified UI** - Non-technical user interfaces
 - 🔴 **Values Framework** - Import moral/ethical systems
 - 🔴 **Safety Templates** - Optional protection features
 
-### Following Priorities (Sprint 7-8)
+### Following Priorities (Phase 1.C - Enhanced Tools)
 - 🟡 **Mirror Mode** - Pattern reflection without judgment
 - 🟡 **Community Standards** - Optional group rules
 - 🟡 **Trust Dynamics** - Appeals and due process
@@ -242,8 +248,9 @@ See [Contributing Guide](docs/CONTRIBUTING.md) for details.
 mnemosyne/
 ├── backend/               # FastAPI + Python backend
 ├── frontend/              # React + TypeScript frontend
-├── shadow/                # Agent orchestration system
-├── dialogues/             # Philosophical agents (50+)
+├── shadow/                # Shadow Council agents (to be ported as unified tool)
+├── dialogues/             # Forum of Echoes agents (to be ported as unified tool)
+├── tools/                 # Universal tool plugins (coming soon)
 ├── collective/            # Collective intelligence templates
 ├── docs/                  # All documentation
 │   ├── decisions/         # Architecture decisions

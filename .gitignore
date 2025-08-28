@@ -68,6 +68,10 @@ tmp/
 archive/*
 !archive/.gitkeep
 
+# Legacy agent systems (migrated to tools)
+shadow/
+dialogues/
+
 # Local development
 local/
 scratch/

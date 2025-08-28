@@ -172,8 +172,10 @@ class AgenticFlowController:
         
         Returns reasoning text explaining what needs to be done.
         """
+        logger.info("Starting reason_about_query...")
         # Load reasoning prompt
         prompt = await self._load_prompt("agentic_reasoning")
+        logger.info(f"Loaded prompt, length: {len(prompt)}")
         
         # Build context for LLM
         llm_context = {
@@ -186,13 +188,18 @@ class AgenticFlowController:
         }
         
         # Get LLM reasoning (use limited tokens for efficiency)
-        response = await self.llm_service.complete(
-            prompt=prompt.format(**llm_context),
-            system="You are an intelligent assistant that reasons about user queries and determines what actions to take.",
-            max_tokens=settings.OPENAI_MAX_TOKENS_REASONING
-        )
-        
-        return response.get("content", "")
+        logger.info("Calling LLM for reasoning...")
+        try:
+            response = await self.llm_service.complete(
+                prompt=prompt.format(**llm_context),
+                system="You are an intelligent assistant that reasons about user queries and determines what actions to take.",
+                max_tokens=settings.OPENAI_MAX_TOKENS_REASONING
+            )
+            logger.info(f"LLM response received: {response is not None}")
+            return response.get("content", "") if response else ""
+        except Exception as e:
+            logger.error(f"Error in reason_about_query LLM call: {e}")
+            return f"Error reasoning about query: {str(e)}"
     
     async def plan_actions(
         self, 
@@ -450,19 +457,37 @@ class AgenticFlowController:
     async def _load_prompt(self, name: str) -> str:
         """Load a prompt template from file."""
         import os
+        import aiofiles
         prompt_path = os.path.join(
             os.path.dirname(__file__),
             "..", "..", "prompts", f"{name}.txt"
         )
         try:
-            with open(prompt_path, "r") as f:
-                return f.read()
+            # Try async file reading first
+            try:
+                async with aiofiles.open(prompt_path, "r") as f:
+                    return await f.read()
+            except:
+                # Fallback to sync reading if aiofiles not available
+                with open(prompt_path, "r") as f:
+                    return f.read()
         except FileNotFoundError:
             logger.warning(f"Prompt {name} not found at {prompt_path}, using default")
             return self._get_default_prompt(name)
     
     def _get_default_prompt(self, name: str) -> str:
         """Get default prompt if file not found."""
+        # Get available tools from registry for descriptions
+        try:
+            from app.services.tools.registry import tool_registry
+            available_tools = tool_registry.list_tools()
+            tool_descriptions = "\n".join([
+                f"  - {tool}: {tool_registry.get_tool_metadata(tool).description}"
+                for tool in available_tools
+            ])
+        except:
+            tool_descriptions = "  - shadow_council: Technical and strategic expertise\n  - forum_of_echoes: Philosophical perspectives"
+            
         defaults = {
             "agentic_reasoning": """
 Given the user query: {query}
@@ -472,21 +497,63 @@ Active tasks: {active_tasks}
 Previous actions taken: {previous_actions}
 
 Analyze what needs to be done to properly respond to this query.
-Consider which actions would be most helpful.
-Available actions: {available_actions}
+
+IMPORTANT: Use these specific actions (DO NOT use ACTIVATE_SHADOW or ACTIVATE_DIALOGUE - those are deprecated):
+
+- USE_TOOL: Execute specialized tools for complex analysis. ALWAYS use this when:
+  * User mentions "Shadow Council" or needs technical help → USE_TOOL with tool_name="shadow_council"
+  * User mentions "Forum of Echoes" or needs philosophical perspectives → USE_TOOL with tool_name="forum_of_echoes"
+  * User needs calculations → USE_TOOL with tool_name="calculator"
+  * User needs date/time → USE_TOOL with tool_name="datetime"
+- SEARCH_MEMORIES: Search user's stored memories
+- CREATE_MEMORY: Store new information as a memory
+- LIST_TASKS/CREATE_TASK: Manage user's tasks
+- EXPLAIN: Provide direct explanation without tools
+- DONE: Simple response is sufficient
+
+DO NOT USE: ACTIVATE_SHADOW, ACTIVATE_DIALOGUE (these are legacy - use USE_TOOL instead)
+
+Available tools:
+""" + tool_descriptions + """
+
+Consider if any tools would enhance the response, especially for:
+- Technical/architectural questions → Shadow Council
+- Philosophical/ethical questions → Forum of Echoes
+- Complex analysis requiring multiple perspectives
 
 Provide clear reasoning about what should be done and why.
 """,
             "agentic_planning": """
 Based on this reasoning: {reasoning}
 
-Available actions: {available_actions}
+CRITICAL - Use ONLY these actions (NOT ACTIVATE_SHADOW or ACTIVATE_DIALOGUE):
+- USE_TOOL: Execute tools (parameters: tool_name, query, parameters)
+  * For Shadow Council: tool_name="shadow_council"
+  * For Forum of Echoes: tool_name="forum_of_echoes"
+- SEARCH_MEMORIES: Find relevant memories (parameters: query, limit)
+- CREATE_MEMORY: Store information (parameters: content, type, tags)
+- LIST_TASKS: Get user tasks (parameters: status, limit)
+- EXPLAIN: Direct response (parameters: none)
+- DONE: Complete (parameters: none)
+
+NEVER USE: ACTIVATE_SHADOW, ACTIVATE_DIALOGUE (deprecated - use USE_TOOL)
+
+Available tools for USE_TOOL action:
+""" + tool_descriptions + """
 
 Create a specific action plan as a JSON array. Each action should have:
-- action: the action name from available actions
-- parameters: any parameters needed
+- action: the action name (e.g., "USE_TOOL", "SEARCH_MEMORIES")
+- parameters: any parameters needed (for USE_TOOL: tool_name, query)
 - reasoning: why this action is needed
 - confidence: confidence score 0-1
+
+Example for using Shadow Council (EXACT format required):
+[{{"action": "USE_TOOL", "parameters": {{"tool_name": "shadow_council", "query": "design a blockchain protocol", "parameters": {{}}}}, "reasoning": "User needs technical expertise", "confidence": 0.9}}]
+
+Example for using Forum of Echoes (EXACT format required):
+[{{"action": "USE_TOOL", "parameters": {{"tool_name": "forum_of_echoes", "query": "what is the meaning of life", "parameters": {{}}}}, "reasoning": "User needs philosophical perspectives", "confidence": 0.9}}]
+
+IMPORTANT: Always use exact parameter names: tool_name (NOT tool), query (NOT input)
 
 Return ONLY valid JSON array, no other text.
 """,

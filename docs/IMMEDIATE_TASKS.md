@@ -1,6 +1,6 @@
 # Immediate Task Breakdown for Mnemosyne Protocol
 *Building Cognitive Sovereignty Through Iterative Development*
-*Last Updated: August 27, 2025*
+*Last Updated: August 27, 2025 - PHASE 1.B COMPLETE!*
 
 ## ✅ Phase 1.A: Agentic Enhancement (100% COMPLETE)
 
@@ -47,8 +47,8 @@
 
 ### Stage 3: Enhancement (Days 7-10) ✅ COMPLETE
 - ✅ Connect action executors (LIST_TASKS, CREATE_TASK working)
-- 🟡 Connect Shadow agent system (stubs in place, Phase 1.B)
-- 🟡 Connect Dialogue agent system (stubs in place, Phase 1.C)
+- 🟡 Port Shadow Council as unified tool (Phase 1.B)
+- 🟡 Port Forum of Echoes as unified tool (Phase 1.B)
 - ✅ Add context aggregation (memories integrated)
 - 🟡 Implement caching for common decisions (deferred)
 - ✅ Add explanation mode (reasoning included)
@@ -60,24 +60,60 @@
 - ✅ Performance optimization - Parallel execution working
 - ✅ Safety validation - Receipts ensure transparency
 
-## ⭐ NEXT PRIORITY: Phase 1.B Shadow Integration
+## ✅ COMPLETE: Phase 1.B Tools & Plugin System (BOTH WEEKS DONE!)
 
-**Phase 1.B - Shadow Agent Connection (1 week)**:
-- 🔴 Connect Engineer agent for technical queries (agent exists)
-- 🔴 Connect Librarian agent for information retrieval (agent exists)
-- 🔴 Connect Priest agent for pattern recognition (agent exists)
-- 🔴 Wire up CREATE_MEMORY action to executor
-- 🔴 Wire up UPDATE_TASK action to executor
-- 🔴 Test multi-agent collaboration
-- 🔴 Add agent-specific prompts
-- 🔴 Implement agent debate orchestration
+**Phase 1.B - Universal Tool Architecture (2 weeks)**:
 
-**Phase 1.C - Dialogue System (1 week)**:
-- [ ] Connect 50+ philosophical agents
-- [ ] Implement debate orchestration
-- [ ] Add perspective synthesis
-- [ ] Create dialogue UI component
-- [ ] Test multi-perspective responses
+### Week 1: Core Infrastructure ✅ COMPLETE (August 27, 2025)
+- ✅ Implement BaseTool interface and registry
+- ✅ Create tool discovery and validation system
+- ✅ Implement USE_TOOL, SELECT_TOOLS, COMPOSE_TOOLS actions
+- ✅ Create 5 simple tools (calculator, datetime, json_formatter, text_formatter, word_counter)
+- ✅ Tool auto-registration on app startup (7 tools registered)
+- ✅ Fixed registry deadlock issue with internal registration method
+
+### Week 2: Agent Migration ✅ COMPLETE (August 27, 2025)
+- ✅ Shadow Council implemented as unified tool with 5 sub-agents:
+  - ✅ Artificer (technical expertise) with LLM integration
+  - ✅ Archivist (knowledge management) with LLM integration
+  - ✅ Mystagogue (pattern recognition) with LLM integration
+  - ✅ Tactician (strategic planning) with LLM integration
+  - ✅ Daemon (devil's advocate) with LLM integration
+- ✅ Forum of Echoes implemented with 10 philosophical voices:
+  - ✅ Pragmatist, Stoic, Existentialist, Buddhist, Skeptic
+  - ✅ Idealist, Materialist, Absurdist, Confucian, Taoist
+- ✅ Memory/Task executors wired (CREATE_MEMORY, UPDATE_TASK)
+- ✅ Multi-agent orchestration and dialogue facilitation
+- ✅ UI tool palette built with manual selection and categories
+- ✅ Enhanced LLM prompts to know about tools and when to use them
+
+## 🚀 NEXT: Phase 1.C - Protocol Integration (2 weeks)
+
+### Week 3: External Protocols (Next Priority)
+- [ ] Implement OpenAPI tool generator
+  - Parse OpenAPI specs and generate tools
+  - Handle authentication (Bearer, API key, OAuth)
+  - Map operations to tool methods
+- [ ] Integrate MCP (Model Context Protocol)
+  - Implement MCP client
+  - Create MCP tool adapter
+  - Test with GitHub, Slack, Google Drive servers
+- [ ] Add tool authentication manager
+  - Secure credential storage
+  - Per-tool auth configuration
+
+### Week 4: A2A Support (Bidirectional)
+- [ ] Implement A2A agent wrapper (consume external agents)
+  - Fetch and parse agent cards
+  - Convert A2A format to Mnemosyne tools
+  - Handle streaming responses
+- [ ] Generate Mnemosyne agent cards (expose capabilities)
+  - Dynamic card generation based on user config
+  - Multi-level exposure (public/partner/local)
+  - Privacy guards for data sanitization
+- [ ] Test bidirectional communication
+  - Mnemosyne consuming external agents
+  - Other systems using Mnemosyne capabilities
 
 **Phase 1.D - Remaining Accessibility**:
 - 🔴 Graduated Sovereignty: Protected/Guided/Sovereign modes

@@ -81,25 +81,40 @@ Your intentions become concrete through a sovereignty-preserving task system:
 
 Every action generates receipts for transparency while maintaining sovereignty.
 
-### 2. Identity Compression (ICV) - Holographic Identity
-Your identity preserved through holographic compression:
-- **Multi-dimensional representation** - Each fragment contains the whole
-- **Temporal stability** - 70% core identity, 30% adaptive growth
-- **Privacy layers** - Public, trusted, and private scopes
-- **User control** - Your identity representation belongs to you
-- **Productive variation** - 5% controlled randomness preserves creativity
+### 2. Identity System (PIE + Kartouche) - Living Identity
+Your identity captured through pragmatic embedding and symbolic synthesis:
 
-Every aspect designed to preserve sovereignty while enabling connection.
+**Pragmatic Identity Embedding (PIE)**:
+- **Dynamic profiling** - LLM-assisted data gathering that respects boundaries
+- **Temporal dynamics** - Identity traits that freshen, decay, and reinforce naturally
+- **128-dim secure vector** - Compressed representation for cryptographic use
+- **Layered privacy** - Core, adaptive, and private partitions for selective disclosure
 
-### 3. Progressive Trust Exchange
-Trust exists on a spectrum and evolves contextually:
-- **Awareness** → Someone exists
-- **Recognition** → Minimal verified disclosure
-- **Familiarity** → Shared interaction history
-- **Shared Memory** → Mutual experiences established
-- **Deep Trust** → Full alignment and revelation
+**Identity Kartouche**:
+- **Validated symbolism** - Trained classifiers map to archetypes, not arbitrary assignments
+- **Visual synthesis** - Multiple symbols merge into your unique glyph
+- **Trust visualization** - Kartouche evolves to show trust state
+- **User sovereignty** - You own your identity data and its representation
 
-Trust isn't binary but contextual - deep trust in one area doesn't mean blind trust in all. Backed by cryptographic commitments ensuring fair disclosure, with appeal processes for trust events and user-defined recovery protocols.
+A dual system: rigorous ML for security, rich symbolism for meaning.
+
+### 3. Trust Transaction Framework (TTF)
+Trust built through verifiable actions, not abstract levels:
+
+**Verifiable Claims**:
+- **Platform claims** - "I am a verified human user"
+- **History claims** - "I have completed >10 collaborative tasks"
+- **Reputation claims** - "My feedback score is >4.5 stars"
+- **Social claims** - "We share 3+ mutual vouched contacts"
+- All backed by ZK-proofs for privacy-preserving verification
+
+**Trust Infrastructure**:
+- **Private Trust Ledger** - Your append-only log of trust events
+- **Dynamic Trust Score** - Continuous 0-100 metric with natural decay
+- **Trust Handshake** - Prove score thresholds without revealing exact values
+- **Local-first design** - You own and control your trust data
+
+Trust as living reputation: earned through action, maintained through engagement, verified without exposure.
 
 ### 4. Resonance & Compatibility
 Mathematical models determine natural connection between compressed identities:

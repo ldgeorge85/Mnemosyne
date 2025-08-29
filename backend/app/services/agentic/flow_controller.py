@@ -41,11 +41,13 @@ class AgenticFlowController:
         self, 
         llm_service: LLMService,
         receipt_service: ReceiptService,
-        executor: Optional[ActionExecutor] = None
+        executor: Optional[ActionExecutor] = None,
+        llm_config: Optional[Dict[str, Any]] = None
     ):
         self.llm_service = llm_service
         self.receipt_service = receipt_service
         self.executor = executor or ActionExecutor()
+        self.llm_config = llm_config or {}
         
     async def execute_flow(
         self, 
@@ -97,7 +99,14 @@ class AgenticFlowController:
             
             # Step 3: Execute actions in parallel (or sequential if specified)
             if stream:
-                await self._stream_status(f"⚡ Executing {len(actions)} actions...")
+                action_names = [a.action.value if hasattr(a.action, 'value') else str(a.action) for a in actions]
+                await self._stream_status(f"⚡ Executing {len(actions)} actions: {action_names}")
+            
+            action_names = [a.action.value if hasattr(a.action, 'value') else str(a.action) for a in actions]
+            logger.info(f"About to execute {len(actions)} actions: {action_names}")
+            for action in actions:
+                action_name = action.action.value if hasattr(action.action, 'value') else str(action.action)
+                logger.info(f"Action details: {action_name} with params: {action.parameters}")
                 
             if plan.parallel and len(actions) > 1:
                 # Parallel execution
@@ -174,8 +183,15 @@ class AgenticFlowController:
         """
         logger.info("Starting reason_about_query...")
         # Load reasoning prompt
-        prompt = await self._load_prompt("agentic_reasoning")
+        # Try simpler prompt for InnoGPT-1
+        try:
+            prompt = await self._load_prompt("agentic_reasoning_simple")
+        except:
+            prompt = await self._load_prompt("agentic_reasoning")
         logger.info(f"Loaded prompt, length: {len(prompt)}")
+        
+        # Get available tools
+        available_tools = await self._get_available_tools()
         
         # Build context for LLM
         llm_context = {
@@ -184,19 +200,35 @@ class AgenticFlowController:
             "available_memories": len(context.get("memories", [])),
             "active_tasks": len(context.get("tasks", [])),
             "previous_actions": [a.action for a in plan.actions],
-            "available_actions": [a.value for a in MnemosyneAction]
+            "available_actions": [a.value for a in MnemosyneAction],
+            "available_tools": available_tools
         }
         
         # Get LLM reasoning (use limited tokens for efficiency)
         logger.info("Calling LLM for reasoning...")
         try:
+            # Format the prompt with context
+            try:
+                formatted_prompt = prompt.format(**llm_context)
+            except KeyError as ke:
+                logger.error(f"Missing key in prompt template: {ke}")
+                logger.error(f"Available keys: {llm_context.keys()}")
+                logger.error(f"Prompt template: {prompt[:200]}")
+                raise
+                
+            logger.info(f"Formatted prompt length: {len(formatted_prompt)}")
+            logger.info(f"First 500 chars of prompt: {formatted_prompt[:500]}")
+            
             response = await self.llm_service.complete(
-                prompt=prompt.format(**llm_context),
+                prompt=formatted_prompt,
                 system="You are an intelligent assistant that reasons about user queries and determines what actions to take.",
-                max_tokens=settings.OPENAI_MAX_TOKENS_REASONING
+                max_tokens=settings.OPENAI_MAX_TOKENS_REASONING,
+                **self.llm_config  # Pass the LLM config (includes system_prompt_mode for InnoGPT)
             )
             logger.info(f"LLM response received: {response is not None}")
-            return response.get("content", "") if response else ""
+            reasoning_content = response.get("content", "") if response else ""
+            logger.info(f"Reasoning content: {reasoning_content[:500]}")
+            return reasoning_content
         except Exception as e:
             logger.error(f"Error in reason_about_query LLM call: {e}")
             return f"Error reasoning about query: {str(e)}"
@@ -214,27 +246,53 @@ class AgenticFlowController:
         # Load action planning prompt
         prompt = await self._load_prompt("agentic_planning")
         
+        # Get available tools
+        available_tools = await self._get_available_tools()
+        
+        # If reasoning is empty or contains error, provide fallback that includes the query
+        if not reasoning or "error" in reasoning.lower():
+            logger.warning(f"Reasoning was empty or contained error: {reasoning}")
+            # Include the actual query in the fallback so the LLM knows what to do
+            query = context.get('query', context.get('original_query', 'user request'))
+            reasoning = f"User asked: '{query}'. Need to determine appropriate action based on this request."
+        
         # Get LLM to plan actions (use limited tokens for efficiency)
+        logger.info(f"Planning with reasoning: {reasoning[:200]}")
+        logger.info(f"Planning with context keys: {context.keys()}")
+        logger.info(f"Query from context: {context.get('query', 'N/A')[:100]}")
+        
         response = await self.llm_service.complete(
             prompt=prompt.format(
                 reasoning=reasoning,
                 available_actions=[a.value for a in MnemosyneAction],
+                available_tools=available_tools,
                 context=json.dumps(context, default=str)[:1000]  # Truncate for token limits
             ),
             max_tokens=settings.OPENAI_MAX_TOKENS_REASONING,
-            system="Convert reasoning into a specific action plan. Return JSON array of actions."
+            system="Convert reasoning into a specific action plan. Return JSON array of actions.",
+            **self.llm_config  # Pass the LLM config
         )
         
         try:
             # Parse JSON response
-            actions_data = json.loads(response.get("content", "[]"))
+            content = response.get("content", "[]")
+            logger.info(f"Action planning LLM response: {content[:500]}")
+            actions_data = json.loads(content)
             
             # Convert to ActionPayload objects
             actions = []
             for action_dict in actions_data:
                 if isinstance(action_dict, dict):
+                    # Get action string and ensure it's a valid enum member
+                    action_str = action_dict.get("action", "DONE")
+                    try:
+                        action_enum = MnemosyneAction(action_str)
+                    except ValueError:
+                        logger.warning(f"Invalid action '{action_str}', defaulting to DONE")
+                        action_enum = MnemosyneAction.DONE
+                    
                     action = ActionPayload(
-                        action=MnemosyneAction(action_dict.get("action", "DONE")),
+                        action=action_enum,
                         parameters=action_dict.get("parameters", {}),
                         reasoning=action_dict.get("reasoning", ""),
                         confidence=action_dict.get("confidence", 0.8)
@@ -253,6 +311,7 @@ class AgenticFlowController:
             
         except (json.JSONDecodeError, ValueError) as e:
             logger.error(f"Failed to parse action plan: {e}")
+            logger.error(f"Raw LLM response: {content[:1000]}")
             # Fallback to simple response
             return [ActionPayload(
                 action=MnemosyneAction.EXPLAIN,
@@ -273,9 +332,15 @@ class AgenticFlowController:
         """
         start_time = time.time()
         
+        # action.action is already a string due to use_enum_values=True in ActionPayload
+        action_str = action.action if isinstance(action.action, str) else action.action.value
+        logger.info(f"execute_action called with: {action_str}, params: {action.parameters}")
+        
         try:
             # Execute through the executor
+            logger.info(f"Calling executor.execute for {action_str}")
             result_data = await self.executor.execute(action, context, user_id)
+            logger.info(f"Executor returned: {str(result_data)[:200]}")
             
             # Create result
             result = ActionResult(
@@ -454,6 +519,32 @@ class AgenticFlowController:
         
         return receipt
     
+    async def _get_available_tools(self) -> str:
+        """Get list of available tools for the prompts."""
+        try:
+            from app.services.tools.registry import tool_registry
+            
+            # Initialize the registry if needed
+            if not tool_registry._initialized:
+                await tool_registry.initialize()
+            
+            available_tools = tool_registry.list_tools()
+            
+            # Build tool descriptions
+            tool_descriptions = []
+            for tool_name in available_tools:
+                try:
+                    tool = tool_registry.tools[tool_name]
+                    metadata = tool.metadata
+                    tool_descriptions.append(f"  - {tool_name}: {metadata.description}")
+                except:
+                    tool_descriptions.append(f"  - {tool_name}: (description unavailable)")
+            
+            return "\n".join(tool_descriptions) if tool_descriptions else "  - shadow_council: Technical and strategic expertise\n  - forum_of_echoes: Philosophical perspectives"
+        except Exception as e:
+            logger.warning(f"Failed to load tool descriptions: {e}")
+            return "  - shadow_council: Technical and strategic expertise\n  - forum_of_echoes: Philosophical perspectives"
+    
     async def _load_prompt(self, name: str) -> str:
         """Load a prompt template from file."""
         import os
@@ -472,115 +563,8 @@ class AgenticFlowController:
                 with open(prompt_path, "r") as f:
                     return f.read()
         except FileNotFoundError:
-            logger.warning(f"Prompt {name} not found at {prompt_path}, using default")
-            return self._get_default_prompt(name)
-    
-    def _get_default_prompt(self, name: str) -> str:
-        """Get default prompt if file not found."""
-        # Get available tools from registry for descriptions
-        try:
-            from app.services.tools.registry import tool_registry
-            available_tools = tool_registry.list_tools()
-            tool_descriptions = "\n".join([
-                f"  - {tool}: {tool_registry.get_tool_metadata(tool).description}"
-                for tool in available_tools
-            ])
-        except:
-            tool_descriptions = "  - shadow_council: Technical and strategic expertise\n  - forum_of_echoes: Philosophical perspectives"
-            
-        defaults = {
-            "agentic_reasoning": """
-Given the user query: {query}
-Current persona mode: {current_persona}
-Available memories: {available_memories}
-Active tasks: {active_tasks}
-Previous actions taken: {previous_actions}
-
-Analyze what needs to be done to properly respond to this query.
-
-IMPORTANT: Use these specific actions (DO NOT use ACTIVATE_SHADOW or ACTIVATE_DIALOGUE - those are deprecated):
-
-- USE_TOOL: Execute specialized tools for complex analysis. ALWAYS use this when:
-  * User mentions "Shadow Council" or needs technical help → USE_TOOL with tool_name="shadow_council"
-  * User mentions "Forum of Echoes" or needs philosophical perspectives → USE_TOOL with tool_name="forum_of_echoes"
-  * User needs calculations → USE_TOOL with tool_name="calculator"
-  * User needs date/time → USE_TOOL with tool_name="datetime"
-- SEARCH_MEMORIES: Search user's stored memories
-- CREATE_MEMORY: Store new information as a memory
-- LIST_TASKS/CREATE_TASK: Manage user's tasks
-- EXPLAIN: Provide direct explanation without tools
-- DONE: Simple response is sufficient
-
-DO NOT USE: ACTIVATE_SHADOW, ACTIVATE_DIALOGUE (these are legacy - use USE_TOOL instead)
-
-Available tools:
-""" + tool_descriptions + """
-
-Consider if any tools would enhance the response, especially for:
-- Technical/architectural questions → Shadow Council
-- Philosophical/ethical questions → Forum of Echoes
-- Complex analysis requiring multiple perspectives
-
-Provide clear reasoning about what should be done and why.
-""",
-            "agentic_planning": """
-Based on this reasoning: {reasoning}
-
-CRITICAL - Use ONLY these actions (NOT ACTIVATE_SHADOW or ACTIVATE_DIALOGUE):
-- USE_TOOL: Execute tools (parameters: tool_name, query, parameters)
-  * For Shadow Council: tool_name="shadow_council"
-  * For Forum of Echoes: tool_name="forum_of_echoes"
-- SEARCH_MEMORIES: Find relevant memories (parameters: query, limit)
-- CREATE_MEMORY: Store information (parameters: content, type, tags)
-- LIST_TASKS: Get user tasks (parameters: status, limit)
-- EXPLAIN: Direct response (parameters: none)
-- DONE: Complete (parameters: none)
-
-NEVER USE: ACTIVATE_SHADOW, ACTIVATE_DIALOGUE (deprecated - use USE_TOOL)
-
-Available tools for USE_TOOL action:
-""" + tool_descriptions + """
-
-Create a specific action plan as a JSON array. Each action should have:
-- action: the action name (e.g., "USE_TOOL", "SEARCH_MEMORIES")
-- parameters: any parameters needed (for USE_TOOL: tool_name, query)
-- reasoning: why this action is needed
-- confidence: confidence score 0-1
-
-Example for using Shadow Council (EXACT format required):
-[{{"action": "USE_TOOL", "parameters": {{"tool_name": "shadow_council", "query": "design a blockchain protocol", "parameters": {{}}}}, "reasoning": "User needs technical expertise", "confidence": 0.9}}]
-
-Example for using Forum of Echoes (EXACT format required):
-[{{"action": "USE_TOOL", "parameters": {{"tool_name": "forum_of_echoes", "query": "what is the meaning of life", "parameters": {{}}}}, "reasoning": "User needs philosophical perspectives", "confidence": 0.9}}]
-
-IMPORTANT: Always use exact parameter names: tool_name (NOT tool), query (NOT input)
-
-Return ONLY valid JSON array, no other text.
-""",
-            "agentic_needs_more": """
-Query: {query}
-
-Results from actions: {results}
-
-Does the user query need more information to be fully addressed?
-Consider if the results provide sufficient information.
-
-Respond with only YES or NO.
-""",
-            "agentic_suggestions": """
-Actions taken: {actions}
-Results: {results}
-
-Generate up to 5 helpful suggestions for the user.
-Each suggestion should respect user agency - they are optional.
-
-Return as JSON array with format:
-[{{"text": "suggestion", "action": "optional_action", "reasoning": "why helpful"}}]
-
-Return ONLY valid JSON array.
-"""
-        }
-        return defaults.get(name, "")
+            logger.error(f"CRITICAL: Prompt {name} not found at {prompt_path}")
+            raise FileNotFoundError(f"Required prompt file missing: {prompt_path}")
     
     def _format_response(self, results: List[ActionResult]) -> Dict[str, Any]:
         """Format results into user-friendly response."""

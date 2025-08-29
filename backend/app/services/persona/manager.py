@@ -246,41 +246,6 @@ class PersonaManager:
             "greeting": self._get_mode_transition_message(old_mode, new_mode)
         }
     
-    async def _select_mode_fallback(
-        self, 
-        query: str, 
-        context: Dict[str, Any]
-    ) -> PersonaMode:
-        """
-        Fallback mode selection using keywords.
-        
-        Args:
-            query: User's query text
-            context: Current conversation context
-            
-        Returns:
-            Selected PersonaMode
-        """
-        query_lower = query.lower()
-        
-        # Guardian mode for safety/protection
-        if any(word in query_lower for word in ["help", "worried", "scared", "danger", "protect"]):
-            return PersonaMode.GUARDIAN
-            
-        # Mentor mode for learning/growth
-        if any(word in query_lower for word in ["learn", "teach", "how to", "understand", "skill"]):
-            return PersonaMode.MENTOR
-            
-        # Mediator mode for conflict
-        if any(word in query_lower for word in ["argue", "conflict", "disagree", "partner", "relationship"]):
-            return PersonaMode.MEDIATOR
-            
-        # Mirror mode for reflection
-        if any(word in query_lower for word in ["reflect", "think", "analyze", "pattern"]):
-            return PersonaMode.MIRROR
-            
-        # Default to confidant for emotional support
-        return PersonaMode.CONFIDANT
     
     async def select_mode_llm(
         self, 
@@ -314,9 +279,8 @@ class PersonaManager:
             with open(prompt_path, "r") as f:
                 prompt_template = f.read()
         except FileNotFoundError:
-            logger.warning(f"Persona selection prompt not found at {prompt_path}, using fallback")
-            # Fallback to simple keyword detection
-            return await self._select_mode_fallback(query, context)
+            logger.error(f"CRITICAL: Persona selection prompt not found at {prompt_path}")
+            raise FileNotFoundError(f"Required prompt file missing: {prompt_path}")
         
         # Build context for LLM
         mood_indicators = context.get("mood_indicators", {})
@@ -341,11 +305,32 @@ class PersonaManager:
                 max_tokens=settings.OPENAI_MAX_TOKENS_REASONING
             )
             
-            # Parse JSON response
-            result = json.loads(response.get("content", "{}"))
-            selected_mode = result.get("selected_mode", "confidant").lower()
-            confidence = result.get("confidence", 0.5)
-            reasoning = result.get("reasoning", "")
+            # Try to parse JSON response
+            content = response.get("content", "{}")
+            try:
+                result = json.loads(content)
+                selected_mode = result.get("selected_mode", "confidant").lower()
+                confidence = result.get("confidence", 0.5)
+                reasoning = result.get("reasoning", "")
+            except json.JSONDecodeError:
+                # Fallback: try to extract mode from plain text response
+                logger.warning(f"LLM returned non-JSON response, attempting text parsing: {content[:200]}")
+                content_lower = content.lower()
+                
+                # Look for mode keywords in the response
+                if "mentor" in content_lower:
+                    selected_mode = "mentor"
+                elif "guardian" in content_lower:
+                    selected_mode = "guardian"
+                elif "mediator" in content_lower:
+                    selected_mode = "mediator"
+                elif "mirror" in content_lower:
+                    selected_mode = "mirror"
+                else:
+                    selected_mode = "confidant"
+                    
+                confidence = 0.7  # Default confidence for text parsing
+                reasoning = content[:200] if content else "Parsed from plain text response"
             
             logger.info(f"LLM selected {selected_mode} mode with {confidence:.2f} confidence: {reasoning}")
             
@@ -361,9 +346,8 @@ class PersonaManager:
             return mode_map.get(selected_mode, PersonaMode.CONFIDANT)
             
         except Exception as e:
-            logger.error(f"LLM persona selection failed: {e}, falling back to keyword detection")
-            # Fallback to keyword-based selection
-            return await self.select_mode(query, context)
+            logger.error(f"LLM persona selection failed: {e}")
+            raise RuntimeError(f"Failed to select persona mode: {e}")
     
     def _get_mode_transition_message(self, 
                                     old_mode: Optional[PersonaMode], 

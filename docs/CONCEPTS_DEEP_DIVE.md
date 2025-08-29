@@ -7,81 +7,69 @@ This document captures the complete depth of the Mnemosyne Protocol's theoretica
 
 ---
 
-## 1. Identity Compression Vector (ICV) [THEORETICAL]
+## 1. Identity System Evolution: ICV → PIE + Kartouche [HYBRID]
 
-### The Five-Layer Compression Pipeline
+### Original ICV Concept [DEPRECATED]
+The original Identity Compression Vector proposed speculative features like holographic properties and arbitrary 70/30 stability splits. While philosophically interesting, empirical analysis revealed these to be ungrounded and impractical.
 
-#### Layer 1: Raw Streams
-- Conversational turns, notes, external docs, metadata
-- Stored as full text/audio/visual artifacts
-- Indexed via embeddings for retrieval
+### New Approach: Pragmatic Identity Embedding (PIE) Pipeline [IMPLEMENTABLE]
 
-#### Layer 2: Feature Packs (Structured Compression)
-Each pack outputs a fixed-dimensional vector (32-128 dims):
+#### Stage 1: Dynamic Data Acquisition
+**Continuous Learning System**:
+- **Psychographic Data**: Both implicit (behavioral patterns) and explicit (questionnaires)
+- **Contextual Data**: Environmental and temporal factors marked as transient
+- **LLM-Assisted Profiling**: RAG architecture with psychometric knowledge base
+  - Function calling for structured output
+  - Gap detection and natural prompting
+  - Non-intrusive data gathering
 
-**Stylometry Pack**: How they communicate
-- Lexical diversity metrics
-- Sentence complexity patterns  
-- Punctuation and rhythm signatures
-- Emotional tone distributions
+#### Stage 2: Temporal Dynamics
+**Living Identity Model**:
+- **Freshness Scores**: Each trait has a decay function
+- **Reinforcement**: Repeated behaviors strengthen traits
+- **Degradation**: Contradictory actions weaken old patterns
+- **Evolution**: Identity naturally adapts over time
 
-**Values/Lexicon Pack**: What they value
-- Weighted term frequency analysis
-- Moral foundations theory mapping
-- Value-loaded term extraction
-- Belief system indicators
+#### Stage 3: Compression & Embedding
+**ML-Based Vectorization**:
+- **Feature Extraction**: Standard ML models for behavioral patterns
+- **VAE Compression**: 128-dimension secure embedding
+- **Layered Partitioning**:
+  - Core (40%): Stable traits
+  - Adaptive (40%): Evolving characteristics
+  - Private (20%): Sensitive attributes
 
-**Narrative Motifs Pack**: Recurring themes
-- Story structure preferences
-- Metaphor and analogy patterns
-- Recurring narrative elements
-- Archetypal story preferences
+#### Stage 4: Symbolic Overlay - Identity Kartouche [UNIQUE]
+**Validated Projection System**:
+- **Trained Classifiers**: Not arbitrary mappings
+  - Archetype classifier trained on exemplar profiles
+  - Tarot/I Ching classifiers for complementary perspectives
+  - Confidence scores for transparency
+- **Composite Symbol Generation**: e.g., `(Sage, Magician, The Creative)`
+- **Visual Synthesis**: Algorithmic merging into unique glyph
+- **Trust State Integration**: Kartouche evolves with trust dynamics
 
-**Behavioral Signals Pack**: Action patterns  
-- Response timing distributions
-- Choice pattern analysis
-- Engagement rhythms
-- Interaction preferences
+### Validation Metrics [EMPIRICAL]
 
-#### Layer 3: Latent Synthesizer
-- Concatenate feature vectors
-- Dimensionality reduction (PCA, autoencoder, or symbolic mapping)
-- Output: Unified 64-dimensional latent vector
-- Stored encrypted in pgvector
-
-#### Layer 4: ICV Packing (128-bit Structure)
+**Reconstruction Accuracy**: Can we recover psychographic traits?
 ```
-Bit Allocation (Configurable):
-- Epoch timestamp: 32 bits
-- Identity class/cluster: 24 bits  
-- Feature hash: 36 bits
-- Compatibility key: 8 bits
-- CRC-12: 12 bits
-- Reserved: 16 bits
-Total: 128 bits → hex/base32 string
+Accuracy = correct_trait_predictions / total_traits > 0.85
 ```
 
-#### Layer 5: Receipts & Holography
-- Every recompute logged with before/after states
-- Delta tracking for identity evolution
-- Holographic property: First N bits approximate whole identity
-- Enables partial matching and privacy-preserving comparison
-
-### Mathematical Foundation
-
-**Information Retention Target**: 80% mutual information between raw and compressed
+**Temporal Stability**: Do core traits persist?
 ```
-I(Raw; ICV) / H(Raw) ≥ 0.8
+Core_stability = correlation(core_t, core_t+30days) > 0.8
+Adaptive_plasticity = variance(adaptive_traits) in expected range
 ```
 
-**Stability Model**: 70/30 split
+**Separability**: Are users distinguishable?
 ```
-ICV(t+1) = 0.7 * ICV_core(t) + 0.3 * ICV_adaptive(t+1)
+Inter-user_distance > 3 * intra-user_variance
 ```
 
-**Uniqueness Requirement**: 
+**Symbolic Validity**: Do projections match human assessment?
 ```
-P(collision) < 10^-9 at 10^10 scale
+Agreement = classifier_output ∩ expert_rating / total > 0.75
 ```
 
 ### Privacy Architecture
@@ -94,61 +82,93 @@ P(collision) < 10^-9 at 10^10 scale
 
 ---
 
-## 2. Progressive Trust Exchange [THEORETICAL]
+## 2. Trust System Evolution: Progressive Exchange → Transaction Framework [IMPLEMENTABLE]
 
-### Trust State Machine
+### Trust Transaction Framework (TTF) [NEW]
 
-#### Phase 1: Awareness
-- Identity presence detected
-- No information exchange
-- Minimal resource commitment
-- Exit: Recognition signal sent
+#### Core Components
 
-#### Phase 2: Recognition  
-- Pseudonymous proof of uniqueness
-- Minimal verifiable disclosure
-- Resource: Attention bandwidth
-- Exit: Repeated interaction threshold
+**1. Verifiable Claims**:
+Atomic units of trust backed by ZK-proofs:
+- **Platform Claims**: Account age, verification status
+- **History Claims**: Task completions, contributions
+- **Reputation Claims**: Feedback scores, ratings
+- **Social Claims**: Mutual connections, vouches
+- **External Claims**: Third-party credentials
 
-#### Phase 3: Familiarity
-- Memory receipts begin accumulating
-- Behavioral pattern learning
-- Resource: Memory allocation
-- Exit: Mutual value alignment detected
+**2. Private Trust Ledger**:
+Local, append-only log of trust events:
+- Cryptographically signed entries
+- Never shared directly
+- Source for ZK-proof generation
+- User-sovereign storage
 
-#### Phase 4: Shared Memory
-- Mutual history established
-- Partial ICV field disclosure
-- Resource: Compute for verification
-- Exit: Deep compatibility confirmed
-
-#### Phase 5: Deep Trust
-- Near-complete identity revelation
-- Strong cryptographic commitments
-- Resource: Full engagement
-- Exit: Relationship transformation or dissolution
-
-### Cryptographic Mechanisms
-
-#### Pedersen Commitments
+**3. Dynamic Trust Score (DTS)**:
+Continuous 0-100 metric:
 ```python
-# Commitment to value without revealing it
-C = g^v * h^r mod p
-# where v = value, r = random blinding factor
+DTS = f(Claims, Vouching, History, Decay)
+# Claims: Weighted sum of verified claims
+# Vouching: Aggregate DTS of vouchers
+# History: Frequency and recency of positive interactions
+# Decay: -1 point/week of inactivity
 ```
 
-#### Zero-Knowledge Proofs
-Prove properties without revealing values:
-- "My trust score > threshold" without revealing score
-- "We share values" without revealing which values
-- "I've been consistent" without revealing history
+**4. Trust Handshake Protocol**:
+Simple, privacy-preserving connection:
+1. Alice requests connection (minimum DTS threshold)
+2. Bob generates ZK-proof of DTS ≥ threshold
+3. Alice verifies proof
+4. Connection established without revealing exact scores
 
-#### Verifiable Delay Functions (VDFs)
-Ensure simultaneous disclosure:
+### Implementation Architecture
+
+#### Claim Generation Pipeline
 ```python
-# Both parties compute VDF
-proof = VDF(commitment, time_parameter)
-# Reveals happen only after proof generation
+def generate_claim(ledger, claim_type, parameters):
+    # Extract relevant entries from ledger
+    entries = ledger.filter(claim_type, parameters)
+    
+    # Generate cryptographic proof
+    proof = generate_zk_proof(
+        statement=claim_type.statement,
+        witness=entries,
+        public=parameters
+    )
+    
+    return VerifiableClaim(proof, metadata)
+```
+
+#### Trust Score Calculation
+```python
+def calculate_dts(ledger, current_time):
+    base_score = 0
+    
+    # Weight different claim categories
+    for claim in ledger.verified_claims:
+        base_score += claim.weight * claim.value
+    
+    # Apply vouching multiplier
+    vouch_multiplier = calculate_vouch_weight(ledger.vouches)
+    
+    # Apply time decay
+    decay = calculate_decay(ledger.last_activity, current_time)
+    
+    return min(100, (base_score * vouch_multiplier) - decay)
+```
+
+#### Privacy-Preserving Handshake
+```python
+def trust_handshake(requester_threshold, responder_ledger):
+    # Calculate current DTS
+    current_dts = calculate_dts(responder_ledger)
+    
+    # Generate proof without revealing score
+    proof = prove_threshold(
+        score=current_dts,
+        threshold=requester_threshold
+    )
+    
+    return proof  # Verifiable without exposing actual DTS
 ```
 
 ### Trust Dynamics

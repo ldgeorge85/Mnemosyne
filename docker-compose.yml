@@ -60,6 +60,7 @@ services:
       - OPENAI_BASE_URL=${OPENAI_BASE_URL}
       - OPENAI_MODEL=${OPENAI_MODEL}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - AUTH_REQUIRED=${AUTH_REQUIRED:-false}
       - W3C_DID_ENABLED=true
       - W3C_DID_METHOD=mnem
     volumes:

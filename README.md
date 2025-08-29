@@ -114,38 +114,54 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - ✅ **Infrastructure** - Docker, PostgreSQL, Redis, Qdrant all operational
 - ✅ **Agentic Flow** - ReAct pattern with reasoning, planning, and parallel action execution
 - ✅ **LLM Persona Selection** - Intelligent mode selection based on context (92% confidence achieved)
-- 🔄 **CREATE_MEMORY Action** - Stub exists, needs executor implementation
-- 🔄 **CREATE_TASK Action** - Stub exists, needs executor implementation
+- ✅ **Shadow Council** - 5 technical sub-agents fully integrated
+- ✅ **Forum of Echoes** - 10 philosophical voices for diverse perspectives
+- ✅ **Tool System** - Universal tool registry with 7 working tools
 - ✅ **Proactive Suggestions** - Context-aware next steps while respecting sovereignty
 - ✅ **SSE Streaming** - Real-time status updates during agentic processing
-- ✅ **Token Management** - 64k context window with automatic truncation (August 27, 2025)
-- ✅ **UI Polish** - Standardized layouts, pagination, consistent search (August 27, 2025)
+- ✅ **Token Management** - 64k context window with automatic truncation
+- ✅ **UI Polish** - Standardized layouts, pagination, consistent search
 - ✅ **Per-Message Personas** - Shows which mode was used for each response
 
 ### In Active Development
-- 🚀 **Phase 1.B: Tools & Plugin System** - Universal tool architecture
-  - ✅ Build core tool infrastructure with registry (COMPLETE!)
-  - ✅ Implement USE_TOOL, SELECT_TOOLS, COMPOSE_TOOLS actions
-  - ✅ Create 5 simple example tools (calculator, datetime, formatters)
-  - ✅ Tool discovery and registration on startup
-  - 🔴 Implement tool UI palette for manual selection
-  - 🔴 Port Shadow Council as unified tool (Artificer, Archivist, Mystagogue, Tactician, Daemon)
-  - 🔴 Port Forum of Echoes as unified tool (50+ philosophical perspectives)
-  - 🔴 Add OpenAPI support for REST API tools
-  - 🔴 Integrate MCP for data source access
-  - 🔴 Implement A2A bidirectional support with agent cards
-- 🔄 **Accessibility Layer** - Onboarding wizards and simplified UIs
-- 🔄 **Graduated Sovereignty** - Protected/Guided/Sovereign modes
-- 🔄 **Values Alignment** - Import moral/ethical frameworks
-- 🔄 **Bridge Building** - Features for different worldviews
-- 🔄 **Mirror Mode** - Fifth persona for pattern reflection
+
+#### 🚀 Phase 1.C: Protocol Integration
+- 🔄 Add OpenAPI support for REST API tools
+- 🔄 Integrate MCP for data source access
+- 🔄 Implement A2A bidirectional support with agent cards
+- 🔄 Privacy controls for tool exposure
+
+#### 🧬 Next-Gen Identity System (PIE + Kartouche)
+- 🔬 **Pragmatic Identity Embedding (PIE)** - ML-based identity compression
+  - Dynamic data acquisition with LLM-assisted profiling
+  - Temporal dynamics (freshness, decay, reinforcement)
+  - 128-dimension secure embedding
+  - Layered granularity for ZK-proofs
+- 🔬 **Identity Kartouche** - Visual identity synthesis
+  - Validated symbolic projection (archetypes, tarot, I Ching)
+  - Unique visual glyph generation
+  - Trust state visualization
+
+#### 🤝 Trust Transaction Framework (TTF)
+- 🔬 **Verifiable Claims** - Action-based trust building
+  - Platform, history, reputation, and social claims
+  - ZK-proof backed verification
+  - Privacy-preserving validation
+- 🔬 **Trust Ledger** - Local-first trust history
+  - Append-only cryptographic log
+  - Private, user-sovereign storage
+  - Source for ZK-proof generation
+- 🔬 **Dynamic Trust Score** - Continuous 0-100 metric
+  - Weighted by claims, vouching, history
+  - Natural decay requiring maintenance
+  - Simple handshake protocol
 
 ### Research Track (Parallel)
-- 🔬 **Game Mechanics** - Task gamification and engagement patterns
-- 🔬 **Identity Compression** - Holographic identity representation
-- 🔬 **Productive Variation** - Controlled randomness for creativity
-- 🔬 **Natural Clustering** - Organic group formation patterns
-- 🔬 **Joy Metrics** - Measuring system delight and user creativity
+- 🔬 **PIE Pipeline Validation** - Testing psychographic compression
+- 🔬 **Symbolic Classifier Training** - Grounding archetypal mappings
+- 🔬 **Trust Dynamics Modeling** - Simulating trust networks
+- 🔬 **Kartouche Generation** - Visual identity synthesis algorithms
+- 🔬 **ZK-STARK Optimization** - Efficient proof generation
 
 ### Next Priorities (Phase 1.B - Tools & Plugin System)
 - 🔴 **Onboarding Wizard** - Persona selection for new users

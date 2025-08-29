@@ -86,6 +86,14 @@ MODEL_PROFILES: Dict[str, Dict[str, Any]] = {
         "system_prompt_mode": "separate",
         "special_tokens": True,
     },
+    "innogpt": {
+        # InnoGPT-1 with Harmony format (reasoning + final messages)
+        "force_temperature": None,
+        "supports_reasoning_level": True,
+        "system_prompt_mode": "harmony",  # Special mode for InnoGPT
+        "reasoning_format": "harmony",  # Uses special Harmony format
+        "expects_user_level": True,  # InnoGPT expects user-level in messages
+    },
 }
 
 

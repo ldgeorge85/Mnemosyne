@@ -48,6 +48,7 @@ class ToolMetadata:
     requires_auth: bool = False        # Needs API keys?
     cost_estimate: float = 0.0         # Computational/API cost
     timeout: int = 30                  # Max execution time in seconds
+    max_parallel: int = 1              # Max parallel operations (1 = sequential)
     max_retries: int = 3               # Max retry attempts
     
     # Visibility & Privacy

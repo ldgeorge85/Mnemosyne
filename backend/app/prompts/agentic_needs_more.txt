@@ -1,19 +1,8 @@
-Evaluate whether more information or actions are needed.
+Query: {query}
 
-Actions Executed: {actions_executed}
-Results Obtained: {results}
-Original Query: {query}
-Current Context: {context}
+Results from actions: {results}
 
-Based on the actions taken and results obtained, determine if:
-1. The query has been sufficiently addressed
-2. More actions are needed to complete the response
-3. Additional information should be requested from the user
+Does the user query need more information to be fully addressed?
+Consider if the results provide sufficient information.
 
-Return as JSON:
-{{
-  "needs_more": true/false,
-  "reasoning": "Explanation of why more is or isn't needed",
-  "suggested_next_action": "Action name or null",
-  "confidence": 0.0-1.0
-}}
+Respond with only YES or NO.

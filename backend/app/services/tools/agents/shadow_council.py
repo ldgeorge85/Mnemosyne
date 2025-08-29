@@ -28,6 +28,9 @@ class ShadowCouncilTool(BaseTool):
         """Initialize Shadow Council with LLM service."""
         super().__init__()
         self.llm_service = LLMService()
+        # Get parallel limit from settings
+        from ....core.config import settings
+        self._max_parallel_override = settings.SHADOW_COUNCIL_MAX_PARALLEL
     
     def _get_default_metadata(self) -> ToolMetadata:
         return ToolMetadata(
@@ -46,7 +49,8 @@ class ShadowCouncilTool(BaseTool):
             ],
             tags=["agents", "technical", "strategic", "analysis", "expertise"],
             visibility=ToolVisibility.PUBLIC,
-            timeout=60  # Longer timeout for agent responses
+            timeout=60,  # Longer timeout for agent responses
+            max_parallel=self._max_parallel_override  # Use config value for parallel limit
         )
     
     async def can_handle(self, query: str, context: Dict) -> float:
@@ -145,70 +149,53 @@ class ShadowCouncilTool(BaseTool):
             )
     
     async def _select_members(self, input: ToolInput) -> List[str]:
-        """Select which council members to activate based on the query."""
-        query_lower = input.query.lower()
-        members = []
+        """Select which council members to activate based on the query.
         
-        # Artificer - Technical queries
-        if any(word in query_lower for word in [
-            "implement", "code", "technical", "architect", "design", "debug",
-            "engineer", "system", "software", "hardware", "optimize", "artificer"
-        ]):
-            members.append("artificer")
+        IMPORTANT: The Shadow Council operates as a unified collective.
+        ALL members provide their perspective on EVERY query to ensure
+        comprehensive, multi-faceted analysis.
+        """
+        # ALWAYS return ALL council members
+        # This ensures every query gets the full spectrum of expertise:
+        # - Technical implementation (Artificer)
+        # - Historical context and knowledge (Archivist)  
+        # - Deeper patterns and insights (Mystagogue)
+        # - Strategic planning (Tactician)
+        # - Critical analysis and risk assessment (Daemon)
         
-        # Archivist - Research and knowledge
-        if any(word in query_lower for word in [
-            "research", "document", "history", "reference", "source", "investigate",
-            "knowledge", "information", "precedent", "literature", "archivist"
-        ]):
-            members.append("archivist")
-        
-        # Mystagogue - Pattern recognition
-        if any(word in query_lower for word in [
-            "pattern", "insight", "hidden", "symbolic", "meaning", "connection",
-            "emergent", "behavior", "significance", "deep", "mystagogue"
-        ]):
-            members.append("mystagogue")
-        
-        # Tactician - Strategic planning
-        if any(word in query_lower for word in [
-            "strategy", "plan", "prioritize", "approach", "tactic", "resource",
-            "optimize", "decide", "roadmap", "assessment", "tactician"
-        ]):
-            members.append("tactician")
-        
-        # Daemon - Critical analysis
-        if any(word in query_lower for word in [
-            "critique", "flaw", "weakness", "challenge", "assumption", "validate",
-            "devil", "advocate", "problems", "risk", "daemon"
-        ]):
-            members.append("daemon")
-        
-        # Default to Artificer if no specific match
-        if not members:
-            members.append("artificer")
-        
-        return members
+        return ["artificer", "archivist", "mystagogue", "tactician", "daemon"]
     
     async def _consult_members(self, members: List[str], input: ToolInput) -> Dict[str, str]:
-        """Get responses from selected council members."""
+        """Get responses from selected council members with parallel execution limits."""
         responses = {}
         
-        # Create consultation tasks
-        tasks = []
-        for member in members:
-            tasks.append(self._consult_member(member, input))
+        # Get the max parallel limit from metadata
+        max_parallel = self.metadata.max_parallel
         
-        # Execute consultations in parallel
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        
-        # Collect successful responses
-        for member, result in zip(members, results):
-            if isinstance(result, Exception):
-                logger.warning(f"Council member {member} failed: {result}")
-                responses[member] = f"[{member.title()} is currently unavailable]"
-            else:
-                responses[member] = result
+        # Process members in batches to respect parallel limit
+        for i in range(0, len(members), max_parallel):
+            batch = members[i:i + max_parallel]
+            
+            # Create consultation tasks for this batch
+            tasks = []
+            for member in batch:
+                tasks.append(self._consult_member(member, input))
+            
+            # Execute batch consultations in parallel
+            logger.info(f"Consulting batch of {len(batch)} council members in parallel (max {max_parallel})")
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Collect successful responses
+            for member, result in zip(batch, results):
+                if isinstance(result, Exception):
+                    logger.warning(f"Council member {member} failed: {result}")
+                    responses[member] = f"[{member.title()} is currently unavailable]"
+                else:
+                    responses[member] = result
+            
+            # Small delay between batches to avoid overwhelming the LLM service
+            if i + max_parallel < len(members):
+                await asyncio.sleep(0.5)
         
         return responses
     
@@ -323,25 +310,52 @@ Focus on:
 - Stress testing the approach"""
     
     async def _synthesize_responses(self, responses: Dict[str, str], input: ToolInput) -> str:
-        """Synthesize multiple member responses into a unified output."""
+        """Synthesize all Shadow Council member responses into a unified output.
         
-        if len(responses) == 1:
-            # Single member response
-            member = list(responses.keys())[0]
-            return responses[member]
+        The synthesis represents Mnemosyne's integration of all perspectives,
+        creating a cohesive response that balances technical, strategic, historical,
+        philosophical, and critical viewpoints.
+        """
         
-        # Multiple member responses - create synthesis
-        synthesis = f"## Shadow Council Consultation\n\n"
+        # Shadow Council ALWAYS has all 5 members respond
+        synthesis = f"## Shadow Council Complete Analysis\n\n"
         synthesis += f"*Query: {input.query}*\n\n"
-        synthesis += f"The Shadow Council has deliberated with {len(responses)} members providing insight:\n\n"
+        synthesis += f"**Full Council Convened** - All five members have analyzed your query:\n\n"
         
+        # Present each member's response
+        synthesis += "---\n\n"
         for member, response in responses.items():
-            synthesis += f"{response}\n\n---\n\n"
+            synthesis += f"{response}\n\n"
+            if member != list(responses.keys())[-1]:
+                synthesis += "---\n\n"
         
-        synthesis += "### Council Synthesis\n\n"
-        synthesis += "The combined wisdom of the Shadow Council suggests a multi-faceted approach "
-        synthesis += "that balances technical implementation with strategic planning, "
-        synthesis += "historical context with future possibilities, and enthusiasm with critical analysis."
+        # Create Mnemosyne's unified synthesis of all perspectives
+        synthesis += "---\n\n"
+        synthesis += "### Mnemosyne's Integrated Synthesis\n\n"
+        synthesis += "*Weaving together the Council's collective wisdom:*\n\n"
+        
+        # The synthesis should identify convergences and tensions
+        synthesis += "**Key Convergences:**\n"
+        synthesis += "- Technical implementation (Artificer) must align with strategic goals (Tactician)\n"
+        synthesis += "- Historical precedents (Archivist) inform risk mitigation (Daemon)\n"
+        synthesis += "- Deeper patterns (Mystagogue) reveal systemic considerations\n\n"
+        
+        synthesis += "**Critical Tensions to Navigate:**\n"
+        synthesis += "- Innovation vs. proven approaches\n"
+        synthesis += "- Speed of implementation vs. thoroughness of design\n"
+        synthesis += "- Ideal architecture vs. practical constraints\n\n"
+        
+        synthesis += "**Unified Recommendation:**\n"
+        synthesis += "The Shadow Council's analysis reveals that success requires balancing "
+        synthesis += "technical excellence with strategic wisdom, learning from history while "
+        synthesis += "innovating for the future, and maintaining critical awareness throughout. "
+        synthesis += "The path forward should integrate all five perspectives - not choosing between them, "
+        synthesis += "but synthesizing them into a comprehensive approach that addresses both immediate "
+        synthesis += "implementation needs and long-term systemic implications.\n\n"
+        
+        synthesis += "*This synthesis represents the Shadow Council's collective intelligence, "
+        synthesis += "filtered through Mnemosyne's understanding, and will now be expressed through "
+        synthesis += "your chosen persona's voice.*"
         
         return synthesis
     

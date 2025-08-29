@@ -94,21 +94,23 @@ The task system now serves as the bridge between abstract concepts and concrete 
 - 🔄 **Trust building** through shared tasks (planned)
 - 🔄 **Identity evolution** as patterns shape the ICV (research)
 
-#### The Conceptual Stack [STATUS: THEORETICAL]
+#### The Conceptual Stack [STATUS: EVOLVED]
 
-1. **Identity Compression Vector (ICV)**
-   - 128-bit representation of human essence
-   - 70/30 stability model (core/adaptive)
-   - 5-layer compression pipeline
-   - Holographic encoding (partials preserve meaning)
-   - Public/private splits for privacy
+1. **Pragmatic Identity Embedding (PIE) + Kartouche** [VALIDATED APPROACH]
+   - Dynamic data acquisition with LLM-assisted profiling
+   - Temporal dynamics (freshness, decay, reinforcement)
+   - 128-dimension secure embedding via ML compression
+   - Validated symbolic projection to archetypes
+   - Visual Identity Kartouche as unique personal glyph
+   - Layered privacy (Core/Adaptive/Private partitions)
 
-2. **Progressive Trust Exchange**
-   - 5-phase trust progression (awareness → deep trust)
-   - Cryptographic commitments (Pedersen, ZKPs, VDFs)
-   - Reciprocity enforcement with exchange rates
-   - Trust decay and recovery mechanisms
-   - Scoped disclosure based on trust level
+2. **Trust Transaction Framework (TTF)** [IMPLEMENTABLE]
+   - Verifiable Claims backed by ZK-proofs
+   - Private Trust Ledger (append-only, local-first)
+   - Dynamic Trust Score (0-100 with natural decay)
+   - Trust Handshake Protocol for privacy-preserving connections
+   - Action-based trust building, not abstract levels
+   - Gaming resistance through diversity of signals
 
 3. **Resonance & Compatibility**
    - Multi-model approach (harmonic, quantum, information, archetypal)
@@ -141,13 +143,25 @@ The agent isn't just functional—it embodies depth and awareness:
 - **Transparent Operations**: Every decision generates receipts with appeal process
 - **Consciousness Mapping**: Shows patterns without moral judgment
 
-### Critical Reality Check
+### Evolution & Validation Strategy
 
-**None of these theoretical concepts have been empirically validated.** The entire stack depends on ICV validation—if identity can't be compressed as theorized, everything above it collapses. This requires:
+The project has evolved from speculative concepts to pragmatic, implementable approaches:
 
-1. **Immediate Research**: Validate core hypothesis with real data
-2. **Dual-Track Development**: Build proven features while researching theoretical
-3. **Fallback Strategies**: Standard embeddings if ICV fails
+**Identity System Evolution**:
+- OLD: ICV with unvalidated holographic properties and arbitrary metrics
+- NEW: PIE pipeline with ML-based compression + symbolic Kartouche overlay
+- VALIDATION: Phased experiments with synthetic data, then beta users
+
+**Trust System Evolution**:
+- OLD: 5-level state machine with abstract compatibility
+- NEW: Continuous DTS with verifiable claims and local ledgers
+- VALIDATION: Simulation of trust networks, then controlled beta
+
+**Key Improvements**:
+1. **Empirical Grounding**: All metrics now testable, not arbitrary
+2. **Modular Architecture**: Core engine separate from symbolic layer
+3. **Local-First Design**: User sovereignty through data ownership
+4. **Fallback Positions**: Clear alternatives if approaches fail
 4. **Scientific Integrity**: Publish results whether positive or negative
 
 ### Sovereignty Defense Architecture

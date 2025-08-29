@@ -26,6 +26,9 @@ class ForumOfEchoesTool(BaseTool):
         """Initialize Forum with LLM service."""
         super().__init__()
         self.llm_service = LLMService()
+        # Get parallel limit from settings
+        from ....core.config import settings
+        self._max_parallel_override = settings.FORUM_OF_ECHOES_MAX_PARALLEL
     
     # Define available voices with their characteristics
     VOICES = {
@@ -108,7 +111,8 @@ class ForumOfEchoesTool(BaseTool):
             ],
             tags=["philosophy", "debate", "perspectives", "wisdom", "worldview"],
             visibility=ToolVisibility.PUBLIC,
-            timeout=60  # Longer timeout for philosophical discourse
+            timeout=60,  # Longer timeout for philosophical discourse
+            max_parallel=self._max_parallel_override  # Use config value for parallel limit
         )
     
     async def can_handle(self, query: str, context: Dict) -> float:

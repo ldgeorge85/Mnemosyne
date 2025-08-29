@@ -1,0 +1,11 @@
+Query: {query}
+Context: persona={current_persona}, memories={available_memories}, tasks={active_tasks}
+
+Determine what action is needed:
+- If user mentions "Shadow Council" or needs technical help, use shadow_council tool
+- If user mentions "Forum of Echoes" or needs philosophy, use forum_of_echoes tool
+- If user needs calculations, use calculator tool
+- If user needs memory search, use SEARCH_MEMORIES
+- If simple response suffices, use EXPLAIN
+
+Provide your reasoning about what should be done.

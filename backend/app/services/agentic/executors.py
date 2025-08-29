@@ -430,9 +430,13 @@ class ActionExecutor:
         from app.services.tools.registry import tool_registry
         from app.services.tools.base import ToolInput
         
+        logger.info(f"_use_tool called with params: {params}")
+        
         tool_name = params.get("tool_name")
         tool_params = params.get("parameters", {})
         query = params.get("query", "")
+        
+        logger.info(f"Executing tool: {tool_name} with query: {query[:100]}")
         
         try:
             # Get the tool from registry

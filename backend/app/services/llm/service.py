@@ -52,10 +52,27 @@ class LLMService:
             "Content-Type": "application/json"
         }
         
-        messages = []
-        if system:
-            messages.append({"role": "system", "content": system})
-        messages.append({"role": "user", "content": prompt})
+        # Check if we're using Harmony format (InnoGPT-1)
+        system_prompt_mode = kwargs.get("system_prompt_mode", "separate")
+        
+        if system_prompt_mode == "harmony":
+            # InnoGPT-1 Harmony format: combine system and user into single message
+            # with user-level annotation
+            combined_content = prompt
+            if system:
+                combined_content = f"{system}\n\n{prompt}"
+            
+            messages = [{
+                "role": "user",
+                "content": combined_content,
+                "user_level": "advanced"  # InnoGPT-1 expects this
+            }]
+        else:
+            # Standard format
+            messages = []
+            if system:
+                messages.append({"role": "system", "content": system})
+            messages.append({"role": "user", "content": prompt})
         
         data = {
             "model": self.model,
@@ -71,6 +88,10 @@ class LLMService:
             data["max_tokens"] = final_max_tokens
         
         logger.info(f"Making LLM request to {self.base_url}/chat/completions")
+        logger.info(f"Number of messages being sent: {len(data.get('messages', []))}")
+        logger.info(f"Message roles: {[msg.get('role') for msg in data.get('messages', [])]}")
+        # Log full request for debugging
+        logger.info(f"Full request data: {json.dumps(data, indent=2)}")
         logger.debug(f"Request data: {json.dumps(data, indent=2)}")
         
         async with httpx.AsyncClient(timeout=60.0) as client:
@@ -137,11 +158,40 @@ class LLMService:
             "Content-Type": "application/json"
         }
         
-        # Prepend system message if provided
-        message_list = []
-        if system:
-            message_list.append({"role": "system", "content": system})
-        message_list.extend(messages)
+        # Check if we're using Harmony format (InnoGPT-1)
+        system_prompt_mode = kwargs.get("system_prompt_mode", "separate")
+        
+        if system_prompt_mode == "harmony":
+            # InnoGPT-1 Harmony format: combine all into single user message
+            message_list = []
+            
+            # Combine system and all messages into one
+            combined_parts = []
+            if system:
+                combined_parts.append(system)
+            
+            # Add conversation history
+            for msg in messages:
+                role = msg.get("role", "user")
+                content = msg.get("content", "")
+                if role == "assistant":
+                    combined_parts.append(f"Assistant: {content}")
+                elif role == "user":
+                    combined_parts.append(f"User: {content}")
+                else:
+                    combined_parts.append(content)
+            
+            message_list = [{
+                "role": "user",
+                "content": "\n\n".join(combined_parts),
+                "user_level": "advanced"
+            }]
+        else:
+            # Standard format
+            message_list = []
+            if system:
+                message_list.append({"role": "system", "content": system})
+            message_list.extend(messages)
         
         data = {
             "model": self.model,

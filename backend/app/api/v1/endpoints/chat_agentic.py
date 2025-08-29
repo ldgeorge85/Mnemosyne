@@ -82,7 +82,8 @@ async def stream_agentic_response(
     # Initialize flow controller
     flow_controller = AgenticFlowController(
         llm_service=llm_service,
-        receipt_service=receipt_service
+        receipt_service=receipt_service,
+        llm_config={}  # Will be set after persona selection
     )
     
     # Initialize persona for user
@@ -133,6 +134,10 @@ async def stream_agentic_response(
         await persona_manager.switch_mode(selected_mode, "Agentic analysis")
     
     context["persona_mode"] = selected_mode.value
+    
+    # Update flow controller with persona's LLM config
+    llm_config = persona_manager.get_llm_config(settings.effective_model_profile)
+    flow_controller.llm_config = llm_config
     
     yield f"event: status\ndata: {json.dumps({'status': f'Activated {selected_mode.value} mode'})}\n\n"
     
@@ -210,7 +215,7 @@ async def stream_agentic_response(
         
         # Get enhanced prompt and LLM config for final response
         system_prompt = persona_manager.get_enhanced_prompt()
-        llm_config = persona_manager.get_llm_config(settings.LLM_MODEL_PROFILE)
+        llm_config = persona_manager.get_llm_config(settings.effective_model_profile)
         
         # Add action results to the conversation context if any
         if context.get("previous_results"):
@@ -281,7 +286,8 @@ async def stream_agentic_response(
         yield f"event: done\ndata: {json.dumps({'duration_ms': duration_ms, 'iterations': iteration})}\n\n"
         
     except Exception as e:
-        logger.error(f"Agentic flow error: {e}")
+        import traceback
+        logger.error(f"Agentic flow error: {e}", exc_info=True)
         yield f"event: error\ndata: {json.dumps({'error': str(e)})}\n\n"
 
 

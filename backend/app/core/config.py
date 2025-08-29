@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     DOCS_ENABLED: bool = True  # Enable/disable OpenAPI docs
     DOCS_LOGO_URL: str = "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png"  # Placeholder
     DOCS_PRIMARY_COLOR: str = "#1f4287"  # Primary brand color
-    AUTH_REQUIRED: bool = True  # Whether authentication is required for API access
+    AUTH_REQUIRED: bool = Field(default=True, env="AUTH_REQUIRED")  # Whether authentication is required for API access
     SECRET_KEY: str = Field(default="CHANGE-THIS-SECRET-KEY-IN-PRODUCTION", env="SECRET_KEY")  # SECURITY WARNING: Change this!
     
     # CORS settings
@@ -145,7 +145,31 @@ class Settings(BaseSettings):
     LLM_STATIC_TEMPERATURE: float = 0.7  # Used when mode is "static"
     LLM_SYSTEM_PROMPT_MODE: str = "separate"  # "separate" or "embedded"
     LLM_SUPPORTS_REASONING_LEVEL: bool = False  # True for models with reasoning channels
-    LLM_MODEL_PROFILE: str = "standard"  # Profile: standard, reasoning_channel, embedded_system, deepseek
+    LLM_MODEL_PROFILE: str = "standard"  # Profile: standard, reasoning_channel, embedded_system, deepseek, innogpt
+    
+    # Tool Parallel Execution Limits
+    TOOL_MAX_PARALLEL_DEFAULT: int = 2  # Default for all tools
+    SHADOW_COUNCIL_MAX_PARALLEL: int = 2  # Shadow Council specific (5 members total)
+    FORUM_OF_ECHOES_MAX_PARALLEL: int = 2  # Forum specific (many voices)
+    
+    @property
+    def effective_model_profile(self) -> str:
+        """Auto-detect model profile based on model name if not explicitly set."""
+        if self.LLM_MODEL_PROFILE != "standard":
+            return self.LLM_MODEL_PROFILE
+        
+        # Auto-detect based on model name
+        model_lower = self.OPENAI_MODEL.lower()
+        if "innogpt" in model_lower:
+            return "innogpt"
+        elif "gemma" in model_lower:
+            return "embedded_system"
+        elif "deepseek" in model_lower:
+            return "deepseek"
+        elif any(x in model_lower for x in ["o1-preview", "gpt-oss"]):
+            return "reasoning_channel"
+        
+        return "standard"
     
     # Embedding Settings (uses OpenAI-compatible endpoint by default)
     EMBEDDING_API_ENDPOINT: Optional[str] = None  # Override if different from OPENAI_BASE_URL/embeddings

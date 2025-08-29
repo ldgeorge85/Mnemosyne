@@ -1,4 +1,4 @@
-# Mnemosyne Protocol: Technical Roadmap
+# Mnemosyne Protocol: Technical Roadmap 2025
 *Building Cognitive Sovereignty Infrastructure*
 
 ## Overview
@@ -7,712 +7,219 @@ This roadmap implements **cognitive sovereignty** through iterative development,
 
 **Development Philosophy**: Build useful infrastructure that inherently preserves sovereignty. Advanced features emerge organically as trust and adoption grow.
 
-## Current Status
+## Current Status (Updated: December 2024)
 
-### Backend Complete ✅
-- ✅ **Authentication System** - Secure multi-provider auth
-- ✅ **Memory CRUD** - Complete with vector embeddings
-- ✅ **Chat System** - Authenticated conversations with persistence
-  - ✅ Local conversation history tracking (localStorage)
-  - ✅ SSE streaming endpoint `/api/v1/chat/stream`
-  - ✅ Conversation creation and management UI
-  - ✅ Persona mode switching in chat interface
-- ✅ **Task System** - Full CRUD with game mechanics and XP
-- ✅ **Infrastructure** - Docker, PostgreSQL, Redis, Qdrant operational
-- ✅ **Production Deployment** - SSL, automated deployment ready
+### ✅ Phase 1 Core Foundation - 100% COMPLETE
 
-### Frontend Complete ✅
-- ✅ **Basic Pages** - Login, Dashboard, Chat, Tasks, Memories all working
-- ✅ **UI/UX Issues Fixed** - Chat scrolling fixed, persistent navigation added
-- ✅ **Shell Navigation** - AppShell with sidebar, chat history working
-- ✅ **Task UI** - Complete with list and creation forms
-- ✅ **Memory UI** - Full CRUD interface implemented (Phase 1.3)
-- ✅ **Chat Streaming** - Server-sent events with SSE endpoint working (2025-08-26)
-- ✅ **UI Library** - shadcn/ui migration complete (Chakra removed)
-- ✅ **UI Standardization** - Tasks, Memories, Receipts pages unified (2025-08-27)
-- ✅ **Pagination** - "Load More" functionality prevents bottlenecks (2025-08-27)
-- ✅ **Token Management** - 64k context window with smart truncation (2025-08-27)
-- ✅ **Persona Badges** - Per-message mode display (2025-08-27)
-
-### Completed Features
-- ✅ **Persona System** - Complete with 5 modes (including Mirror), worldview adapters, chat integration
-- ✅ **Receipts System** - FULL STACK COMPLETE - Database, API, and UI viewer working!
-- ✅ **Trust System** - Database models, migrations, and API endpoints complete
-- ✅ **Task System** - FULL STACK COMPLETE - Backend, API, UI with forms and lists!
-- ✅ **Memory System** - FULL STACK COMPLETE - CRUD, embeddings, UI with search!
-- ✅ **Mirror Mode** - Pattern reflection without judgment (2025-08-26)
-- ✅ **Agentic Flow** - ReAct pattern with LLM reasoning (2025-08-26)
-- ✅ **LLM Persona Selection** - 92% confidence achieved replacing keywords
-- ✅ **Parallel Action Execution** - asyncio.gather() for efficiency
-- ✅ **Proactive Suggestions** - Context-aware next steps
-- ✅ **LIST_TASKS Action** - WIRED to task service, retrieves and displays tasks!
-- ✅ **Task Queries** - Agentic chat properly handles task-related questions!
-
-### ✅ Phase 1 Core Foundation - 95% COMPLETE (August 27, 2025)
-
-**Phase 1.A: Agentic Enhancement** - 100% COMPLETE
+**Phase 1.A: Agentic Enhancement** - COMPLETE
 - ✅ ReAct pattern with 92% confidence in LLM reasoning
 - ✅ Parallel action execution with asyncio.gather()
-- ✅ Proactive suggestions (3 per response)
-- ✅ Task integration working (LIST_TASKS action)
-- ✅ SSE streaming with status updates
-- ✅ Receipt enforcement middleware
-
-**Phase 1.B: Universal Tools & Plugin System** - 100% COMPLETE
-- ✅ BaseTool interface and ToolRegistry implemented
-- ✅ 7 tools working (5 simple + Shadow Council + Forum of Echoes)
-- ✅ Shadow Council: 5 LLM-powered sub-agents (Artificer, Archivist, Mystagogue, Tactician, Daemon)
-- ✅ Forum of Echoes: 10 philosophical voices with dialogue orchestration
-- ✅ USE_TOOL, SELECT_TOOLS, COMPOSE_TOOLS executors
-- ✅ Memory/Task executors wired (CREATE_MEMORY, UPDATE_TASK)
-- ✅ UI tool palette with category organization
-- ✅ Enhanced prompts - LLM knows about tools and when to use them
-
-### Next Development Phase
-- 🚀 **Phase 1.C: Protocol Integration** - NEXT PRIORITY
-  - OpenAPI tool generation from specs
-  - MCP (Model Context Protocol) client implementation
-  - A2A bidirectional support (consume and provide)
-  - Privacy guards and exposure controls
-- ❌ **Auth Providers** - Only Static works, OAuth/DID/API are stubs
-- 🔄 **Advanced Features** - Trust networks, ICV validation pending
-
-### Research Track (Parallel)
-- 🔬 **Identity Compression** - Holographic representation validation
-- 🔬 **Game Mechanics** - Task gamification and engagement patterns
-- 🔬 **Productive Variation** - Creative randomness (5% target rate)
-- 🔬 **Natural Clustering** - Organic group formation
-- 🔬 **Joy Metrics** - System delight measurement
-
-## Development Philosophy
-
-### Understanding Spectrum
-- **Everyone**: Full access to all features and capabilities
-- **Some**: Understand sovereignty architecture connections
-- **Few**: Grasp complete liberation framework
-
-### Design Principles
-- **Useful First**: Every feature provides immediate value
-- **Sovereignty Embedded**: Privacy and control in architecture
-- **Natural Emergence**: Advanced features grow organically
-- **Full Spectrum Awareness**: Acknowledge all aspects of human experience
-- **Progressive Complexity**: Simple core, validated additions
-- **Model Agnostic**: Interface with AI via user-configured endpoints
-- **Mirror, Not Judge**: Show patterns without imposing values
-- **Architectural Defense**: Make authoritarian use structurally difficult
-- **Pattern Observation**: Track spectrums, not good/evil
-- **User Interpretation**: System observes, users determine meaning
-
-## Phase Structure
-
-### Phase 0: Security Activation ✅ COMPLETE
-**Status**: COMPLETED
-**Goal**: Activate existing security components to eliminate vulnerabilities
-
-#### Tasks Completed:
-1. ✅ Enable AuthManager in main.py
-2. ✅ Wire AuthManager into application startup  
-3. ✅ Configure Static auth provider for development
-4. ✅ Remove dev-login endpoints
-5. ✅ Fix user object handling in chat endpoint
-6. ⏳ Add rate limiting middleware (deferred to Phase 1)
-7. ✅ CORS configured properly
-8. ✅ Set AUTH_REQUIRED=True
-
-#### Success Criteria Achieved:
-- ✅ All API endpoints require authentication
-- ✅ No hardcoded credentials in codebase
-- ✅ Zero critical security vulnerabilities
-- ✅ User object properly passed to all handlers
-
-**See**: [SECURITY_ACTIVATION_LOG.md](SECURITY_ACTIVATION_LOG.md) for details
-
----
-
-### Phase 0.5: Code Cleanup & Consolidation ✅ COMPLETE
-**Status**: COMPLETED - August 18, 2025
-**Goal**: Strip down to genuinely useful components, delete all half-implementations
-
-#### What We Kept:
-- [x] AuthManager (sophisticated multi-provider system)
-- [x] Docker/database setup (working infrastructure)
-- [x] Config structure (settings management)
-- [x] Basic FastAPI skeleton
-- [x] Error handling and logging setup
-
-#### What We Deleted:
-- [x] All three competing auth dependency systems
-- [x] simple_auth.py and auth_dev.py
-- [x] Mock user logic and dev bypasses
-- [x] Duplicate API directory (backend/api/)
-- [x] Test/dev shortcuts and hardcoded values
-
-#### Clean Implementation Achieved:
-- [x] One auth pattern everywhere (AuthManager)
-- [x] Clean API structure with consistent auth
-- [x] All endpoints using AuthUser from AuthManager
-- [x] Proper separation of concerns
-- [x] Authentication enforced (401 on unauthenticated)
-
-#### Success Criteria:
-- [x] Auth consolidated to single pattern
-- [ ] All endpoints use same auth pattern
-- [ ] Can build and run without errors
-- [ ] Clean, understandable codebase
-- [ ] Ready for fresh development
-
----
-
-### Phase 1: Core Foundation + Accessibility
-**Status**: Phase 1.A COMPLETE ✅, Phase 1.B Tools & Plugin System NEXT
-**Goal**: Sovereign personal AI accessible to diverse worldviews
-
-#### Phase 1.A: Agentic Enhancement ✅ COMPLETE (2025-08-27)
-- ✅ Memory CRUD with embeddings
-- ✅ Chat system with authentication and persistence
-- ✅ Task system with game mechanics
-- ✅ Vector storage integration
-- ✅ Authentication system
-- ✅ Production deployment ready
-- ✅ **Agentic Flow with ReAct pattern**
-- ✅ **LLM-driven persona selection (92% confidence)**
-- ✅ **Parallel action execution**
-- ✅ **Proactive suggestions**
-- ✅ **Configurable LLM temperatures per persona**
-- ✅ **Flexible system prompt modes (embedded/separate)**
-- ✅ **Reasoning level support for advanced models**
-- ✅ **SSE streaming with status updates**
-
-#### Phase 1.B: Tools & Plugin System (IN PROGRESS - Week 1 Complete!)
-**Week 1: Core Infrastructure** ✅ COMPLETE
-- ✅ Implement BaseTool interface and registry
-- ✅ Create USE_TOOL, SELECT_TOOLS, COMPOSE_TOOLS actions
-- ✅ Implement 5 simple tools (calculator, datetime, json_formatter, text_formatter, word_counter)
-- ✅ Tool discovery and auto-registration working
-- 🔴 Build UI tool palette for manual selection
-- 🔴 Wire CREATE_MEMORY and UPDATE_TASK executors
-
-**Week 2: Agent Migration**
-- 🔴 Port Shadow Council as unified tool with sub-agents:
-  - Artificer (technical expertise, formerly Engineer)
-  - Archivist (knowledge management, formerly Librarian)
-  - Mystagogue (pattern recognition, formerly Priest)
-  - Tactician (strategic planning, new)
-  - Daemon (devil's advocate, new)
-- 🔴 Port Forum of Echoes as unified tool with 5-10 philosophical perspectives to start
-- 🔴 Create ConceptChecker composite tool
-- 🔴 Create ConceptDebate orchestration tool
-- 🔴 Test multi-tool collaboration
-
-#### Phase 1.C: Protocol Integration (2 weeks)
-**Week 3: External Protocols**
-- 🔴 Implement OpenAPI tool generator
-- 🔴 Add MCP client for data sources
-- 🔴 Test with GitHub, Slack MCP servers
-
-**Week 4: A2A Support**
-- 🔴 Implement A2A bidirectional support
-- 🔴 Generate dynamic agent cards (public/partner/local)
-- 🔴 Add privacy guards and exposure controls
-
-#### Phase 1.D: Accessibility Layer
-- 🔴 **Graduated Sovereignty**: Protected/Guided/Sovereign modes
-- 🔴 **Onboarding Personas**: 5 worldview-specific entry points
-- 🔴 **Values Alignment**: Import moral/ethical frameworks
-- 🔴 **Simplified UI**: Non-technical user interfaces
-- 🔴 **Safety Templates**: Optional protection for vulnerable users
-
-#### Success Metrics
-- User satisfaction with persona interactions
-- Successful cross-cultural adaptations
-- Trust network formation rate
-- Joy coefficient (unexpected delight events)
-
-#### Memory System with ICV
-- [x] Complete memory CRUD operations ✅ COMPLETE (2025-08-24)
-- [ ] Implement ICV-aware memory storage
-- [x] Wire up vector embeddings ✅ (using Qdrant with 1024d vectors)
-- [x] Add semantic search ✅ (text search working)
-- [ ] Add worldview context to search
-- [ ] Implement importance scoring based on user values
-- [ ] Create receipts for memory operations
-
-#### Chat System ✅ COMPLETE
-- [x] Chat endpoint with proper user context ✅
-- [x] Streaming endpoint working with SSE ✅
-- [x] Conversation persistence in database ✅
-- [x] Message history stored and retrievable ✅
-- [x] Implement persona voice ✅ (5 modes including Mirror)
-- [x] Create mode switching ✅ (PersonaManager with API)
-- [x] Add receipts for transparency ✅ (receipts generated for chat)
-
-#### Frontend Integration
-- [x] Complete auth flow with backend ✅
-- [x] Chat interface with streaming ✅
-- [x] Task management UI ✅
-- [x] Implement memory UI components ✅ COMPLETE (2025-08-25)
-- [x] Add memory search interface ✅ COMPLETE (2025-08-25)
-- [x] Receipt viewer UI ✅ COMPLETE (2025-08-26)
-- [ ] Add user settings page
-
-#### Testing & Quality
-- [ ] Achieve 60% test coverage
-- [ ] Add integration tests for critical paths
-- [ ] Setup CI/CD pipeline (GitHub Actions)
-- [ ] Add error monitoring (Sentry)
-- [ ] Test LLM responses with new model
-
----
-
-### Phase 1.2: Task System - Action Layer ⭐ CORE COMPLETE
-**Status**: Backend complete, needs frontend
-**Goal**: Unified task tracking with time awareness and game mechanics
-
-#### Complete
-- [x] Task model with game mechanics ✅
-- [x] CRUD endpoints with XP calculation ✅
-- [x] Start/complete task flow ✅
-- [x] Quest types and difficulty levels ✅
-- [x] Experience point calculation ✅
-
-#### Immediate Needs (for MVP)
-- [ ] Basic frontend task components
-- [ ] Connect to existing UI
-- [ ] Deploy for testing
-
-#### Future Enhancements
-- [ ] Receipt system for transparency
-- [ ] Time awareness and scheduling
-- [ ] Achievement system
-- [ ] Collaboration features
-
-#### Integration Points
-- **Persona System**: Tasks suggested by persona mode
-- **Memory System**: Completed tasks become memories
-- **Trust Networks**: Shared tasks build trust
-- **ICV Evolution**: Task patterns shape identity
-- **Receipts**: Every task action logged
-
-#### Success Metrics
-- Tasks bridge past (memories) to future (intentions)
-- Natural gamification without dark patterns
-- Trust building through concrete collaboration
-- Time sovereignty through scheduling control
-
----
-
-### Phase 1.5: Research Track - Sovereignty & Governance
-**Parallel to Phase 1 and 1.A**
-**Goal**: Validate cognitive sovereignty with robust governance
-**Track**: Research with immediate application
-
-#### Trust Dynamics & Governance ✅ COMPLETE (2025-08-26)
-- [x] Implement trust event system with neutral language ✅
-- [x] Build appeals process with due process guarantees ✅
-- [x] Add policy versioning for all decisions ✅
-- [x] Create separation of duties (reporter ≠ resolver) ✅
-- [x] Design contextual visibility controls ✅
-- [x] Implement bounded trust parameters (max 20% monthly change) ✅
-- [x] Add progressive trust exchange protocol (5 levels) ✅
-
-##### Trust Progression Levels
-1. **Awareness** - Agents have met (zero-knowledge proof)
-2. **Recognition** - Minimal verified disclosure
-3. **Familiarity** - Shared interaction history
-4. **Shared Memory** - Mutual experiences established
-5. **Deep Trust** - Full alignment and revelation
-
-##### Database Schema for Trust System
-```sql
--- Trust events tracking (neutral language)
-CREATE TABLE trust_events (
-    id UUID PRIMARY KEY,
-    actor_id UUID REFERENCES users(id),
-    subject_id UUID REFERENCES users(id),
-    event_type VARCHAR(50) NOT NULL,  -- 'disclosure', 'interaction', 'conflict'
-    trust_delta FLOAT,  -- Can be positive or negative
-    context JSONB,
-    -- Governance fields
-    reporter_id UUID REFERENCES users(id),
-    resolver_id UUID REFERENCES users(id),  -- Must be different from reporter
-    appeal_id UUID REFERENCES appeals(id),
-    policy_version VARCHAR(20) DEFAULT 'v1',
-    -- Sovereignty preservation
-    visibility_scope VARCHAR(20) DEFAULT 'private',
-    user_consent BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
--- Appeals process with due process
-CREATE TABLE appeals (
-    id UUID PRIMARY KEY,
-    trust_event_id UUID REFERENCES trust_events(id),
-    appellant_id UUID REFERENCES users(id),
-    status VARCHAR(20) NOT NULL,
-    appeal_reason TEXT,
-    resolution TEXT,
-    submitted_at TIMESTAMP DEFAULT NOW(),
-    resolved_at TIMESTAMP,
-    -- Due process fields
-    evidence JSONB,
-    witness_ids UUID[],
-    review_board_ids UUID[]  -- Multiple reviewers for important cases
-);
-```
-
-#### Spectrum Awareness Features
-- [x] Track behavioral patterns on spectrums ✅ COMPLETE (2025-08-26)
-- [x] Build Mirror mode for persona (reflection without judgment) ✅ COMPLETE (2025-08-26)
-- [x] Create consciousness mapping (opt-in only) ✅ COMPLETE (2025-08-26)
-- [x] Implement pattern recognition without moral judgment ✅ COMPLETE (2025-08-26)
-- [ ] Add user-editable notes on their patterns
-
-##### Database Schema for Consciousness Mapping
-```sql
--- Consciousness mapping (opt-in, not "shadow profiles")
-CREATE TABLE consciousness_maps (
-    user_id UUID PRIMARY KEY REFERENCES users(id),
-    conscious_values JSONB,
-    observed_patterns JSONB,
-    emerging_patterns JSONB,
-    integration_score FLOAT DEFAULT 0.0,
-    last_updated TIMESTAMP,
-    user_consent BOOLEAN NOT NULL DEFAULT FALSE,
-    user_notes TEXT  -- User can add their own context
-);
-```
-
-#### Synthetic ICV Pilots (Accelerated)
-- Generate synthetic identities for testing
-- Validate compression before real users
-- Test holographic properties (each part contains whole)
-- Measure temporal stability (70/30 model)
-- Include shadow aspects in compression
-
-#### Natural Clustering Studies
-- Observe organic group formation
-- Measure trust network emergence
-- Identify resonance patterns
-- Add spectrum diversity indicators (descriptive only)
-
-#### Voice & Archetype Refinement
-- [ ] Tune persona voice for each mode
-- [ ] Implement Mirror mode for pattern reflection
-- [ ] Create aesthetic customization options
-- [ ] Build neutral observation language
-- [ ] Test reflection vs judgment balance
-
-#### ICV Blending Engine
-- [ ] Create rules engine for ICV adaptation
-- [ ] Implement value weighting system
-- [ ] Build preference learning from interactions
-- [ ] Create user override mechanisms
-- [ ] Implement reset/recalibration functions
-
-#### Receipts Visualization
-- [ ] Expand receipts with decision trees
-- [ ] Create transparency dashboard
-- [ ] Build trust metrics visualization
-- [ ] Implement influence tracking
-- [ ] Add exportable trust logs
-
-#### Philosophical Integration
-- [ ] Deepen Stoic resilience patterns
-- [ ] Implement Confucian harmony in mediations
-- [ ] Add Sufi compassion to guardian mode
-- [ ] Integrate Buddhist mindfulness prompts
-- [ ] Balance Western humanist agency
-
----
-
-### Phase 2: Trust Networks & Advanced Features
-**Prerequisites**: Phase 1 complete
-**Goal**: Enable natural group formation and advanced capabilities
-**Timeline**: Months 2-4
-
-#### Trust Network Implementation
-- Progressive trust building (5 phases)
-- Natural cluster formation
-- Resonance detection algorithms
-- Advanced features for high-trust groups
-
-#### Productive Variation System
-- Implement 5% controlled randomness
-- Semantic jitter for creativity
-- Paradox injection for flexibility
-- Silence as sovereign response
-
-#### Contextual Presentation
-- Professional context (competence focus)
-- Personal context (chosen vulnerability)
-- Public context (protective masking)
-- Core contributor view (full depth)
-- Dynamic depth adjustment
-
----
-
-### Phase 2.5: Research Track - Trust & Resonance Validation
-**Parallel to Phase 2**
-**Goal**: Validate Progressive Trust Exchange and Resonance models
-**Track**: Research/experimental
-
-#### Validation Protocol
-- Test trust progression in controlled interactions
-- Measure resonance predictions vs actual compatibility
-- Validate cryptographic commitment schemes
-- Test privacy-preserving computation
-
-### Phase 3: Emergence & Liberation
-**Prerequisites**: Phase 2 complete
-**Goal**: Natural emergence of advanced capabilities
-**Timeline**: Months 9-12
-
-#### Advanced Trust Features
-- High-trust clusters unlock special capabilities
-- Natural emergence of coordination patterns
-- Organic cell formation without central planning
-- Sovereignty features activate progressively
-
-#### Privacy Through Architecture
-- Zero-knowledge proofs for sensitive operations
-- Encrypted identity compression
-- User-owned model weights
-- Proof-carrying actions for all operations
-
----
-
-### Phase 4: Collective Intelligence
-**Prerequisites**: Phase 3 trust networks established
-**Goal**: Enable collective cognition while preserving sovereignty
-**Timeline**: Year 2+
-
-#### Natural Collective Formation
-- Groups form through resonance, not assignment
-- Collective memory emerges from individual contributions
-- Shared decision-making without central control
-- Time-bounded collaborations
-
-#### Governance Without Control
-- Consensus through resonance
-- Natural leadership emergence
-- Conflict resolution through multi-perspective validation
-- Dissolution when purpose completes
-
----
-
-### Phase 5: Agent Communication & Networks
-**Prerequisites**: Phase 4 complete
-**Goal**: Enable agent-to-agent communication
-**Track**: Conditional on prior validations
-
-#### Agent Communication
-- [ ] Define agent communication protocol
-- [ ] Implement secure message passing
-- [ ] Add agent discovery mechanism
-- [ ] Create handshake protocol
-
-#### Trust Mechanics
-- [ ] Implement trust scoring algorithm
-- [ ] Add reputation tracking
-- [ ] Create trust decay mechanism
-- [ ] Build trust visualization
-
-#### Progressive Disclosure
-- [ ] Implement zero-knowledge proofs
-- [ ] Add graduated information sharing
-- [ ] Create privacy negotiation
-- [ ] Build trust-based access control
-
----
-
-### Phase 6: Collective Intelligence Experiments
-**Prerequisites**: Phase 5 complete, strong research validation
-**Goal**: Test collective intelligence emergence
-**Track**: Highly experimental
-
-#### Group Mechanics
-- [ ] Implement collective creation
-- [ ] Add membership management
-- [ ] Create role-based permissions
-- [ ] Build invitation system
-
-#### Collective Intelligence
-- [ ] Implement voting mechanisms
-- [ ] Add consensus algorithms
-- [ ] Create shared memory pool
-- [ ] Build collective decision tracking
-
-#### Governance
-- [ ] Implement quadratic voting
-- [ ] Add proposal system
-- [ ] Create treasury management
-- [ ] Build dispute resolution
-
----
-
-### Phase 7: Federation & Scale
-**Prerequisites**: Phase 6 validated
-**Goal**: Enable inter-collective coordination
-**Track**: Future vision
-
-#### Federation Protocol
-- [ ] Define inter-collective protocol
-- [ ] Implement collective discovery
-- [ ] Add federation handshake
-- [ ] Create resource sharing
-
-#### Distributed Systems
-- [ ] Add distributed consensus (Tendermint)
-- [ ] Implement state synchronization
-- [ ] Create conflict resolution
-- [ ] Build federation governance
-
----
-
-### Phase 8: Production Scale
-**Prerequisites**: Core features stable
-**Goal**: Optimize for production scale
-**Track**: Engineering optimization
-
-#### Performance Optimization
-- [ ] Implement caching strategies
-- [ ] Add database indexing
-- [ ] Optimize vector searches
-- [ ] Create load balancing
-
-#### Infrastructure
-- [ ] Migrate to Kubernetes
-- [ ] Add horizontal scaling
-- [ ] Implement service mesh
-- [ ] Create monitoring dashboard
-
----
-
-## Technology Stack
-
-### Track 1 - Proven Technologies
-- **Backend**: FastAPI, PostgreSQL, Async SQLAlchemy, Redis/KeyDB
-- **Frontend**: React, TypeScript, shadcn/ui (migration complete)
-- **Vector Store**: Qdrant for embeddings
-- **AI Integration**: Model-agnostic API endpoints (user-configured)
-- **Infrastructure**: Docker, docker compose
-- **Testing**: Pytest, no mocks policy
-
-### Track 2 - Research/Experimental
-- **Identity Compression**: Custom algorithms [THEORETICAL]
-- **Trust Exchange**: ZK proofs, Pedersen commitments [THEORETICAL]
-- **Resonance**: Multi-model computation [THEORETICAL]
-- **Collective Intelligence**: Synchronization models [THEORETICAL]
-
-### Future Considerations
-- **Identity**: W3C DIDs when needed
-- **Storage**: IPFS if decentralization required
-- **Scale**: Kubernetes when load demands
-
-## Risk Mitigation
+- ✅ Proactive suggestions with sovereignty preservation
+- ✅ Task integration (LIST_TASKS action)
+- ✅ SSE streaming with real-time status updates
+
+**Phase 1.B: Universal Tools & Plugin System** - COMPLETE
+- ✅ 7 tools working (Shadow Council, Forum of Echoes, 5 utilities)
+- ✅ Shadow Council: 5 technical sub-agents fully integrated
+- ✅ Forum of Echoes: 10 philosophical voices active
+- ✅ Tool registry with auto-discovery
+- ✅ Enhanced prompts with tool awareness
+
+### 🚀 Phase 1.C: Protocol Integration - IN PROGRESS
+
+**Target: Q1 2025**
+- 🔄 OpenAPI tool generation from specifications
+- 🔄 MCP (Model Context Protocol) client implementation
+- 🔄 A2A bidirectional support (consume and provide)
+- 🔄 Privacy guards and exposure controls
+- 🔄 Tool permission management
+
+## Phase 2: Next-Generation Identity & Trust (Q1-Q2 2025)
+
+### Phase 2.A: PIE Identity System
+**Pragmatic Identity Embedding Pipeline**
+
+**Core Engine Development**:
+- Dynamic data acquisition with LLM-assisted profiling
+- Temporal dynamics (freshness, decay, reinforcement)
+- Psychographic vectorization with ML models
+- 128-dimension secure embedding generation
+- Layered privacy partitions (Core/Adaptive/Private)
+
+**Validation Targets**:
+- 80% profile completion within 30 days
+- >95% inter-user separability at 10k scale
+- <10% information loss in compression
+- 70% core trait stability over 6 months
+
+### Phase 2.B: Identity Kartouche System
+**Visual Identity Synthesis**
+
+**Symbolic Projection**:
+- Train archetype classifiers on exemplar profiles
+- Validate against expert human assessments
+- Test multiple symbolic systems (Tarot, I Ching, etc.)
+- Achieve >80% agreement with human raters
+
+**Kartouche Generation**:
+- Visual synthesis algorithms for unique glyphs
+- Trust state visualization integration
+- Dynamic evolution with identity changes
+- <0.1% collision rate at 1M scale
+
+### Phase 2.C: Trust Transaction Framework
+**Action-Based Trust Building**
+
+**Core Components**:
+- Verifiable Claims architecture with ZK-proofs
+- Private Trust Ledger (append-only, local-first)
+- Dynamic Trust Score (0-100 with decay)
+- Trust Handshake Protocol (<2 sec proof generation)
+
+**Implementation Targets**:
+- <100ms verification time
+- >99% gaming resistance
+- <1MB storage per year typical usage
+- >75% correlation with human trust assessments
+
+## Phase 3: Collective Intelligence (Q3-Q4 2025)
+
+### Phase 3.A: Resonance Algorithms
+**Mathematical Compatibility Modeling**
+
+- Harmonic resonance (frequency/phase analysis)
+- Quantum-inspired entanglement measures
+- Information-theoretic divergence metrics
+- Archetypal compatibility matrices
+- Privacy-preserved computation via ZK
+
+### Phase 3.B: Agent Communication Standards
+**Protocol Stack Implementation**
+
+- Multi-transport support (HTTP, WebSocket, MQTT, gRPC)
+- Semantic layer with ACL performatives
+- AI-mediated communication levels (0-6)
+- Trust integration in every message
+- Philosophical debate orchestration
+
+### Phase 3.C: Emergence Mechanics
+**Collective Formation & Dissolution**
+
+- Resonance-based clustering algorithms
+- Kuramoto synchronization dynamics
+- Stigmergic coordination spaces
+- Entropy-based dissolution triggers
+- Meta-collective hierarchies
+
+## Phase 4: Scale & Adoption (2026)
+
+### Phase 4.A: Production Hardening
+- Security audits and penetration testing
+- Performance optimization for 100k+ users
+- Mobile and edge device support
+- Decentralized infrastructure (IPFS, blockchain)
+
+### Phase 4.B: Ecosystem Development
+- Developer SDK and API documentation
+- Third-party tool marketplace
+- Community governance mechanisms
+- Economic incentive models
+
+### Phase 4.C: Global Deployment
+- Multi-language and cultural adaptation
+- Regulatory compliance frameworks
+- Enterprise integration options
+- Educational and onboarding programs
+
+## Research Track (Parallel)
+
+### Active Research Areas
+
+**PIE Pipeline Validation**:
+- Synthetic data generation with LLMs/GANs
+- Longitudinal stability studies
+- Cross-cultural validity testing
+- Privacy attack resistance
+
+**Trust Dynamics Modeling**:
+- Network effect simulations
+- Sybil attack resistance
+- Decay function optimization
+- Recovery mechanism design
+
+**Symbolic System Design**:
+- Classifier training methodologies
+- Orthogonality analysis
+- User resonance studies
+- Cultural universality validation
+
+**Collective Intelligence**:
+- Emergence condition identification
+- Stability maintenance algorithms
+- Value generation metrics
+- Dissolution optimization
+
+## Risk Mitigation Strategy
 
 ### Technical Risks
-| Risk | Mitigation |
-|------|------------|
-| Security vulnerabilities | Immediate Phase 0 activation |
-| Scalability issues | Progressive optimization |
-| Integration failures | Incremental development |
-| Privacy breaches | Formal verification |
+1. **ML Performance**: Fallback to higher dimensions or ensembles
+2. **ZK Efficiency**: Use optimistic verification if needed
+3. **Symbolic Quality**: Resort to clustering if classifiers fail
 
-### Execution Risks
-| Risk | Mitigation |
-|------|------------|
-| Scope creep | Strict phase boundaries |
-| Integration debt | Continuous integration |
-| Documentation lag | Doc-as-code approach |
-| Testing gaps | TDD for critical paths |
+### Adoption Risks
+1. **Complexity**: Progressive disclosure with simple defaults
+2. **Privacy Concerns**: Optional encrypted cloud backup
+3. **Gaming/Attacks**: Reputation burning and quarantine
+
+### Fallback Positions
+- PIE → Standard embeddings
+- Kartouche → Simple avatars
+- TTF → Traditional reputation
+- Collective → Standard groups
 
 ## Success Metrics
 
-### Phase Completion Criteria
-- Phase 0: Zero security vulnerabilities
-- Phase 1: Working single-user application with persona
-- Phase 2: Trust networks forming naturally
-- Phase 3: Cryptographic privacy active
-- Phase 4: DID authentication working
-- Phase 5: Two agents exchanging trust
-- Phase 6: First collective decision
-- Phase 7: Two collectives interacting
-- Phase 8: 1000+ concurrent agents
+### Phase 2 (Identity & Trust)
+- [ ] PIE system generates stable, meaningful representations
+- [ ] Kartouches achieve >85% user recognition
+- [ ] TTF enables trust without privacy compromise
+- [ ] Beta users report increased agency
 
-### Key Performance Indicators
-- User retention: >60% monthly active
-- Agent interactions: >100 daily per user
-- Trust formations: >10 per user
-- Collective decisions: >1 per week
-- System uptime: >99.9%
+### Phase 3 (Collective Intelligence)
+- [ ] Resonance algorithms predict compatibility >70% accuracy
+- [ ] Agent communication achieves semantic fidelity
+- [ ] Collectives demonstrate emergent capabilities
+- [ ] Dissolution occurs gracefully
 
-## Implementation Order
+### Phase 4 (Scale)
+- [ ] System handles 100k+ concurrent users
+- [ ] Third-party ecosystem emerges
+- [ ] Cross-cultural adoption validated
+- [ ] Sovereignty preserved at scale
 
-### Immediate Priority (Current Sprint)
-1. **UI/UX Unification** - Fix critical issues, add navigation shell
-   - Phase 1: Critical fixes (chat scrolling, layout)
-   - Phase 2: Navigation shell (sidebar, chat history)
-   - Phase 3: Progressive enhancement (port best features)
-2. **Frontend Integration** - Connect all backend features in UI
-3. **Persona System** - Complete 4-mode implementation
-4. **Receipts & Transparency** - Add audit trail
+## Resource Requirements
 
-### Parallel Research Track
-- Game mechanics integration
-- ICV validation studies
-- Trust protocol testing
-- Resonance correlation analysis
+### Team (Minimum Viable)
+- 2 ML Engineers (PIE, symbolic systems)
+- 1 Cryptography Engineer (ZK, protocols)
+- 2 Full-stack Developers (integration)
+- 1 UX Designer (kartouche, interfaces)
+- 1 Research Coordinator
 
-### Conditional Development
-- Only implement theoretical features after validation
-- Maintain fallback strategies
-- Build on proven foundations
+### Infrastructure
+- GPU compute: $5k/month
+- Testing environment: 10k synthetic users
+- Beta program: 100-500 real users
+- Security audits: $50k per phase
 
-### Decision Gates
-Between phases, evaluate:
-- Did research validation succeed?
-- Are users finding value?
-- Should we pivot or proceed?
+## Conclusion
 
-## Critical Dependencies
+This roadmap charts a path from the current working system to a complete cognitive sovereignty platform. By focusing on empirically validated approaches (PIE, TTF) while preserving philosophical depth (Kartouche, symbolic overlays), we can build something both practical and transformative.
 
-The theoretical concepts have cascading dependencies:
-```
-Identity Compression (ICV)
-    ↓ enables
-Progressive Trust Exchange
-    ↓ enables  
-Resonance Compatibility
-    ↓ enables
-Agent Communication
-    ↓ enables
-Collective Intelligence
-```
+The phased approach allows continuous value delivery while managing risk. Each phase builds on the previous, with clear fallback positions if approaches prove unviable.
 
-If ICV validation fails, the entire theoretical stack must be reconsidered.
-
-## Next Actions
-
-### Immediate (This Sprint)
-1. **Fix chat UI** - Viewport-relative height, proper scrolling
-2. **Create AppShell** - Unified navigation wrapper
-3. **Port Sidebar** - From Chakra logic to shadcn/ui
-4. **Add chat history** - Sessions in sidebar
-5. **Test mobile** - Ensure responsive design
-
-### Next Sprint
-1. **Complete persona system** - 4 modes with worldview
-2. **Add receipts** - Transparency for all actions
-3. **Integrate context panels** - Memories while chatting
-4. **Polish UI** - Animations, keyboard shortcuts
-
-### Research Track (Parallel)
-1. Begin synthetic ICV validation studies
-2. Test game mechanics with real usage
-3. Design trust network protocols
-4. Make go/no-go decisions on theoretical features
+Most importantly, this roadmap maintains the project's commitment to user sovereignty, privacy, and agency at every step.
 
 ---
 
-*This roadmap prioritizes delivering value with proven technologies while validating ambitious theoretical concepts through rigorous research.*
+*"Building cognitive sovereignty through validated engineering and principled research."*

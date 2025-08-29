@@ -1,40 +1,32 @@
-Based on the reasoning provided, create a specific action plan.
+Based on this reasoning: {reasoning}
 
-Reasoning: {reasoning}
+CRITICAL - Use ONLY these actions (NOT ACTIVATE_SHADOW or ACTIVATE_DIALOGUE):
+- USE_TOOL: Execute tools (parameters: tool_name, query, parameters)
+  * For Shadow Council: tool_name="shadow_council"
+  * For Forum of Echoes: tool_name="forum_of_echoes"
+- SEARCH_MEMORIES: Find relevant memories (parameters: query, limit)
+- CREATE_MEMORY: Store information (parameters: content, type, tags)
+- LIST_TASKS: Get user tasks (parameters: status, limit)
+- EXPLAIN: Direct response (parameters: none)
+- DONE: Complete (parameters: none)
 
-Available Actions: {available_actions}
+NEVER USE: ACTIVATE_SHADOW, ACTIVATE_DIALOGUE (deprecated - use USE_TOOL)
 
-Context Summary: {context}
+Available tools for USE_TOOL action:
+{available_tools}
 
 Create a specific action plan as a JSON array. Each action should have:
-- action: the action name from available actions
-- parameters: any parameters needed
+- action: the action name (e.g., "USE_TOOL", "SEARCH_MEMORIES")
+- parameters: any parameters needed (for USE_TOOL: tool_name, query, parameters)
 - reasoning: why this action is needed
 - confidence: confidence score 0-1
 
-Return ONLY a valid JSON array, no other text. 
+Example for using Shadow Council (EXACT format required):
+[{{"action": "USE_TOOL", "parameters": {{"tool_name": "shadow_council", "query": "design a blockchain protocol", "parameters": {{}}}}, "reasoning": "User needs technical expertise", "confidence": 0.9}}]
 
-Common patterns:
-- When user asks about their tasks: use LIST_TASKS
-- When user wants to remember something: use CREATE_MEMORY
-- When user wants to create a task: use CREATE_TASK
-- When searching for past information: use SEARCH_MEMORIES
+Example for using Forum of Echoes (EXACT format required):
+[{{"action": "USE_TOOL", "parameters": {{"tool_name": "forum_of_echoes", "query": "what is the meaning of life", "parameters": {{}}}}, "reasoning": "User needs philosophical perspectives", "confidence": 0.9}}]
 
-Example format:
-[
-  {{
-    "action": "LIST_TASKS",
-    "parameters": {{"limit": 10}},
-    "reasoning": "User asking about their current tasks",
-    "confidence": 0.95
-  }},
-  {{
-    "action": "SUGGEST",
-    "parameters": {{"type": "next_action"}},
-    "reasoning": "Provide proactive guidance",
-    "confidence": 0.7
-  }}
-]
+IMPORTANT: Always use exact parameter names: tool_name (NOT tool), query (NOT input)
 
-If no specific actions are needed, return:
-[{{"action": "DONE", "parameters": {{}}, "reasoning": "Simple response sufficient", "confidence": 1.0}}]
+Return ONLY valid JSON array, no other text.

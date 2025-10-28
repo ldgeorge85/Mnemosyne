@@ -13,6 +13,10 @@
 
 </div>
 
+## 📢 Alpha Release - October 2025
+
+**This is an alpha release of a solo research project.** See [ALPHA_RELEASE.md](ALPHA_RELEASE.md) for expectations and context.
+
 ## 🎆 Current Status: Research Platform Operational 🎆
 
 **Phase 1.B - Substantially Complete**: Core primitives working, research validation ongoing
@@ -274,15 +278,18 @@ See [PROJECT_STATUS.md](docs/PROJECT_STATUS.md) for detailed priorities and hone
 
 ## Contributing
 
-We're looking for collaborators who share the vision of digital sovereignty and collective intelligence.
+This is a solo research project with limited maintenance capacity. If the ideas resonate with you, please:
+- **Fork the repository** and make it your own
+- **Open issues** for discussion (checked when possible)
+- **Share what you build** with these concepts
 
-### Immediate Needs
-- **Persona System** - Complete 4-mode adaptive personality
-- **ICV Research** - Validate identity compression hypothesis
-- **Trust Networks** - Design progressive disclosure protocols
-- **Testing** - Increase coverage and integration tests
+See [ALPHA_RELEASE.md](ALPHA_RELEASE.md) for realistic expectations and [Contributing Guide](docs/CONTRIBUTING.md) for technical details.
 
-See [Contributing Guide](docs/CONTRIBUTING.md) for details.
+## Contact
+
+- **GitHub Issues**: Primary communication channel
+- **Pull Requests**: Welcome but may not be reviewed quickly
+- **Author**: L.D. George (@ldgeorge85)
 
 ## Project Structure
 

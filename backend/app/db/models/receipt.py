@@ -51,11 +51,22 @@ class ReceiptType(str, enum.Enum):
     # Trust operations
     TRUST_EXCHANGE = "trust_exchange"
     TRUST_EVENT = "trust_event"
-    
+
+    # Negotiation operations
+    NEGOTIATION_CREATED = "negotiation_created"
+    NEGOTIATION_JOINED = "negotiation_joined"
+    NEGOTIATION_OFFER = "negotiation_offer"
+    NEGOTIATION_ACCEPTED = "negotiation_accepted"
+    NEGOTIATION_CONSENSUS = "negotiation_consensus"
+    NEGOTIATION_FINALIZED = "negotiation_finalized"
+    NEGOTIATION_BINDING = "negotiation_binding"
+    NEGOTIATION_WITHDRAWN = "negotiation_withdrawn"
+    NEGOTIATION_DISPUTED = "negotiation_disputed"
+
     # Consent operations
     CONSENT_GIVEN = "consent_given"
     CONSENT_REVOKED = "consent_revoked"
-    
+
     # Agent operations
     AGENT_ACTION = "agent_action"
 
@@ -124,7 +135,11 @@ class Receipt(Base):
     ip_address = Column(String(45))  # Client IP (for security)
     user_agent = Column(String(500))  # Client user agent
     session_id = Column(String(255))  # Session identifier
-    
+
+    # Cryptographic integrity
+    content_hash = Column(String(64))  # SHA-256 hash of receipt contents
+    previous_hash = Column(String(64))  # Hash of previous receipt (for chaining)
+
     # Relationships
     user = relationship("User", back_populates="receipts")
     
@@ -146,6 +161,8 @@ class Receipt(Base):
             "explanation": self.explanation,
             "privacy_impact": self.privacy_impact,
             "user_visible": self.user_visible,
+            "content_hash": self.content_hash,
+            "previous_hash": self.previous_hash,
         }
     
     def __repr__(self) -> str:

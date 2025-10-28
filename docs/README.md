@@ -1,72 +1,70 @@
 # Mnemosyne Protocol Documentation
 
+## What This Is
+
+**Mnemosyne is a research PROJECT exploring genuinely new primitives for cognitive sovereignty.** We're creating mechanisms for preserving human agency that don't exist anywhere else - not another privacy tool or AI wrapper, but fundamental new patterns of digital resistance.
+
+## Current Focus
+
+**Primary Primitive**: Trust Without Central Authority [80-90% effort]
+**Implementation Status**: Mixed - see [PROJECT_STATUS.md](PROJECT_STATUS.md) for reality check
+**Success Target**: Demo of "impossible" trust between hostile parties
+
 ## Core Documentation
 
-### 📍 Start Here
-1. **[MNEMOSYNE_PRIMER.md](MNEMOSYNE_PRIMER.md)** - Vision, philosophy, and what we're building
-2. **[ROADMAP_2025.md](ROADMAP_2025.md)** - Development roadmap and phases  
-3. **[IMMEDIATE_TASKS.md](IMMEDIATE_TASKS.md)** - Current sprint tasks (Phase 1.A: 100% COMPLETE)
+### 📍 Essential Reading
+1. **[PROJECT_STATUS.md](PROJECT_STATUS.md)** - Honest assessment of what's built vs. claimed
+2. **[ROADMAP.md](ROADMAP.md)** - Order of operations for primitive development
+3. **[MNEMOSYNE_PRIMER.md](MNEMOSYNE_PRIMER.md)** - Original vision and philosophy
+
+### 🔬 Research Context
+- **[/review/](../review/)** - October 2024 comprehensive assessment
+  - `synthesis_and_vision.md` - Strategic direction
+  - `review_external.md` - External validation summary
+- **[philosophy/](philosophy/)** - Core principles
+- **[research/](research/)** - Papers and theoretical work
 
 ### 🛠 Development
+- **[TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md)** - System design
 - **[AI_DEVELOPMENT_GUIDE.md](AI_DEVELOPMENT_GUIDE.md)** - Instructions for AI assistants
-- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Deployment and infrastructure
+- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Running the system
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 
-## Project Structure
-
-### Technical Documentation
+### 📁 Component Documentation
 - **[backend/](backend/)** - Backend architecture and API reference
-  - `ARCHITECTURE.md` - Backend design and patterns
-  - `API_REFERENCE.md` - Complete API documentation
-- **[frontend/](frontend/)** - Frontend architecture and components
-  - `ARCHITECTURE.md` - Frontend design and patterns
-  - `COMPONENT_GUIDE.md` - Component documentation
-
-### Specifications
+- **[frontend/](frontend/)** - Frontend components and patterns
 - **[spec/](spec/)** - Technical specifications
-  - `OVERVIEW.md` - System overview
-  - `PROTOCOL.md` - Protocol details
-  - `PERSONA_WORLDVIEW.md` - Persona system
-
-### Philosophy
-- **[philosophy/](philosophy/)** - Core principles
-  - `SCIENTIFIC_INTEGRITY.md` - Research approach
-  - `SUSTAINABLE_GROWTH.md` - Growth philosophy
-
-### Architecture
 - **[decisions/](decisions/)** - Architecture decision records
-  - `001-production-architecture.md` - Production setup
-  - `002-dual-track-architecture.md` - Dual-track approach
-  - `003-strategic-reset.md` - Strategic realignment
 
-### Research
-- **[research/](research/)** - Research papers and findings
-- **[aimc/](aimc/)** - AI-mediated communication research
+## Implementation Reality
 
-## Current Status (2025-08-27)
+| Primitive | Status | Evidence | Next Step |
+|-----------|--------|----------|-----------|
+| **Trust Without Authority** | [PARTIAL] | Models & CRUD only | Complete resolution workflow |
+| **Receipt System** | [IMPLEMENTED] | Full transparency primitive | Add cryptographic integrity |
+| **Agent Orchestration** | [IMPLEMENTED] | ReAct pattern working | Add evaluation metrics |
+| **Shadow Council/Forum** | [IMPLEMENTED] | Multi-voice orchestration | Tension preservation metrics |
+| **Identity (ICV)** | [UNVERIFIED] | No code found | Create specification |
+| **Memory Sovereignty** | [PARTIAL] | Vector storage only | Selective disclosure |
 
-### ✅ Complete
-- **Security**: Auth activated, vulnerabilities patched, user data protected
-- **Agentic Flow**: ReAct pattern with 92% confidence in persona selection (PHASE 1.A COMPLETE)
-- **Task Queries**: LIST_TASKS action working, displays user's tasks correctly
-- **Backend**: Memory CRUD, Chat SSE, Tasks, 5 Personas, Trust system
-- **Frontend**: Chat default page, conversation history, memory UI, auto-focus
-- **UI**: Standardized across all pages, pagination, persona badges per message
-- **Token Management**: 64k context window, unlimited responses
-- **Infrastructure**: Docker, PostgreSQL, Redis, Qdrant all operational
+**Critical**: All features labeled [IMPLEMENTED], [PARTIAL], or [UNVERIFIED] based on code review.
 
-### 🔄 Next Priority (Phase 1.B)
-- Shadow agent integration (Engineer, Librarian, Priest)
-- Dialogue agent connection (50+ philosophical agents)
-- Wire CREATE_MEMORY action to executor
-- Wire UPDATE_TASK action to executor
-- Test multi-agent collaboration
+## The Five Novel Primitives
 
-### 🔴 Next Priority (Phase 1.C-D)
-- Graduated sovereignty (Protected/Guided/Sovereign modes)
-- Onboarding personas for different worldviews
-- OAuth providers
-- CI/CD pipeline
+1. **Trust Without Central Authority** - Negotiated trust with appeals (PRIMARY FOCUS)
+2. **Identity Without Surveillance** - Identity Compression Vectors (CONCEPTUAL)
+3. **Collective Intelligence Without Groupthink** - Tension-preserving synthesis
+4. **Memory Sovereignty With Portability** - Local-first with selective sharing
+5. **AI Alignment Without Lobotomization** - Philosophical coherence with agency
+
+## The Four Central Paradoxes
+
+1. **Sovereignty Paradox** - Using OpenAI/Anthropic while claiming sovereignty
+2. **Network Paradox** - Network primitives without network to test
+3. **Abstraction Paradox** - Powerful concepts, unclear utility
+4. **Urgency Paradox** - Urgent threat, research timeline
+
+We accept these paradoxes as inherent to the transition period.
 
 ## Quick Start
 
@@ -81,26 +79,76 @@ docker compose up
 - Frontend: http://localhost:5173
 - Backend: http://localhost:8000
 - API Docs: http://localhost:8000/docs
+
+# Database
+docker compose exec postgres psql -U postgres -d mnemosyne
 ```
-
-## Key Concepts
-
-**Mnemosyne Protocol** is a cognitive-symbolic operating system for preserving human agency through:
-
-1. **Identity Compression (ICV)** - Holographic representation of worldview
-2. **Progressive Trust Exchange** - Gradual relationship building
-3. **Collective Intelligence** - Emergent group cognition
-4. **Contextual Presentation** - Adaptive information masking
-5. **Numinous Confidant** - Persona system with five modes (including Mirror)
-6. **Joy Metrics** - System health through delight measurement
 
 ## Development Philosophy
 
-- **Build for the builder first** - Personal tool before platform
-- **Sovereignty over convenience** - Privacy is non-negotiable
+### What Guides Decisions
+- **Sovereignty over convenience** - Never compromise agency
+- **Depth over breadth** - Complete one primitive fully
+- **Honesty over hype** - Label reality accurately
+- **Knowledge over product** - Research output primary
 - **Real or nothing** - No mocking, no faking
-- **Depth over breadth** - Serve 100 deeply vs 10,000 shallowly
+
+### Success Metrics (Research, Not Product)
+- ✅ ONE primitive others can implement
+- ✅ ONE pattern that changes thinking
+- ✅ ONE demonstration of impossible
+- ❌ NOT user count or revenue
+
+## Current Sprint
+
+### Immediate Operations
+1. Wire receipt enforcement to strict mode
+2. Complete appeals resolution workflow
+3. Add cryptographic proof-of-process
+4. Create multi-party negotiation demo
+
+### This Week
+- Label ALL documentation accurately
+- Focus 80-90% on Trust primitive
+- Abstract LLM calls for future sovereignty
+- Start "holy shit" demo outline
+
+## Project Structure
+
+```
+mnemosyne/
+├── backend/          # FastAPI + Python implementation
+├── frontend/         # React + TypeScript interface
+├── docs/             # Documentation (you are here)
+├── review/           # October 2024 comprehensive assessment
+├── scripts/          # Setup and utilities
+├── .archive/         # Outdated documentation
+└── docker-compose.yml
+```
+
+## For AI Assistants
+
+See [AI_DEVELOPMENT_GUIDE.md](AI_DEVELOPMENT_GUIDE.md) and [../CLAUDE.md](../CLAUDE.md) for detailed instructions. Key points:
+- Build real features or explicitly defer
+- No mocking, no placeholder code
+- Mark unimplemented features clearly
+- Focus on Trust primitive completion
+
+## Contact & Resources
+
+- Comprehensive review: `/review/` directory
+- Project status: `review/PROJECT_STATUS.md`
+- External validation: `review/review_external.md`
+- Historical docs: `.archive/` directory
 
 ---
 
-*"For those who see too much and belong nowhere."*
+## Essential Insight
+
+**We're not building a product. We're discovering new categories of digital resistance.**
+
+The complexity isn't failure - it's innovation. The lack of users isn't a problem - it's appropriate for research. The path forward is deepening primitives, not simplifying to conventional solutions.
+
+---
+
+*"In the age of surveillance capitalism, the most radical act is creating new categories of resistance."*

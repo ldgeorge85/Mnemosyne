@@ -13,22 +13,19 @@
 
 </div>
 
-## 🎆 Current Status: Phase 1.A COMPLETE! 🎆
+## 🎆 Current Status: Research Platform Operational 🎆
 
-**Agentic Flow is WORKING** - ReAct pattern foundation is live:
-- ✅ Intelligent persona selection via LLM (92% confidence achieved!)
-- ✅ Multi-action planning and parallel execution
-- ✅ Memory context retrieval and integration  
-- ✅ Task queries working with LIST_TASKS action
-- ✅ Configurable LLM temperatures per persona mode
-- ✅ Flexible system prompt modes for model compatibility
-- ✅ Proactive suggestions while respecting sovereignty
-- ✅ Full transparency through decision receipts
-- ✅ UI standardization and pagination (August 27, 2025)
-- ✅ Token management system (64k context, unlimited responses)
-- ✅ Per-message persona badges showing mode used
-- ✅ Collapsible reasoning display (persistent for transparency)
-- ✅ Phase 1.B IN PROGRESS: Universal Tools & Plugin System (core infrastructure complete!)
+**Phase 1.B - Substantially Complete**: Core primitives working, research validation ongoing
+- ✅ Trust Primitive (75% complete) - Appeals resolution, multi-party negotiation, cryptographic receipts
+- ✅ Agentic orchestration - Shadow Council & Forum of Echoes generating perspectives
+- ✅ Tool registry with auto-discovery and parallel execution
+- ✅ Memory/Task executors integrated (CREATE_MEMORY, UPDATE_TASK)
+- ✅ Receipt system with SHA-256 hashing for transparency
+- 🔄 Digital signatures needed for non-repudiation
+- 🔄 Identity Compression Vectors (conceptual, no implementation)
+- 🔄 Zero-knowledge proofs (research phase)
+
+**What's Next**: Focus on completing Trust Primitive with working demonstrations
 
 ## Quick Introduction
 
@@ -38,7 +35,7 @@ A world where your AI doesn't just assist you—it truly represents ALL of you, 
 
 **The Mnemosyne Protocol is building cognitive sovereignty infrastructure** - technology that preserves human agency through full spectrum awareness, not moral imposition.
 
-**Deep dive**: [INTEGRATED_VISION_2025.md](docs/INTEGRATED_VISION_2025.md)
+**Deep dive**: [PROJECT_STATUS.md](docs/PROJECT_STATUS.md) for honest assessment
 
 ## Quick Start
 
@@ -97,11 +94,39 @@ The system adapts to your worldview:
 - **Guided Mode** - Balanced autonomy and support
 - **Sovereign Mode** - Full control for advanced users
 
+## What Actually Works Now
+
+Conservative assessment of fully functional features:
+
+### Operational Infrastructure
+- ✅ **Authentication** - JWT-based auth with secure token management
+- ✅ **PostgreSQL Database** - All migrations working, tables created
+- ✅ **Vector Storage** - Qdrant integration for embeddings
+- ✅ **Redis Streaming** - Event processing operational
+- ✅ **Docker Stack** - Full deployment ready
+
+### Implemented Features
+- ✅ **Receipt System** - SHA-256 cryptographic hashing, full transparency logs
+- ✅ **Multi-Party Negotiation** - 2046 lines, 3 tables, 10 endpoints (needs user ID fix)
+- ✅ **Appeals Resolution** - 422 lines, voting system, SLA tracking
+- ✅ **Memory Storage** - CRUD operations, embeddings, vector search, complete UI
+- ✅ **Task Management** - Full stack with forms, tracking, and gamification
+- ✅ **Chat System** - Conversations with streaming, history, persona integration
+- ✅ **Agentic Flow** - ReAct pattern with planning and parallel execution
+- ✅ **Agent Tools** - Shadow Council (5 agents) and Forum of Echoes (10 voices) operational
+
+### Research Phase (Not Yet Implemented)
+- 🔬 **Identity Compression Vectors (ICV)** - Conceptual only, no code
+- 🔬 **Zero-Knowledge Proofs** - Research stage, not implemented
+- 🔬 **W3C DID Integration** - Environment variables only, no implementation
+- 🔬 **Progressive Disclosure** - Basic owner-only ACL, not relationship-based
+- 🔬 **Local Model Support** - Planned, not yet integrated
+
 ## Current Status
 
 The project implements **cognitive sovereignty** through proven technologies while researching advanced capabilities.
 
-### Working Now
+### Working Features (Detailed)
 - ✅ **Authentication System** - Secure, consolidated auth with JWT
 - ✅ **Memory System** - FULL STACK: CRUD, embeddings, vector search, complete UI
 - ✅ **Vector Storage** - Qdrant integration for semantic search
@@ -123,13 +148,14 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - ✅ **UI Polish** - Standardized layouts, pagination, consistent search
 - ✅ **Per-Message Personas** - Shows which mode was used for each response
 
-### In Active Development
+### Next Phase: 1.C Protocol Integration (Starting Now)
 
-#### 🚀 Phase 1.C: Protocol Integration
-- 🔄 Add OpenAPI support for REST API tools
-- 🔄 Integrate MCP for data source access
-- 🔄 Implement A2A bidirectional support with agent cards
-- 🔄 Privacy controls for tool exposure
+#### 🚀 External Protocol Support
+- 🔄 OpenAPI tool generation from specifications
+- 🔄 MCP (Model Context Protocol) client implementation
+- 🔄 A2A bidirectional support - consume and provide agents
+- 🔄 Privacy guards and exposure controls
+- 🔄 Tool permission management per user
 
 #### 🧬 Next-Gen Identity System (PIE + Kartouche)
 - 🔬 **Pragmatic Identity Embedding (PIE)** - ML-based identity compression
@@ -177,7 +203,7 @@ The project implements **cognitive sovereignty** through proven technologies whi
 - 🟢 **Specialized Modes** - Operational/Contemplative/Aesthetic
 - 🟢 **Integration Tests** - Comprehensive coverage
 
-See [IMMEDIATE_TASKS.md](docs/IMMEDIATE_TASKS.md) for detailed execution plan.
+See [PROJECT_STATUS.md](docs/PROJECT_STATUS.md) for detailed priorities and honest assessment.
 
 ## Architecture
 
@@ -209,10 +235,10 @@ See [IMMEDIATE_TASKS.md](docs/IMMEDIATE_TASKS.md) for detailed execution plan.
 ## Documentation
 
 ### Essential Reading
-- **[Project Primer](docs/MNEMOSYNE_PRIMER.md)** - Complete vision with 6 core innovations
-- **[Roadmap](docs/ROADMAP_2025.md)** - Dual-track development plan
-- **[Integrated Vision](docs/INTEGRATED_VISION_2025.md)** - Strategic analysis
-- **[Immediate Tasks](docs/IMMEDIATE_TASKS.md)** - Tactical execution plan
+- **[Project Primer](docs/PRIMER.md)** - Complete vision and philosophy
+- **[Roadmap](docs/ROADMAP.md)** - Development plan and priorities
+- **[Project Status](docs/PROJECT_STATUS.md)** - Honest assessment of what's built vs. what's research
+- **[Trust Primitive Primer](docs/TRUST_PRIMITIVE_PRIMER.md)** - Core innovation explained
 
 ### Technical Deep Dive
 - **[Concepts Deep Dive](docs/CONCEPTS_DEEP_DIVE.md)** - Complete theoretical framework
@@ -272,7 +298,7 @@ mnemosyne/
 │   ├── decisions/         # Architecture decisions
 │   ├── research/          # Academic foundations
 │   ├── spec/              # Protocol specifications
-│   └── MNEMOSYNE_PRIMER.md  # Start here
+│   └── PRIMER.md          # Start here
 ├── scripts/               # Setup and utilities
 └── CLAUDE.md              # AI assistant instructions
 ```

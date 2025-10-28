@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-You are working on **The Mnemosyne Protocol** - a cognitive-symbolic operating system for preserving human agency. This is a personal project that will grow into a platform.
+You are working on **The Mnemosyne Protocol** - a cognitive-symbolic operating system for preserving human agency through research into new primitives for digital sovereignty.
 
 ## Core Philosophy
 
@@ -88,23 +88,28 @@ git add -A && git commit -m "message"
 - Review existing code patterns
 
 ### 2. Database Schema
-The schema needs completion. Key tables:
-- `memories` - Personal memory storage with vector embeddings
-- `users` - Authentication (NEEDS IMPLEMENTATION)
-- `signals` - Deep Signal storage (NEEDS IMPLEMENTATION)
-- `sharing_contracts` - Collective sharing rules
-- `trust_relationships` - Trust scores (NEEDS IMPLEMENTATION)
+Key tables implemented:
+- `memories` - Personal memory storage with vector embeddings ✅
+- `users` - Authentication with JWT ✅
+- `conversations` - Chat history storage ✅
+- `messages` - Individual chat messages ✅
+- `tasks` - Task system with gamification ✅
+- `receipts` - Transparency tracking ✅
+- `trust_events` - Trust system events ✅
+- `appeals` - Appeals process ✅
+- `trust_relationships` - Trust scoring ✅
+- `consciousness_maps` - Pattern tracking (opt-in) ✅
 
 ### 3. API Endpoints
 See `docs/reference/API.md` for complete specification. Many endpoints need implementation.
 
-### 4. Agent System (Phase 1.B Priority!)
-- Shadow Council in `shadow/` directory (Artificer, Archivist, Mystagogue, Tactician, Daemon)
-- Forum of Echoes in `dialogues/` directory (50+ philosophical voices)
-- **NEW**: Agentic flow controller in `backend/app/services/agentic/`
-- Use ReAct pattern (Reasoning + Acting)
-- Parallel execution with asyncio.gather()
-- LLM decisions replace keyword matching
+### 4. Agent System ✅ PHASE 1.B COMPLETE!
+- Shadow Council ✅ - 5 technical agents fully operational as unified tool
+- Forum of Echoes ✅ - 10 philosophical voices active as unified tool  
+- Agentic flow controller ✅ - ReAct pattern with 92% confidence
+- Tool registry ✅ - 7 tools registered with auto-discovery
+- Parallel execution ✅ - Configurable batching (e.g., SHADOW_COUNCIL_MAX_PARALLEL=2)
+- LLM reasoning ✅ - Replaces all keyword matching
 
 ### 5. Privacy Requirements
 - K-anonymity minimum of 3
@@ -268,10 +273,10 @@ await vector_store.store({
 
 ## Philosophy Reminders
 
-1. **Build for the builder first** - Every feature must serve the person building it
+1. **Research focus** - Building new primitives for cognitive sovereignty
 2. **Sovereignty over convenience** - Privacy and control are non-negotiable
 3. **Real or nothing** - No mocking, no faking, no pretending
-4. **Depth over breadth** - Better to serve 100 deeply than 10,000 shallowly
+4. **Depth over breadth** - Complete implementations over partial features
 
 ## Common Tasks
 
@@ -336,12 +341,8 @@ await vector_store.store({
 
 ## Remember
 
-You're not building a product. You're building a new way of thinking about cognitive sovereignty. Every line of code should reflect that philosophy.
+This is a research project exploring new primitives for cognitive sovereignty. Every line of code should reflect that philosophy.
 
-**Current Phase**: Building personal tool (1 user)
-**Next Phase**: Early adopters (10 users)
+**Current Phase**: Research and validation
+**Focus**: Complete implementations of core primitives
 **Philosophy**: Real implementation or explicit deferral
-
----
-
-*"For those who see too much and belong nowhere."*

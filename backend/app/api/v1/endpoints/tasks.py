@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any, Union
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Path, Body, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Path, Body, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies.db import get_async_db
@@ -83,6 +83,7 @@ def task_to_dict(task) -> dict:
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 async def create_task(
     task_data: TaskCreate,
+    request: Request,
     current_user: AuthUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_async_db)
 ) -> Any:
@@ -134,7 +135,7 @@ async def create_task(
     task_progress = task.progress
     
     # Create receipt for transparency
-    receipt_service = ReceiptService(db)
+    receipt_service = ReceiptService(db, request)
     await receipt_service.create_receipt(
         user_id=current_user.user_id,
         entity_type="task",
@@ -363,6 +364,7 @@ async def get_subtasks(
 
 @router.put("/{task_id}", response_model=TaskResponse)
 async def update_task(
+    request: Request,
     task_id: UUID = Path(...),
     task_update: TaskUpdate = Body(...),
     current_user: AuthUser = Depends(get_current_user),
@@ -406,7 +408,7 @@ async def update_task(
     updated_task = await task_service.update_task(task_id, update_data)
     
     # Create receipt for transparency
-    receipt_service = ReceiptService(db)
+    receipt_service = ReceiptService(db, request)
     await receipt_service.create_receipt(
         user_id=current_user.user_id,
         entity_type="task",
@@ -425,6 +427,7 @@ async def update_task(
 
 @router.patch("/{task_id}/complete", response_model=TaskCompleteResponse)
 async def complete_task(
+    request: Request,
     task_id: UUID = Path(...),
     completion_data: TaskCompleteRequest = Body(TaskCompleteRequest()),
     current_user: AuthUser = Depends(get_current_user),
@@ -519,7 +522,7 @@ async def complete_task(
     await db.refresh(task)
     
     # Create receipt for task completion
-    receipt_service = ReceiptService(db)
+    receipt_service = ReceiptService(db, request)
     await receipt_service.create_receipt(
         user_id=current_user.user_id,
         entity_type="task",
@@ -688,6 +691,7 @@ async def get_task_stats(
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_task(
+    request: Request,
     task_id: UUID = Path(...),
     hard_delete: bool = Query(False),
     current_user: AuthUser = Depends(get_current_user),
@@ -725,7 +729,7 @@ async def delete_task(
         )
     
     # Create receipt before deletion
-    receipt_service = ReceiptService(db)
+    receipt_service = ReceiptService(db, request)
     await receipt_service.create_receipt(
         user_id=current_user.user_id,
         entity_type="task",

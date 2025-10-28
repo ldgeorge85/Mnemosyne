@@ -15,10 +15,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 import logging
 from sqlalchemy import text
 
-from backend.core.config import get_settings
-from backend.core.database import db_manager, Base
-from backend.core.vectors import vector_store
-from backend.core.redis_client import redis_manager
+from app.core.config import get_settings
+from app.core.database import db_manager, Base
+from app.core.vectors import vector_store
+from app.core.redis_client import redis_manager
 
 # Configure logging
 logging.basicConfig(
@@ -120,7 +120,7 @@ async def create_default_user() -> None:
     logger.info("Creating default admin user...")
     
     try:
-        from backend.models.user import User, InitiationLevel
+        from app.db.models.user import User, InitiationLevel
         
         async with db_manager.session() as session:
             # Check if admin exists

@@ -6,7 +6,7 @@ This module defines the main API router and includes all route handlers.
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import health, memories, agents, tasks, task_schedules, recurring_tasks, auth, persona, receipts, trust
+from app.api.v1.endpoints import health, memories, agents, tasks, task_schedules, recurring_tasks, auth, persona, receipts, trust, negotiations
 from app.core.config import settings
 
 # Create the main API router
@@ -51,6 +51,9 @@ api_router.include_router(receipts.router, prefix="/receipts", tags=["receipts"]
 
 # Include the Trust router (sovereignty safeguards)
 api_router.include_router(trust.router, prefix="/trust", tags=["trust"])
+
+# Include the Negotiations router (multi-party binding agreements)
+api_router.include_router(negotiations.router, prefix="/negotiations", tags=["negotiations"])
 
 # Additional routers will be added as they are implemented
 # Examples:

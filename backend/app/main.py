@@ -43,8 +43,11 @@ app = FastAPI(
 app.add_middleware(RequestIDMiddleware)
 
 # Receipt enforcement middleware (sovereignty safeguard)
-# Start in non-strict mode, can be made strict once all endpoints have receipts
-app.add_middleware(ReceiptEnforcementMiddleware, strict_mode=False)
+# Use configuration to determine enforcement mode
+receipt_strict_mode = settings.RECEIPT_ENFORCEMENT_MODE == "strict"
+receipt_enabled = settings.RECEIPT_ENFORCEMENT_MODE != "disabled"
+if receipt_enabled:
+    app.add_middleware(ReceiptEnforcementMiddleware, strict_mode=receipt_strict_mode)
 
 # Add CORS middleware
 app.add_middleware(

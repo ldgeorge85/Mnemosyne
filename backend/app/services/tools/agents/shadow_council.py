@@ -29,8 +29,7 @@ class ShadowCouncilTool(BaseTool):
         super().__init__()
         self.llm_service = LLMService()
         # Get parallel limit from settings
-        from ....core.config import settings
-        self._max_parallel_override = settings.SHADOW_COUNCIL_MAX_PARALLEL
+        self._max_parallel_override = getattr(settings, 'SHADOW_COUNCIL_MAX_PARALLEL', 2)
     
     def _get_default_metadata(self) -> ToolMetadata:
         return ToolMetadata(
@@ -50,7 +49,7 @@ class ShadowCouncilTool(BaseTool):
             tags=["agents", "technical", "strategic", "analysis", "expertise"],
             visibility=ToolVisibility.PUBLIC,
             timeout=60,  # Longer timeout for agent responses
-            max_parallel=self._max_parallel_override  # Use config value for parallel limit
+            max_parallel=getattr(self, '_max_parallel_override', 2)  # Use config value for parallel limit
         )
     
     async def can_handle(self, query: str, context: Dict) -> float:

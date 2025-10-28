@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     DOCS_PRIMARY_COLOR: str = "#1f4287"  # Primary brand color
     AUTH_REQUIRED: bool = Field(default=True, env="AUTH_REQUIRED")  # Whether authentication is required for API access
     SECRET_KEY: str = Field(default="CHANGE-THIS-SECRET-KEY-IN-PRODUCTION", env="SECRET_KEY")  # SECURITY WARNING: Change this!
+
+    # Receipt Enforcement Settings
+    RECEIPT_ENFORCEMENT_MODE: str = Field(default="warning", env="RECEIPT_ENFORCEMENT_MODE")  # "strict", "warning", or "disabled"
     
     # CORS settings
     CORS_ORIGINS: List[Union[str, AnyHttpUrl]] = [

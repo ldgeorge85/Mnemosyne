@@ -25,6 +25,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 # Import all models to ensure they're registered with Base
 from app.db.models.memory import Memory, MemoryChunk
+from app.db.models.negotiation import Negotiation, NegotiationMessage, NegotiationEscrow
 from app.db.session import Base  # Declarative base for all models
 target_metadata = Base.metadata
 

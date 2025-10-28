@@ -11,7 +11,7 @@ from app.schemas.memory import MemoryResponse, MemoryCreate, MemoryUpdate, Memor
 from app.services.memory.reflection import MemoryReflectionService
 from app.services.memory.embeddings import EmbeddingGenerator
 from app.services.vector_store.qdrant_store import get_qdrant_store
-from fastapi import Depends, HTTPException, APIRouter, Body
+from fastapi import Depends, HTTPException, APIRouter, Body, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_async_db
 from app.core.auth.manager import get_current_user
@@ -95,6 +95,7 @@ async def get_hierarchy(
 @router.post("/", response_model=MemoryResponse, status_code=status.HTTP_201_CREATED)
 async def create_memory(
     memory_data: MemoryCreate,
+    request: Request,
     db: AsyncSession = Depends(get_async_db),
     current_user: AuthUser = Depends(get_current_user)
 ) -> MemoryResponse:
@@ -157,7 +158,7 @@ async def create_memory(
     )
     
     # Create receipt for transparency
-    receipt_service = ReceiptService(db)
+    receipt_service = ReceiptService(db, request)
     await receipt_service.create_receipt(
         user_id=current_user.user_id,
         entity_type="memory",
@@ -284,6 +285,7 @@ async def list_memories(
 @router.put("/{memory_id}", response_model=MemoryResponse)
 async def update_memory(
     memory_data: MemoryUpdate,
+    request: Request,
     memory_id: str = Path(..., description="The ID of the memory to update"),
     db: AsyncSession = Depends(get_async_db),
     current_user: AuthUser = Depends(get_current_user)
@@ -328,7 +330,7 @@ async def update_memory(
     updated_memory_id = str(updated_memory.id)
     
     # Create receipt for transparency
-    receipt_service = ReceiptService(db)
+    receipt_service = ReceiptService(db, request)
     await receipt_service.create_receipt(
         user_id=current_user.user_id,
         entity_type="memory",
@@ -350,6 +352,7 @@ async def update_memory(
 
 @router.delete("/{memory_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_memory(
+    request: Request,
     memory_id: str = Path(..., description="The ID of the memory to delete"),
     permanent: bool = Query(False, description="Whether to permanently delete the memory"),
     db: AsyncSession = Depends(get_async_db),
@@ -384,7 +387,7 @@ async def delete_memory(
         )
     
     # Create receipt before deletion
-    receipt_service = ReceiptService(db)
+    receipt_service = ReceiptService(db, request)
     await receipt_service.create_receipt(
         user_id=current_user.user_id,
         entity_type="memory",

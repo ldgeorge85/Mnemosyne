@@ -41,7 +41,9 @@ class ReceiptResponse(BaseModel):
     explanation: Optional[str] = None
     privacy_impact: Optional[str] = None
     user_visible: bool = True
-    
+    content_hash: Optional[str] = None
+    previous_hash: Optional[str] = None
+
     class Config:
         from_attributes = True
 
@@ -124,7 +126,9 @@ async def get_user_receipts(
                 confidence_score=r.confidence_score,
                 explanation=r.explanation,
                 privacy_impact=r.privacy_impact,
-                user_visible=r.user_visible
+                user_visible=r.user_visible,
+                content_hash=r.content_hash,
+                previous_hash=r.previous_hash
             )
             for r in receipts
         ]
@@ -217,7 +221,9 @@ async def get_receipt(
             confidence_score=receipt.confidence_score,
             explanation=receipt.explanation,
             privacy_impact=receipt.privacy_impact,
-            user_visible=receipt.user_visible
+            user_visible=receipt.user_visible,
+            content_hash=receipt.content_hash,
+            previous_hash=receipt.previous_hash
         )
         
     except HTTPException:
@@ -275,7 +281,9 @@ async def get_entity_receipts(
                 confidence_score=r.confidence_score,
                 explanation=r.explanation,
                 privacy_impact=r.privacy_impact,
-                user_visible=r.user_visible
+                user_visible=r.user_visible,
+                content_hash=r.content_hash,
+                previous_hash=r.previous_hash
             )
             for r in receipts
         ]
@@ -287,4 +295,105 @@ async def get_entity_receipts(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve entity receipts"
+        )
+
+
+class ReceiptVerificationResponse(BaseModel):
+    """Receipt verification response."""
+    receipt_id: str
+    valid: bool
+    message: str
+
+
+class ChainVerificationResponse(BaseModel):
+    """Receipt chain verification response."""
+    valid: bool
+    total_receipts: int
+    verified_receipts: int
+    invalid_receipts: List[dict] = Field(default_factory=list)
+    chain_breaks: List[dict] = Field(default_factory=list)
+
+
+@router.post("/verify/{receipt_id}", response_model=ReceiptVerificationResponse)
+async def verify_receipt(
+    receipt_id: str,
+    current_user: AuthUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_async_db)
+):
+    """Verify the cryptographic integrity of a specific receipt.
+
+    Recalculates the receipt's content hash and verifies it matches the stored hash.
+    """
+    try:
+        # Convert receipt_id to UUID
+        try:
+            receipt_uuid = UUID(receipt_id)
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid receipt ID format: {receipt_id}"
+            )
+
+        service = ReceiptService(db)
+
+        # Get the receipt
+        receipt = await service.get_receipt_by_id(
+            receipt_id=receipt_uuid,
+            user_id=UUID(current_user.user_id)
+        )
+
+        if not receipt:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Receipt not found"
+            )
+
+        # Verify the receipt
+        is_valid = await service.verify_receipt(receipt)
+
+        return ReceiptVerificationResponse(
+            receipt_id=receipt_id,
+            valid=is_valid,
+            message="Receipt is valid" if is_valid else "Receipt verification failed"
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error verifying receipt: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to verify receipt"
+        )
+
+
+@router.post("/verify-chain", response_model=ChainVerificationResponse)
+async def verify_receipt_chain(
+    start_date: Optional[datetime] = Query(None, description="Start date for verification"),
+    end_date: Optional[datetime] = Query(None, description="End date for verification"),
+    current_user: AuthUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_async_db)
+):
+    """Verify the cryptographic integrity of the user's entire receipt chain.
+
+    Checks that:
+    - Each receipt's content hash is valid
+    - Each receipt's previous_hash matches the prior receipt's content_hash
+    """
+    try:
+        service = ReceiptService(db)
+
+        verification_result = await service.verify_receipt_chain(
+            user_id=UUID(current_user.user_id),
+            start_date=start_date,
+            end_date=end_date
+        )
+
+        return ChainVerificationResponse(**verification_result)
+
+    except Exception as e:
+        logger.error(f"Error verifying receipt chain: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to verify receipt chain"
         )

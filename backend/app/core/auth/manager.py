@@ -238,20 +238,33 @@ async def get_current_user(
 ) -> AuthUser:
     """
     FastAPI dependency to get current authenticated user
-    
+
     Supports multiple token sources:
     1. Authorization header (Bearer token)
     2. API-Key header
     3. Cookie (for web apps)
     """
-    
+
+    # Check if authentication is disabled (test mode)
+    if not settings.AUTH_REQUIRED:
+        # Return a test user
+        return AuthUser(
+            user_id="00000000-0000-0000-0000-000000000001",
+            auth_method=AuthMethod.STATIC,
+            username="test_user",
+            email="test@example.com",
+            roles=["user", "admin"],
+            permissions=["*"],
+            metadata={}
+        )
+
     auth_manager = get_auth_manager()
     token = None
-    
+
     # Try Authorization header
     if credentials and credentials.scheme.lower() == "bearer":
         token = credentials.credentials
-    
+
     # Try API-Key header
     if not token:
         api_key = request.headers.get("X-API-Key") or request.headers.get("API-Key")
@@ -263,17 +276,17 @@ async def get_current_user(
             )
             if result.success and result.user:
                 return result.user
-    
+
     # Try cookie (for web apps)
     if not token:
         token = request.cookies.get("access_token")
-    
+
     # Verify token
     if token:
         user = await auth_manager.verify_token(token)
         if user:
             return user
-    
+
     # No valid authentication found
     raise HTTPException(
         status_code=401,

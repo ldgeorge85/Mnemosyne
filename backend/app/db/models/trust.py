@@ -73,7 +73,11 @@ class TrustEvent(Base):
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)
     resolved_at = Column(DateTime)
-    
+
+    # Cryptographic integrity
+    content_hash = Column(String(64))  # SHA-256 hash of trust event contents
+    previous_hash = Column(String(64))  # Hash of previous trust event (for chaining)
+
     # Relationships
     actor = relationship("User", foreign_keys=[actor_id], backref="trust_events_as_actor")
     subject = relationship("User", foreign_keys=[subject_id], backref="trust_events_as_subject")

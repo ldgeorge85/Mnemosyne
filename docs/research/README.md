@@ -1,6 +1,10 @@
 # Mnemosyne Protocol Research Documentation
 ## Comprehensive Index and Navigation Guide
 
+*Last Updated: October 2025 - Alpha Release*
+
+⚠️ **Note**: This research directory contains both theoretical explorations and experimental hypotheses. Much of this is aspirational or conceptual. For what actually works, see [/ALPHA_RELEASE.md](/ALPHA_RELEASE.md) and [/docs/PROJECT_STATUS.md](/docs/PROJECT_STATUS.md).
+
 ---
 
 ## 📊 Research Documentation
@@ -139,14 +143,21 @@
 
 ---
 
-## 📊 Research Statistics
+## 📊 Research Status (October 2025)
 
+### Implemented vs Conceptual
+- **Working Code**: Receipt system, agent orchestration, basic trust primitive
+- **Partial Implementation**: Multi-party negotiation, appeals resolution
+- **Conceptual Only**: ICV, zero-knowledge proofs, progressive disclosure
+- **Research Phase**: Cultural universality, symbol systems
+
+### Research Statistics
 - **Total Documents**: 30+
-- **Research Duration**: 2 weeks intensive
-- **Key Findings**: 10 major discoveries
-- **Open Questions**: 15 critical unknowns
-- **Implementation Timeline**: 4-month MVP
-- **Validation Requirements**: 5 empirical studies needed
+- **Research Duration**: 2 weeks intensive sprint + ongoing
+- **Key Findings**: Trust primitive (75% complete)
+- **Open Questions**: Identity compression, ZK implementation
+- **Solo Developer**: Limited bandwidth, alpha release
+- **Validation Requirements**: Need external testing
 
 ---
 

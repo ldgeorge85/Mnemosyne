@@ -20,14 +20,22 @@ Instead of building another privacy app or AI wrapper, we're exploring **five no
 ### 1. Trust Without Central Authority [PRIMARY FOCUS]
 **Research Question**: Can trust exist without blockchain or central servers?
 - **Hypothesis**: Negotiated trust with appeals process
-- **Status**: [PARTIAL] - Basic models exist, resolution workflow needed
+- **Status**: [75% COMPLETE] - Working implementation with cryptographic receipts
 - **Goal**: Demo of binding agreement between hostile parties
+- **Implementation Docs**:
+  - [TRUST_PRIMITIVE_PRIMER.md](TRUST_PRIMITIVE_PRIMER.md) - Complete explanation of how it works
+  - [RECEIPT_CRYPTOGRAPHY.md](RECEIPT_CRYPTOGRAPHY.md) - SHA-256 hash chain implementation
+  - [spec/MULTI_PARTY_NEGOTIATION.md](spec/MULTI_PARTY_NEGOTIATION.md) - Protocol specification
 
 ### 2. Identity Without Surveillance [CONCEPTUAL]
 **Research Question**: Can identity persist privately across systems?
 - **Hypothesis**: Identity Compression Vectors (ICV)
 - **Status**: [UNVERIFIED] - No implementation yet
 - **Goal**: Mathematical model and specification
+- **Research Docs**:
+  - [ICV_IMPLEMENTATION_STRATEGY.md](ICV_IMPLEMENTATION_STRATEGY.md) - Proposed approach
+  - [ICV_PROTOCOL_STANDARD.md](ICV_PROTOCOL_STANDARD.md) - Protocol design
+  - [MODULAR_IDENTITY_PROTOCOL.md](MODULAR_IDENTITY_PROTOCOL.md) - Architecture
 
 ### 3. Collective Intelligence Without Groupthink [PARTIAL]
 **Research Question**: Can groups think without collapsing to consensus?
@@ -55,6 +63,29 @@ Instead of building another privacy app or AI wrapper, we're exploring **five no
 4. **Urgency Paradox** - Urgent threat but research takes time
 
 These are inherent to the transition period. We accept them.
+
+## Implementation Documentation
+
+### Key Working Features - With Documentation
+
+For detailed technical implementation, see these documents:
+
+#### Trust & Negotiation System
+- **[TRUST_PRIMITIVE_PRIMER.md](TRUST_PRIMITIVE_PRIMER.md)** - Complete guide to the trust primitive (75% working)
+- **[RECEIPT_CRYPTOGRAPHY.md](RECEIPT_CRYPTOGRAPHY.md)** - SHA-256 cryptographic receipt implementation
+- **[spec/MULTI_PARTY_NEGOTIATION.md](spec/MULTI_PARTY_NEGOTIATION.md)** - Negotiation protocol specification
+- **[spec/NEGOTIATION_P2P_EXTENSION.md](spec/NEGOTIATION_P2P_EXTENSION.md)** - P2P extension design
+
+#### Architecture & Deployment
+- **[ROADMAP.md](ROADMAP.md)** - Current development priorities and timeline
+- **[ROADMAP_P2P_TRUST.md](ROADMAP_P2P_TRUST.md)** - P2P trust network roadmap
+- **[P2P_TRUST_ARCHITECTURE_FINAL_SYNTHESIS.md](P2P_TRUST_ARCHITECTURE_FINAL_SYNTHESIS.md)** - Architecture vision
+- **[SIMPLE_TRUST_PROTOCOL.md](SIMPLE_TRUST_PROTOCOL.md)** - Simplified protocol overview
+
+#### Conceptual & Future Work
+- **[ICV_IMPLEMENTATION_STRATEGY.md](ICV_IMPLEMENTATION_STRATEGY.md)** - Identity compression strategy
+- **[IDENTITY_TRUST_COMPARISON.md](IDENTITY_TRUST_COMPARISON.md)** - Comparison of approaches
+- **[TASK_BREAKDOWN.md](TASK_BREAKDOWN.md)** - Detailed implementation tasks
 
 ## Current Implementation
 
@@ -143,9 +174,39 @@ Yes, it lacks users - because it's research, not a product.
 4. Enable others to build
 5. Move to next primitive OR help others continue
 
+## Research Documentation Paths
+
+The project includes extensive research documentation exploring theoretical foundations and future possibilities:
+
+### 📚 Research Directory Structure
+
+#### For Understanding Core Concepts
+- **[/docs/research/GLOSSARY.md](/docs/research/GLOSSARY.md)** - Comprehensive terminology reference
+- **[/docs/research/README.md](/docs/research/README.md)** - Research index and navigation guide
+
+#### For Technical Deep Dives
+- **Identity & Behavior** - Theoretical models for identity compression and evolution
+- **Cryptography & Privacy** - Zero-knowledge proofs, nullifiers, formal privacy models
+- **Communication & Coordination** - MLS protocol analysis, consensus mechanisms
+- **Collective Intelligence** - Quorum dynamics, resonance mechanics, symbol emergence
+
+#### Important Caveats
+- **Much is conceptual**: The research directory contains both working code analysis and pure theory
+- **Not all is implemented**: Many documents describe aspirational features
+- **Active research**: Some hypotheses have been invalidated, others remain open questions
+
+### 🔬 Review Directory
+
+The `/review/` directory contains critical assessments from October 2024:
+- **External validation** of claims vs implementation
+- **Honest assessment** of what works vs what doesn't
+- **Strategic synthesis** of viable paths forward
+
 ## Essential Context
 
-For deep understanding, review:
+For realistic understanding:
+- **[/ALPHA_RELEASE.md](/ALPHA_RELEASE.md)** - Solo developer context and expectations
+- **[/docs/PROJECT_STATUS.md](/docs/PROJECT_STATUS.md)** - What's actually built vs conceptual
 - `/review/` - October 2024 comprehensive assessment
 - `review/synthesis_and_vision.md` - Strategic direction
 - `review/PROJECT_STATUS.md` - Implementation reality

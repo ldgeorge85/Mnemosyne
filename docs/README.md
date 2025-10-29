@@ -12,10 +12,22 @@
 
 ## Core Documentation
 
-### 📍 Essential Reading
-1. **[PROJECT_STATUS.md](PROJECT_STATUS.md)** - Honest assessment of what's built vs. claimed
-2. **[ROADMAP.md](ROADMAP.md)** - Order of operations for primitive development
-3. **[MNEMOSYNE_PRIMER.md](MNEMOSYNE_PRIMER.md)** - Original vision and philosophy
+### 📍 Essential Reading - Start Here
+1. **[PRIMER.md](PRIMER.md)** - Project overview with all implementation references
+2. **[PROJECT_STATUS.md](PROJECT_STATUS.md)** - Honest assessment of what's built vs. claimed
+3. **[TRUST_PRIMITIVE_PRIMER.md](TRUST_PRIMITIVE_PRIMER.md)** - Our main working innovation (75% complete)
+
+### 🚀 Key Implementation Documents
+- **[RECEIPT_CRYPTOGRAPHY.md](RECEIPT_CRYPTOGRAPHY.md)** - SHA-256 cryptographic receipts (WORKING)
+- **[TASK_BREAKDOWN.md](TASK_BREAKDOWN.md)** - Detailed implementation phases
+- **[spec/MULTI_PARTY_NEGOTIATION.md](spec/MULTI_PARTY_NEGOTIATION.md)** - Negotiation protocol spec
+- **[spec/NEGOTIATION_P2P_EXTENSION.md](spec/NEGOTIATION_P2P_EXTENSION.md)** - P2P extension design
+
+### 🗺️ Roadmaps & Architecture
+- **[ROADMAP.md](ROADMAP.md)** - Order of operations for primitive development
+- **[ROADMAP_P2P_TRUST.md](ROADMAP_P2P_TRUST.md)** - P2P trust network roadmap
+- **[P2P_TRUST_ARCHITECTURE_FINAL_SYNTHESIS.md](P2P_TRUST_ARCHITECTURE_FINAL_SYNTHESIS.md)** - Architecture vision
+- **[SIMPLE_TRUST_PROTOCOL.md](SIMPLE_TRUST_PROTOCOL.md)** - Simplified protocol explanation
 
 ### 🔬 Research Context
 - **[/review/](../review/)** - October 2024 comprehensive assessment

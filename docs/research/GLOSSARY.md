@@ -1,6 +1,8 @@
 # Mnemosyne Protocol Research Glossary
 ## Comprehensive Terms, Theories, and Protocols
 
+*Last Updated: October 2025 - Alpha Release*
+
 ---
 
 ## A
@@ -277,6 +279,22 @@
 - **Byzantine Threshold (1/3)**: Maximum tolerable malicious nodes
 - **k-anonymity (k≥5)**: Minimum anonymity set size
 - **ε-differential privacy**: Privacy parameter (typically ε=1.0)
+
+---
+
+## Mnemosyne-Specific Terms
+
+**Agentic Flow**: ReAct pattern implementation for intelligent task orchestration with LLM reasoning.
+
+**Forum of Echoes**: Collection of 10 philosophical voices providing diverse perspectives.
+
+**Identity Compression Vector (ICV)**: Theoretical ~128-bit mathematical compression of identity patterns (conceptual, not implemented).
+
+**Receipts System**: Transparency primitive with SHA-256 cryptographic hashing for all system decisions.
+
+**Shadow Council**: Group of 5 technical sub-agents (Artificer, Archivist, Mystagogue, Tactician, Daemon) for specialized analysis.
+
+**Trust Primitive**: Novel mechanism for establishing binding agreements without central authority (75% complete).
 
 ---
 

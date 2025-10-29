@@ -1,6 +1,10 @@
 # The Trust Primitive: A Primer
 *Enabling Binding Agreements Without Central Authority*
 
+**Last Updated**: October 2025 - Alpha Release
+**Implementation Status**: 75% Complete (Working but needs digital signatures)
+**Research References**: See [/docs/research/](/docs/research/) for theoretical foundations
+
 ## The Breakthrough
 
 For the first time, we have a working system that enables two hostile parties to reach binding agreements without:

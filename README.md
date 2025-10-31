@@ -6,6 +6,7 @@
 # 🏛️ The Mnemosyne Protocol
 *A Cognitive-Symbolic Operating System for Preserving Human Agency*
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Status](https://img.shields.io/badge/Status-Active%20Development-yellow)]()
 [![Security](https://img.shields.io/badge/Security-Activated-green)]()
 [![Documentation](https://img.shields.io/badge/Docs-Updated-green)]()
@@ -290,6 +291,18 @@ This is a solo research project with limited maintenance capacity. If the ideas 
 - **Share what you build** with these concepts
 
 See [ALPHA_RELEASE.md](ALPHA_RELEASE.md) for realistic expectations and [Contributing Guide](docs/CONTRIBUTING.md) for technical details.
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+The Apache License 2.0 was chosen to:
+- Ensure proper attribution for research contributions
+- Allow both academic and commercial use of these primitives
+- Provide patent protection for contributors
+- Enable maximum adoption of sovereignty primitives
+
+See the [NOTICE](NOTICE) file for attribution requirements and research citations.
 
 ## Contact
 

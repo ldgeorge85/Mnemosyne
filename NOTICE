@@ -1,0 +1,62 @@
+The Mnemosyne Protocol
+Copyright 2025 Lewis George
+
+This product includes software developed for The Mnemosyne Protocol
+(https://github.com/ldgeorge85/Mnemosyne).
+
+================================================================================
+ATTRIBUTION NOTICE
+================================================================================
+
+The Mnemosyne Protocol is a research project exploring new primitives for
+cognitive sovereignty - mechanisms for preserving human agency in the age of
+surveillance capitalism.
+
+This is NOT a commercial product but a research initiative creating patterns
+and primitives that others can build upon. The goal is to enable forms of
+digital existence that preserve human agency against corporate aggregation.
+
+Key Innovations:
+- Trust Without Central Authority: Enabling binding agreements between hostile
+  parties without blockchain or central servers
+- Cryptographic Receipts: Transparency primitives with SHA-256 hash chains
+- Identity Compression Vectors: Conceptual framework for portable identity
+- Philosophical Personas: AI alignment without lobotomization
+
+When using or building upon this work, please acknowledge The Mnemosyne Protocol
+and its mission to create new categories of resistance through novel primitives.
+
+================================================================================
+RESEARCH CITATIONS
+================================================================================
+
+If you use this software in research, please cite:
+
+The Mnemosyne Protocol: New Primitives for Cognitive Sovereignty
+Lewis George, 2025
+https://github.com/ldgeorge85/Mnemosyne
+
+================================================================================
+COMPONENTS AND LICENSES
+================================================================================
+
+This project incorporates work from various open source projects:
+
+FastAPI - MIT License
+React - MIT License
+PostgreSQL - PostgreSQL License
+Redis - BSD License
+Docker - Apache License 2.0
+Python - PSF License
+Node.js - MIT License
+
+For detailed component licensing, see the respective project documentation.
+
+================================================================================
+DISCLAIMER
+================================================================================
+
+This is experimental research software. While we strive for security and
+correctness, the primitives explored here are novel and should be thoroughly
+tested before any production use. The focus is on creating new patterns for
+others to validate, improve, and build upon.

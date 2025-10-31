@@ -9,12 +9,12 @@ from enum import Enum
 from typing import Dict, Any, List, Optional, Union, Type, Callable, AsyncGenerator
 
 import openai
-from langchain.schema import ChatMessage, HumanMessage, AIMessage, SystemMessage
-from langchain.chat_models import ChatOpenAI, AzureChatOpenAI
-from langchain.schema.runnable import RunnableConfig
-from langchain.callbacks.base import BaseCallbackHandler
-from langchain.chains import ConversationChain
-from langchain.memory import ConversationBufferMemory
+from langchain_core.messages import ChatMessage, HumanMessage, AIMessage, SystemMessage
+from langchain_core.runnables import RunnableConfig
+from langchain_core.callbacks import BaseCallbackHandler
+from langchain_community.chat_models import ChatOpenAI, AzureChatOpenAI
+from langchain_classic.chains import ConversationChain
+from langchain_classic.memory import ConversationBufferMemory
 
 from app.core.config import settings
 from app.services.llm.config import LLMConfig, LLMProvider

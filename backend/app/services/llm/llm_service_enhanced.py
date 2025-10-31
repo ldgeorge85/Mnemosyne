@@ -12,9 +12,9 @@ from datetime import datetime
 from uuid import UUID
 import tiktoken
 
-from langchain.chat_models import ChatOpenAI
-from langchain.schema import ChatMessage, HumanMessage, AIMessage, SystemMessage
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain_community.chat_models import ChatOpenAI
+from langchain_core.messages import ChatMessage, HumanMessage, AIMessage, SystemMessage
+from langchain_core.callbacks import StreamingStdOutCallbackHandler
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings

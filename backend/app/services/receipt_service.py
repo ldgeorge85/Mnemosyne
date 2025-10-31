@@ -18,6 +18,7 @@ from fastapi import Request
 from app.db.models.receipt import Receipt, ReceiptType
 from app.db.models.user import User
 from app.core.config import settings
+from app.services.crypto_service import CryptoService
 
 logger = logging.getLogger(__name__)
 
@@ -209,6 +210,22 @@ class ReceiptService:
             # Calculate content hash
             content_hash = self._calculate_content_hash(receipt_data)
 
+            # Generate system signature if key is configured
+            signature = None
+            signature_algorithm = None
+            try:
+                if hasattr(settings, 'SYSTEM_SIGNING_KEY') and settings.SYSTEM_SIGNING_KEY:
+                    # Sign the content hash for tamper-proof receipts
+                    signature = CryptoService.generate_system_signature(
+                        data=content_hash,
+                        system_private_key_b64=settings.SYSTEM_SIGNING_KEY
+                    )
+                    signature_algorithm = 'Ed25519'
+                    logger.debug(f"System signature generated for receipt {receipt_id}")
+            except Exception as e:
+                logger.warning(f"Failed to generate system signature for receipt: {e}")
+                # Continue without signature - receipts are still valid without them
+
             # Create receipt with cryptographic hashes
             receipt = Receipt(
                 id=receipt_id,
@@ -239,7 +256,9 @@ class ReceiptService:
                 user_agent=user_agent,
                 session_id=session_id,
                 content_hash=content_hash,
-                previous_hash=previous_hash
+                previous_hash=previous_hash,
+                signature=signature,
+                signature_algorithm=signature_algorithm
             )
 
             self.db.add(receipt)
@@ -744,3 +763,54 @@ class ReceiptService:
         except Exception as e:
             logger.error(f"Error verifying receipt chain: {e}")
             raise
+
+    async def verify_receipt_signature(
+        self,
+        receipt: Receipt,
+        system_public_key_b64: Optional[str] = None
+    ) -> bool:
+        """Verify a receipt's cryptographic signature.
+
+        Args:
+            receipt: Receipt to verify
+            system_public_key_b64: System's public key (base64-encoded Ed25519)
+                                   If None, loads from settings
+
+        Returns:
+            True if signature is valid, False otherwise
+        """
+        try:
+            # Check if receipt has a signature
+            if not receipt.signature or not receipt.signature_algorithm:
+                logger.debug(f"Receipt {receipt.id} has no signature")
+                return False
+
+            # Only Ed25519 supported currently
+            if receipt.signature_algorithm != 'Ed25519':
+                logger.warning(f"Unsupported signature algorithm: {receipt.signature_algorithm}")
+                return False
+
+            # Get system public key
+            if system_public_key_b64 is None:
+                if not hasattr(settings, 'SYSTEM_PUBLIC_KEY') or not settings.SYSTEM_PUBLIC_KEY:
+                    logger.warning("System public key not configured")
+                    return False
+                system_public_key_b64 = settings.SYSTEM_PUBLIC_KEY
+
+            # Verify signature on content hash
+            is_valid = CryptoService.verify_ed25519_signature(
+                public_key_b64=system_public_key_b64,
+                message=receipt.content_hash,
+                signature_b64=receipt.signature
+            )
+
+            if is_valid:
+                logger.debug(f"Receipt {receipt.id} signature verified successfully")
+            else:
+                logger.warning(f"Receipt {receipt.id} signature verification failed")
+
+            return is_valid
+
+        except Exception as e:
+            logger.error(f"Error verifying receipt signature: {e}", exc_info=True)
+            return False

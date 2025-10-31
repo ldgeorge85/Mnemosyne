@@ -9,8 +9,9 @@ import logging
 from typing import Dict, Any, List, Optional, Union
 from uuid import UUID
 
-from langchain.callbacks.base import BaseCallbackHandler
-from langchain.schema import AgentAction, AgentFinish, LLMResult
+from langchain_core.callbacks import BaseCallbackHandler
+from langchain_core.agents import AgentAction, AgentFinish
+from langchain_core.outputs import LLMResult
 
 # Set up module logger
 logger = logging.getLogger(__name__)

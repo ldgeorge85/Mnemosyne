@@ -19,6 +19,7 @@ pgvector
 pgvector[sqlalchemy]
 redis
 rq
+apscheduler
 langchain
 langchain-community
 openai

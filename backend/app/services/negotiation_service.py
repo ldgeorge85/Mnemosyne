@@ -22,6 +22,7 @@ from app.db.models.negotiation import (
 )
 from app.db.models.user import User
 from app.db.models.trust import Appeal, AppealStatus
+from app.services.crypto_service import CryptoService
 
 logger = logging.getLogger(__name__)
 
@@ -67,9 +68,31 @@ class NegotiationService:
         if initiator_id not in participant_ids:
             participant_ids.append(initiator_id)
 
-        # Default: require ALL participants to accept
-        if required_consensus_count is None:
-            required_consensus_count = len(participant_ids)
+        participant_count = len(participant_ids)
+
+        # Validate and set consensus requirements
+        if required_consensus_count is not None:
+            # Must be positive integer
+            if not isinstance(required_consensus_count, int) or required_consensus_count <= 0:
+                raise ValueError(
+                    f"Consensus count must be a positive integer (got: {required_consensus_count})"
+                )
+
+            # Must be at least majority
+            min_consensus = (participant_count // 2) + 1
+            if required_consensus_count < min_consensus:
+                raise ValueError(
+                    f"Consensus count must be at least majority ({min_consensus} of {participant_count} participants)"
+                )
+
+            # Cannot exceed total participants
+            if required_consensus_count > participant_count:
+                raise ValueError(
+                    f"Consensus count cannot exceed participant count (got {required_consensus_count}, max {participant_count})"
+                )
+        else:
+            # Default: require ALL participants to accept
+            required_consensus_count = participant_count
 
         # Calculate deadlines
         now = datetime.utcnow()
@@ -154,7 +177,7 @@ class NegotiationService:
             return negotiation
 
         # Add to joined list
-        negotiation.joined_participant_ids.append(participant_id)
+        negotiation.joined_participant_ids = negotiation.joined_participant_ids + [participant_id]
 
         # Check if all participants have joined
         if set(negotiation.joined_participant_ids) == set(negotiation.participant_ids):
@@ -265,14 +288,14 @@ class NegotiationService:
         Args:
             negotiation_id: Negotiation to accept
             acceptor_id: User ID accepting
-            signature: Optional cryptographic signature
+            signature: Optional cryptographic signature (Ed25519, base64-encoded)
             message_text: Optional explanation
 
         Returns:
             Updated negotiation (may transition to CONSENSUS_REACHED)
 
         Raises:
-            ValueError: If not participant or wrong status
+            ValueError: If not participant or wrong status or invalid signature
         """
         negotiation = await self.db.get(Negotiation, negotiation_id)
         if not negotiation:
@@ -286,15 +309,46 @@ class NegotiationService:
         if negotiation.status != NegotiationStatus.NEGOTIATING:
             raise ValueError(f"Negotiation not in NEGOTIATING status (current: {negotiation.status.value})")
 
+        # Verify signature if provided
+        signature_verified = False
+        if signature:
+            # Get user's public key
+            user = await self.db.get(User, acceptor_id)
+            if not user or not user.public_key:
+                raise ValueError(f"User {acceptor_id} has no public key registered")
+
+            # Create canonical message to verify
+            message_to_sign = self._create_acceptance_message(
+                negotiation_id=negotiation_id,
+                terms=negotiation.current_terms,
+                terms_version=negotiation.terms_version
+            )
+
+            # Verify signature
+            signature_verified = CryptoService.verify_ed25519_signature(
+                public_key_b64=user.public_key,
+                message=message_to_sign,
+                signature_b64=signature
+            )
+
+            if not signature_verified:
+                raise ValueError("Invalid signature for acceptance")
+
+            logger.info(f"Signature verified for user {acceptor_id} accepting negotiation {negotiation_id}")
+
         # Record acceptance
         if not negotiation.acceptances:
             negotiation.acceptances = {}
 
-        negotiation.acceptances[str(acceptor_id)] = {
+        # Update dict by reassigning to trigger SQLAlchemy change tracking
+        updated_acceptances = negotiation.acceptances.copy()
+        updated_acceptances[str(acceptor_id)] = {
             'version': negotiation.terms_version,
             'timestamp': datetime.utcnow().isoformat(),
-            'signature': signature
+            'signature': signature,
+            'signature_verified': signature_verified
         }
+        negotiation.acceptances = updated_acceptances
 
         # Check for consensus
         consensus_reached = self._check_consensus(negotiation)
@@ -316,7 +370,9 @@ class NegotiationService:
             sender_id=acceptor_id,
             message_type=NegotiationMessageType.ACCEPT,
             terms_version=negotiation.terms_version,
-            message_text=message_text or f"Accepted terms v{negotiation.terms_version}"
+            message_text=message_text or f"Accepted terms v{negotiation.terms_version}",
+            signature=signature,
+            signature_verified=signature_verified
         )
 
         return negotiation
@@ -332,13 +388,13 @@ class NegotiationService:
         Args:
             negotiation_id: Negotiation to finalize
             finalizer_id: User ID finalizing
-            signature: Optional cryptographic signature
+            signature: Optional cryptographic signature (Ed25519, base64-encoded)
 
         Returns:
             Updated negotiation (may transition to BINDING)
 
         Raises:
-            ValueError: If not consensus reached or not participant
+            ValueError: If not consensus reached or not participant or invalid signature
         """
         negotiation = await self.db.get(Negotiation, negotiation_id)
         if not negotiation:
@@ -352,14 +408,45 @@ class NegotiationService:
         if negotiation.status != NegotiationStatus.CONSENSUS_REACHED:
             raise ValueError(f"Negotiation not in CONSENSUS_REACHED status (current: {negotiation.status.value})")
 
+        # Verify signature if provided
+        signature_verified = False
+        if signature:
+            # Get user's public key
+            user = await self.db.get(User, finalizer_id)
+            if not user or not user.public_key:
+                raise ValueError(f"User {finalizer_id} has no public key registered")
+
+            # Create canonical message to verify
+            message_to_sign = self._create_finalization_message(
+                negotiation_id=negotiation_id,
+                binding_terms=negotiation.current_terms,
+                terms_version=negotiation.terms_version
+            )
+
+            # Verify signature
+            signature_verified = CryptoService.verify_ed25519_signature(
+                public_key_b64=user.public_key,
+                message=message_to_sign,
+                signature_b64=signature
+            )
+
+            if not signature_verified:
+                raise ValueError("Invalid signature for finalization")
+
+            logger.info(f"Signature verified for user {finalizer_id} finalizing negotiation {negotiation_id}")
+
         # Record finalization
         if not negotiation.finalizations:
             negotiation.finalizations = {}
 
-        negotiation.finalizations[str(finalizer_id)] = {
+        # Update dict by reassigning to trigger SQLAlchemy change tracking
+        updated_finalizations = negotiation.finalizations.copy()
+        updated_finalizations[str(finalizer_id)] = {
             'timestamp': datetime.utcnow().isoformat(),
-            'signature': signature
+            'signature': signature,
+            'signature_verified': signature_verified
         }
+        negotiation.finalizations = updated_finalizations
 
         # Check if all participants have finalized
         if len(negotiation.finalizations) == len(negotiation.participant_ids):
@@ -496,13 +583,75 @@ class NegotiationService:
             message_text=dispute_reason
         )
 
-        # TODO: Create Appeal using existing appeals system
-        # For now, just log that we would create an appeal
-        logger.info(f"Negotiation {negotiation_id} disputed by {disputer_id}: {dispute_reason}")
-        logger.info("TODO: Create Appeal using AppealResolutionService")
+        # Create TrustEvent for the dispute
+        from app.db.models.trust import TrustEvent, TrustEventType
+        from app.services.appeals_service import AppealResolutionService
+        from datetime import timedelta
 
-        # Placeholder: return negotiation and None for appeal
-        return negotiation, None  # type: ignore
+        # Determine who is the "other party" (subject of the trust event)
+        # For simplicity, if there are exactly 2 participants, the other is the subject
+        other_participant_ids = [pid for pid in negotiation.participant_ids if pid != disputer_id]
+        subject_id = other_participant_ids[0] if other_participant_ids else disputer_id
+
+        # Create TrustEvent representing the dispute/conflict
+        trust_event = TrustEvent(
+            actor_id=disputer_id,
+            subject_id=subject_id,
+            event_type=TrustEventType.CONFLICT,
+            trust_delta=-0.1,  # Disputes slightly reduce trust
+            context={
+                'negotiation_id': str(negotiation_id),
+                'dispute_reason': dispute_reason,
+                'binding_hash': negotiation.binding_hash,
+                'binding_terms': negotiation.binding_terms,
+                'timestamp': datetime.utcnow().isoformat()
+            },
+            reporter_id=disputer_id,
+            visibility_scope='private',
+            user_consent=True  # Explicit action by disputer
+        )
+
+        # Calculate trust event hash
+        import hashlib
+        import json
+        trust_event_hashable = {
+            'actor_id': str(trust_event.actor_id),
+            'subject_id': str(trust_event.subject_id),
+            'event_type': trust_event.event_type.value,
+            'context': trust_event.context,
+            'timestamp': datetime.utcnow().isoformat()
+        }
+        trust_event_json = json.dumps(trust_event_hashable, sort_keys=True, separators=(',', ':'))
+        trust_event.content_hash = hashlib.sha256(trust_event_json.encode('utf-8')).hexdigest()
+
+        self.db.add(trust_event)
+        await self.db.flush()  # Get trust_event.id without committing
+
+        # Create Appeal linked to TrustEvent
+        appeal_service = AppealResolutionService(self.db)
+        appeal = Appeal(
+            trust_event_id=trust_event.id,
+            appellant_id=disputer_id,
+            status=AppealStatus.PENDING,
+            appeal_reason=dispute_reason,
+            evidence={
+                'negotiation_id': str(negotiation_id),
+                'binding_hash': negotiation.binding_hash,
+                'binding_terms': negotiation.binding_terms,
+                'binding_timestamp': negotiation.binding_timestamp.isoformat() if negotiation.binding_timestamp else None
+            },
+            review_deadline=datetime.utcnow() + timedelta(days=7)  # 7-day SLA
+        )
+
+        self.db.add(appeal)
+        await self.db.commit()
+        await self.db.refresh(trust_event)
+        await self.db.refresh(appeal)
+
+        logger.info(f"Negotiation {negotiation_id} disputed by {disputer_id}")
+        logger.info(f"Created TrustEvent {trust_event.id} and Appeal {appeal.id}")
+
+        return negotiation, appeal
 
     async def check_timeouts(self) -> Dict[str, List[Negotiation]]:
         """Check for negotiations past their deadlines.
@@ -627,7 +776,9 @@ class NegotiationService:
         message_type: NegotiationMessageType,
         terms: Optional[Dict[str, Any]] = None,
         terms_version: Optional[int] = None,
-        message_text: Optional[str] = None
+        message_text: Optional[str] = None,
+        signature: Optional[str] = None,
+        signature_verified: bool = False
     ) -> NegotiationMessage:
         """Create a negotiation message.
 
@@ -638,6 +789,8 @@ class NegotiationService:
             terms: Optional terms (for OFFER/COUNTER_OFFER)
             terms_version: Optional terms version
             message_text: Optional message text
+            signature: Optional Ed25519 signature (base64-encoded)
+            signature_verified: Whether signature was verified
 
         Returns:
             Created message
@@ -648,7 +801,9 @@ class NegotiationService:
             message_type=message_type,
             terms=terms,
             terms_version=terms_version,
-            message_text=message_text
+            message_text=message_text,
+            signature_ed25519=signature,
+            signature_verified=signature_verified
         )
 
         # Calculate content hash
@@ -669,3 +824,51 @@ class NegotiationService:
         await self.db.refresh(message)
 
         return message
+
+    def _create_acceptance_message(
+        self,
+        negotiation_id: UUID,
+        terms: Dict[str, Any],
+        terms_version: int
+    ) -> str:
+        """Create canonical message for acceptance signature.
+
+        Args:
+            negotiation_id: Negotiation ID
+            terms: Terms being accepted
+            terms_version: Version of terms
+
+        Returns:
+            Canonical message string to sign
+        """
+        canonical = {
+            'action': 'ACCEPT',
+            'negotiation_id': str(negotiation_id),
+            'terms': terms,
+            'terms_version': terms_version
+        }
+        return json.dumps(canonical, sort_keys=True, separators=(',', ':'))
+
+    def _create_finalization_message(
+        self,
+        negotiation_id: UUID,
+        binding_terms: Dict[str, Any],
+        terms_version: int
+    ) -> str:
+        """Create canonical message for finalization signature.
+
+        Args:
+            negotiation_id: Negotiation ID
+            binding_terms: Final binding terms
+            terms_version: Version of terms
+
+        Returns:
+            Canonical message string to sign
+        """
+        canonical = {
+            'action': 'FINALIZE',
+            'negotiation_id': str(negotiation_id),
+            'binding_terms': binding_terms,
+            'terms_version': terms_version
+        }
+        return json.dumps(canonical, sort_keys=True, separators=(',', ':'))

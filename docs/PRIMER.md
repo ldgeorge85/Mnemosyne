@@ -17,15 +17,21 @@ Mnemosyne is a **research PROJECT** (not a product) exploring genuinely new mech
 
 Instead of building another privacy app or AI wrapper, we're exploring **five novel primitives**:
 
-### 1. Trust Without Central Authority [PRIMARY FOCUS]
+### 1. Trust Without Central Authority [PHASES 1 & 2 COMPLETE]
 **Research Question**: Can trust exist without blockchain or central servers?
 - **Hypothesis**: Negotiated trust with appeals process
-- **Status**: [75% COMPLETE] - Working implementation with cryptographic receipts
-- **Goal**: Demo of binding agreement between hostile parties
+- **Status**: [PHASE 2 COMPLETE] - Production-ready with Ed25519 signatures (2,845 lines of code)
+- **Achievement**: Hostile parties can reach binding agreements with cryptographic proof
 - **Implementation Docs**:
   - [TRUST_PRIMITIVE_PRIMER.md](TRUST_PRIMITIVE_PRIMER.md) - Complete explanation of how it works
+  - [TRUST_PRIMITIVE_COMPLETION_PLAN_V2.md](TRUST_PRIMITIVE_COMPLETION_PLAN_V2.md) - Implementation plan & status
+  - [TRUST_PRIMITIVE_IMPLEMENTATION_STATUS.md](TRUST_PRIMITIVE_IMPLEMENTATION_STATUS.md) - Detailed technical log
   - [RECEIPT_CRYPTOGRAPHY.md](RECEIPT_CRYPTOGRAPHY.md) - SHA-256 hash chain implementation
   - [spec/MULTI_PARTY_NEGOTIATION.md](spec/MULTI_PARTY_NEGOTIATION.md) - Protocol specification
+
+**✅ Phase 1 Complete**: Core negotiation state machine, dispute→appeal, consensus validation
+**✅ Phase 2 Complete**: Ed25519 signatures, client-side key generation, rate limiting
+**⏳ Phase 3 Pending**: Visual demonstration interface
 
 ### 2. Identity Without Surveillance [CONCEPTUAL]
 **Research Question**: Can identity persist privately across systems?
@@ -70,8 +76,10 @@ These are inherent to the transition period. We accept them.
 
 For detailed technical implementation, see these documents:
 
-#### Trust & Negotiation System
-- **[TRUST_PRIMITIVE_PRIMER.md](TRUST_PRIMITIVE_PRIMER.md)** - Complete guide to the trust primitive (75% working)
+#### Trust & Negotiation System (PHASE 2 COMPLETE)
+- **[TRUST_PRIMITIVE_PRIMER.md](TRUST_PRIMITIVE_PRIMER.md)** - Complete guide to the trust primitive
+- **[TRUST_PRIMITIVE_COMPLETION_PLAN_V2.md](TRUST_PRIMITIVE_COMPLETION_PLAN_V2.md)** - Implementation plan with Phase 1 & 2 complete
+- **[TRUST_PRIMITIVE_IMPLEMENTATION_STATUS.md](TRUST_PRIMITIVE_IMPLEMENTATION_STATUS.md)** - Detailed technical implementation log
 - **[RECEIPT_CRYPTOGRAPHY.md](RECEIPT_CRYPTOGRAPHY.md)** - SHA-256 cryptographic receipt implementation
 - **[spec/MULTI_PARTY_NEGOTIATION.md](spec/MULTI_PARTY_NEGOTIATION.md)** - Negotiation protocol specification
 - **[spec/NEGOTIATION_P2P_EXTENSION.md](spec/NEGOTIATION_P2P_EXTENSION.md)** - P2P extension design
@@ -90,11 +98,15 @@ For detailed technical implementation, see these documents:
 ## Current Implementation
 
 ### What Actually Works
-- **Receipt System** [IMPLEMENTED] - Comprehensive transparency primitive
+- **Trust Primitive Phase 1** [IMPLEMENTED] - Full negotiation state machine
+- **Trust Primitive Phase 2** [IMPLEMENTED] - Ed25519 signatures & rate limiting
+- **Receipt System** [IMPLEMENTED] - Comprehensive transparency with system signatures
 - **Agent Orchestration** [IMPLEMENTED] - ReAct pattern, parallel execution
 - **Shadow Council** [IMPLEMENTED] - 5 technical sub-agents
 - **Forum of Echoes** [IMPLEMENTED] - 10 philosophical voices
 - **Vector Memory** [IMPLEMENTED] - Embeddings with search
+- **Background Jobs** [IMPLEMENTED] - APScheduler with Redis locks
+- **Dispute Resolution** [IMPLEMENTED] - Automatic appeal creation
 
 ### What's Aspirational
 - Identity Compression Vectors - No code
@@ -135,16 +147,24 @@ Currently dependent on external LLMs (OpenAI/Anthropic). Migration to local mode
 - Complete demonstration before moving on
 - "Holy shit" moments over explanations
 
-## Current Sprint: Trust Primitive
+## Current Sprint: Trust Primitive Phase 3 (Demo)
 
-### Immediate Operations
-1. Wire receipt enforcement to strict mode
-2. Complete appeals resolution workflow
-3. Add cryptographic proof-of-process
-4. Create multi-party negotiation demo
+### Completed (Phases 1 & 2)
+✅ Full negotiation state machine (INITIATED → NEGOTIATING → CONSENSUS → BINDING)
+✅ Ed25519 digital signatures for non-repudiation
+✅ Client-side key generation (private keys never leave browser)
+✅ Dispute→Appeal connection with trust events
+✅ Rate limiting and background job scheduling
+✅ 16 integration tests covering full flow
+
+### Next: Phase 3 - Visual Demonstration
+1. Build React UI showing split-screen negotiation
+2. Implement WebSocket handler for real-time updates
+3. Create hash chain visualization with D3.js
+4. Animate state transitions to show the "holy shit" moment
 
 ### Success Target
-Demo showing "impossible" trust - two hostile parties reach binding agreement with no central authority, no blockchain, no reputation system.
+Visual demo showing "impossible" trust - two hostile parties reach binding agreement with no central authority, no blockchain, no reputation system. With full cryptographic proof.
 
 ## For Contributors
 

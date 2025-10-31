@@ -24,6 +24,7 @@ from app.core.exceptions import (
 from app.core.middleware import RequestIDMiddleware
 from app.core.auth.manager import get_auth_manager
 from app.middleware.receipt_enforcement import ReceiptEnforcementMiddleware
+from app.middleware.rate_limit import rate_limiter, RateLimitMiddleware
 
 # Configure logging
 configure_logging()
@@ -41,6 +42,9 @@ app = FastAPI(
 # Add middleware in order (reverse order of execution)
 # Request ID middleware (executes first)
 app.add_middleware(RequestIDMiddleware)
+
+# Rate limiting middleware (prevent abuse)
+app.add_middleware(RateLimitMiddleware, rate_limiter=rate_limiter)
 
 # Receipt enforcement middleware (sovereignty safeguard)
 # Use configuration to determine enforcement mode
@@ -173,6 +177,9 @@ app.add_exception_handler(Exception, generic_exception_handler)
 # Include API router
 app.include_router(api_router)
 
+# Global scheduler instance
+scheduler = None
+
 # Startup and shutdown events
 @app.on_event("startup")
 async def startup_event():
@@ -180,13 +187,23 @@ async def startup_event():
     Handler for application startup events.
     Initializes connections and resources needed by the application.
     """
+    global scheduler
+
     logger.info(f"Starting {settings.APP_NAME} API")
-    
+
+    # Initialize rate limiter Redis connection
+    try:
+        await rate_limiter.connect()
+        logger.info("Rate limiter Redis connection established")
+    except Exception as e:
+        logger.warning(f"Failed to connect rate limiter to Redis: {e}")
+        logger.warning("Rate limiting will fail open (allow all requests)")
+
     # Initialize authentication manager
     auth_manager = get_auth_manager()
     available_methods = auth_manager.get_available_methods()
     logger.info(f"Authentication initialized with methods: {available_methods}")
-    
+
     # Initialize tool registry
     try:
         from app.services.tools import tool_registry
@@ -194,7 +211,18 @@ async def startup_event():
         logger.info(f"Tool registry initialized with {len(tool_registry.tools)} tools")
     except Exception as e:
         logger.warning(f"Failed to initialize tool registry: {e}")
-    
+
+    # Initialize background scheduler
+    try:
+        from app.services.scheduler_service import SchedulerService
+        scheduler = SchedulerService()
+        await scheduler.start()
+        logger.info("Background scheduler started successfully")
+    except Exception as e:
+        logger.error(f"Failed to start background scheduler: {e}", exc_info=True)
+        # Don't fail startup, just log the error
+        scheduler = None
+
     # Database initialization is handled by the session module
 
 @app.on_event("shutdown")
@@ -203,8 +231,25 @@ async def shutdown_event():
     Handler for application shutdown events.
     Cleans up resources used by the application.
     """
+    global scheduler
+
     logger.info(f"Shutting down {settings.APP_NAME} API")
-    
+
+    # Close rate limiter Redis connection
+    try:
+        await rate_limiter.close()
+        logger.info("Rate limiter Redis connection closed")
+    except Exception as e:
+        logger.warning(f"Error closing rate limiter connection: {e}")
+
+    # Shutdown background scheduler
+    if scheduler:
+        try:
+            await scheduler.shutdown()
+            logger.info("Background scheduler stopped successfully")
+        except Exception as e:
+            logger.error(f"Error shutting down scheduler: {e}")
+
     # Cleanup tool registry
     try:
         from app.services.tools import tool_registry
@@ -212,7 +257,7 @@ async def shutdown_event():
         logger.info("Tool registry cleaned up")
     except Exception as e:
         logger.warning(f"Failed to cleanup tool registry: {e}")
-    
+
     # Close database connections, etc.
 
 # Run the application if executed directly
